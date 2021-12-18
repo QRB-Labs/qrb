@@ -1,1 +1,1 @@
-![QRB Labs](QRB_log.png)
+![QRB Labs](QRB_logo.png)
