@@ -1,0 +1,27 @@
+Name,Date,Hashrate,Power,Noise,Algorithm,profit
+Bitmain Antminer S19 Pro+ Hyd (198Th),May 2022,198Th/s,5445W,50db,SHA-256,$37.48/day
+Bitmain Antminer S19 XP (140Th),Jul 2022,140Th/s,3010W,75db,SHA-256,$26.91/day
+MicroBT Whatsminer M30S++,Oct 2020,112Th/s,3472W,75db,SHA-256,$21.01/day
+iPollo B2,Oct 2021,110Th/s,3250W,75db,SHA-256,$20.72/day
+Bitmain Antminer S19 Pro (110Th),May 2020,110Th/s,3250W,75db,SHA-256,$20.72/day
+Bitmain Antminer S19j Pro (104Th),Jul 2021,104Th/s,3068W,75db,SHA-256,$19.59/day
+Bitmain Antminer S19j Pro (100Th),Jun 2021,100Th/s,3050W,75db,SHA-256,$18.79/day
+MicroBT Whatsminer M30S+,Oct 2020,100Th/s,3400W,75db,SHA-256,$18.62/day
+Bitmain Antminer S19j Pro (96Th),Aug 2021,96Th/s,2832W,75db,SHA-256,$18.08/day
+Bitmain Antminer S19 (95Th),May 2020,95Th/s,3250W,75db,SHA-256,$17.68/day
+Bitmain Antminer S19j (90Th),Jun 2021,90Th/s,3250W,75db,SHA-256,$16.67/day
+Canaan AvalonMiner 1246,Jan 2021,90Th/s,3420W,75db,SHA-256,$16.58/day
+Bitmain Antminer T19 (88Th),Aug 2021,88Th/s,3344W,75db,SHA-256,$16.22/day
+MicroBT Whatsminer M30S,Apr 2020,86Th/s,3268W,72db,SHA-256,$15.85/day
+iPollo B1,Oct 2021,85Th/s,3400W,75db,SHA-256,$15.58/day
+Bitmain Antminer T19 (84Th),Jun 2020,84Th/s,3150W,75db,SHA-256,$15.50/day
+StrongU Hornbill H8 Pro,Jul 2021,84Th/s,3360W,76db,SHA-256,$15.40/day
+Canaan AvalonMiner 1166 Pro,Aug 2020,81Th/s,3400W,75db,SHA-256,$14.77/day
+MicroBT Whatsminer M31S+,Dec 2020,80Th/s,3360W,70db,SHA-256,$14.59/day
+MicroBT Whatsminer M31S,Apr 2020,76Th/s,3220W,75db,SHA-256,$13.79/day
+StrongU Hornbill H8,Oct 2020,74Th/s,3330W,76db,SHA-256,$13.39/day
+Bitmain Antminer S17+ (73Th),Dec 2019,73Th/s,2920W,75db,SHA-256,$13.38/day
+Bitfury Tardis,Nov 2018,80Th/s,6300W,80db,SHA-256,$13.18/day
+Bolon Miner B11,Aug 2021,70Th/s,3300W,75db,SHA-256,$12.59/day
+MicroBT Whatsminer M20S,Aug 2019,68Th/s,3360W,75db,SHA-256,$12.16
+Bitmain Antminer S9 (13.5Th),Sep 2017,13.5Th/s,1323W,85db,SHA-256
