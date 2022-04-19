@@ -1,4 +1,6 @@
 Name,Date,Hashrate,Power,Noise,Algorithm
+Bitmain Antminer S19 XP Hyd (255Th),Jan 2023,255Th/s,5310W,,SHA-256
+MicroBT Whatsminer M53,Apr 2022,226Th/s,6554W,,SHA-256
 Bitmain Antminer S19 Pro+ Hyd (198Th),May 2022,198Th/s,5445W,50db,SHA-256
 Bitmain Antminer S19 XP (140Th),Jul 2022,140Th/s,3010W,75db,SHA-256
 MicroBT Whatsminer M30S++,Oct 2020,112Th/s,3472W,75db,SHA-256
