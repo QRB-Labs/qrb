@@ -8,5 +8,5 @@ title: QRB Labs
 <br/><br/>
 
 <center>
- [info@qrb-labs.com](mailto:info@qrb-labs.com)
+ info@qrb-labs.com
 </center>
