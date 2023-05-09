@@ -2,10 +2,11 @@
 
 ## Hosting and colocation pricing
 
-Colocation service includes power and all infrastucture costs.
-Hosting includes individual server monitoring and maintenance (but does not include hardware parts). 
+Colocation service includes power and infrastucture costs.
+Hosting includes colocation service plus server monitoring
+and maintenance (but does not include hardware parts).
 
-Price per server per month
+Prices per server per month:
 
 | server max power | number	of servers | colocation	| hosting|
 | ------------ | ----------------- | ---------- | --------|
@@ -15,3 +16,6 @@ Price per server per month
 | 6 kW	       | 100	             | $247	      | $313    | 
 |              |  1000	           | $174       | $240    |
 |              |  10000	           | $170	      | $236    | 
+
+
+For full container co-location, please contact us: info@qrb-labs.com.
