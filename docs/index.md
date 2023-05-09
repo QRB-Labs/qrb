@@ -5,7 +5,7 @@ title: QRB Labs
 <center>
 <br/><br/>
 
-![QRB Labs](QRB_logo.png)
+<img src="QRB_logo.png" alt="QRB Labs">
 <br/><br/>
 
 
