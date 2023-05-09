@@ -20,6 +20,7 @@ Prices per server per month:
 |  6 kW	       |  100		   | $247	      | $313    |
 |              |  1000		   | $174       | $240    |
 |              |  10000		   | $170	      | $236    |
+{:.custom-table}
 
 <br />
 
