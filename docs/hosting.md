@@ -1,3 +1,7 @@
+---
+title: QRB Labs hosting and colocation
+---
+
 # QRB Labs 
 
 ## Hosting and colocation pricing
