@@ -4,15 +4,15 @@ title: QRB Labs hosting and colocation
 
 # QRB Labs
 
-## Hosting and colocation pricing
+## Hosting and colocation
 
-Colocation service includes power and infrastucture costs.
+Colocation service includes power and infrastucture.
 Hosting includes colocation service plus server monitoring
 and maintenance (but does not include hardware parts).
 
 Prices per server per month:
 
-|  max power per server  |  min number of servers  |  colocation  |  hosting  |
+|  max power <br> per server  |  min number <br> of servers  |  colocation  |  hosting  |
 | -----------: | -----------------: | ----------: | --------: |
 |  3 kW	       |  100               | $172       |	$238    |
 |              |  1000              | $94	      | $160    |
