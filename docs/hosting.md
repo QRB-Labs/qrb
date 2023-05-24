@@ -10,7 +10,7 @@ Colocation service includes power and infrastucture.
 Hosting includes colocation service plus server monitoring
 and maintenance (but does not include hardware parts).
 
-Prices per server per month:
+### Prices per server per month
 
 |  max power <br> per server  |  min number <br> of servers  |  colocation  |  hosting  |
 | -----------: | -----------------: | ----------: | --------: |
@@ -25,3 +25,7 @@ Prices per server per month:
 <br />
 
 For full container colocation, please contact us: info@qrb-labs.com.
+
+### Service agreement
+
+See [Server Colocation Agreement](QRB Colocation Agreement.pdf).
