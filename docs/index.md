@@ -2,15 +2,21 @@
 title: QRB Labs
 ---
 <style>
-body {
+div.background {
      background-image: url('images/GERD.jpeg');
      background-repeat: no-repeat;
      background-attachment: fixed;
      background-size: cover;
      opacity: 0.5;
 }
+
+div.foreground {
+    opacity: 1.0;
+}
 </style>
 
+<div class="background">
+<div class="foreground">
 <center>
 <br/><br/>
 
@@ -20,3 +26,5 @@ body {
 
  info@qrb-labs.com
 </center>
+</div>
+</div>
