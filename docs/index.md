@@ -7,7 +7,6 @@ body {
      background-repeat: no-repeat;
      background-attachment: fixed;
      background-size: cover;
-     opacity: 0.5;
 }
 </style>
 
