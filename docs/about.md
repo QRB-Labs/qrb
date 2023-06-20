@@ -1,8 +1,6 @@
 ---
-title: QRB Labs - About us
+title: About QRB Labs
 ---
-
-# QRB Labs
 
 ## About us
 

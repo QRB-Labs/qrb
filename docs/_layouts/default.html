@@ -25,11 +25,80 @@
 	background-size: cover;
      }
 
-    </style>
+   </style>
+
+   <!-- navigation menu -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   <style>
+
+   .topnav {
+       overflow: hidden;
+       position: relative;
+   }
+
+   .topnav #myLinks {
+       display: none;
+       text-align: right;
+   }
+
+   .topnav a {
+       display: block;
+   }
+
+   .topnav #title {
+   }
+
+   .topnav a.icon {
+       display: block;
+       position: absolute;
+       right: 0;
+       top: 0;
+   }
+
+   .topnav a:hover {
+   }
+
+   .active {
+   }
+   </style>
+   
   </head>
+   
   <body>
+
+    <header>
+      <!-- Top Navigation Menu -->
+      <div class="topnav">
+        <a href="/" class="active">
+         <div id="title">
+          {{ page.title | default: site.title }}
+         </div>
+        </a>
+        <div id="myLinks">
+          <a href="/">Home</a>
+          <a href="/about">About us</a>
+          <a href="/hosting">Hosting & Colocation</a>
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+          <i class="fa fa-bars"></i>
+        </a>
+      </div>
+    </header>
+  
     <div style="padding: 16px"> 
       {{ content }}
-     </div>
+    </div>
+
+    <script>
+    function myFunction() {
+	var x = document.getElementById("myLinks");
+	if (x.style.display === "block") {
+	    x.style.display = "none";
+	} else {
+	    x.style.display = "block";
+	}
+    }
+    </script>
+  
   </body>
 </html>

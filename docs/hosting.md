@@ -2,14 +2,9 @@
 title: QRB Labs hosting and colocation
 ---
 
-# QRB Labs
+## Services
 
-## Hosting and colocation
-
-Colocation service includes space, power and all necessary infrastucture.
-
-Hosting includes colocation service plus server monitoring
-and maintenance (but does not include hardware parts).
+Colocation service includes space, power and all necessary infrastucture. Hosting includes colocation service plus server monitoring and maintenance (but does not include hardware parts).
 
 ### Prices per server per month
 
