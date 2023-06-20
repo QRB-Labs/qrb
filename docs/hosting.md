@@ -11,7 +11,7 @@ and maintenance (but does not include hardware parts).
 
 ### Prices per server per month
 
-|  max power <br> per server  |  min number <br> of servers  |  colocation  |  hosting  |
+|  _max power <br> per server_  |  _min number <br> of servers_  |  _colocation_  |  _hosting_  |
 | -----------: | -----------------: | ----------: | --------: |
 |  3 kW	       |  100               | $172       |	$238    |
 |              |  1000              | $94	      | $160    |
