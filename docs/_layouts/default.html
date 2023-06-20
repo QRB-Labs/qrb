@@ -46,6 +46,8 @@
    }
 
    .topnav #title {
+       padding: 16px;
+       font-size: 1.5em;
    }
 
    .topnav a.icon {
@@ -53,6 +55,7 @@
        position: absolute;
        right: 0;
        top: 0;
+       padding: 16px;
    }
 
    .topnav a:hover {
@@ -71,7 +74,7 @@
       <div class="topnav">
         <a href="/" class="active">
          <div id="title">
-          {{ page.title | default: site.title }}
+           {{ page.title }}
          </div>
         </a>
         <div id="myLinks">
