@@ -1,8 +1,8 @@
 ---
-title: QRB Labs Research and development docs
+title: QRB Labs Research and development
 ---
 
-### Research and development docs
+### Documents
 
 <div style="padding: 16px"> 
  <ul>
