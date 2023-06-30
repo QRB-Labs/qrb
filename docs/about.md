@@ -12,10 +12,8 @@ QRB Labs ICT Solutions PLC, a company established in Addis Abeba, Ethiopia, was 
  </ul>
 </div>
 
-QRB Labs is a member of the [Green Africa Mining Alliance](http://gama.africa/).
+QRB Labs is a founding member of the [Green Africa Mining Alliance](http://gama.africa/).
 
-<div style="align-items: center">
 <a href="http://gama.africa">
 <img src="images/gama_logo.svg" width="50px" />
 </a>
-</div>
