@@ -4,26 +4,31 @@ title: QRB Labs hosting and colocation
 
 ### Services
 
-Colocation service consists of data center rackspace, internet
-connectivity, power and all necessary infrastucture in secure
-facilities. Hosting includes colocation service plus server monitoring
-and maintenance (but does not include hardware parts).
+Colocation service consists of data center space, internet
+connectivity, power and all necessary infrastructure in secure
+facilities.
 
-### Prices per server per month
+### Colocation prices in USD/month
 
-|  max power <br> per server  |  min number <br> of servers  |  colocation  |  hosting  |
-| -----------: | -----------------: | ----------: | --------: |
-|  3 kW	       |  100               | $172       |	$238    |
-|              |  1000              | $94	      | $160    |
-|	       |  10000		   | $88	      | $154    |
-|  6 kW	       |  100		   | $247	      | $313    |
-|              |  1000		   | $174       | $240    |
-|              |  10000		   | $170	      | $236    |
+|  max power <br> per server  |  number <br> of servers  |  colocation <br> per server per month |
+| -----------: | -----------------: | ----------: |
+|  3.5 kW	     |  100               | $184        |
+|              |  300               | $116        | 
+|              |  1000               | $109	      | 
+|  6 kW	       |  100		            | $247	      | 
+|              |  300		            | $186        |
+|              |  1000               | $174	      | 
 {:.custom-table}
 
 <br />
 
 For full container colocation, please contact us: info@qrb-labs.com.
+
+### Additional services
+
+Customers have remote access to their servers via VPN, as well as physical site access for installation and maintenance of their servers, at no extra cost. 
+
+We also provide optional "hands & eyes" services on demand, whereby our technicians will do on-site repairs, upgrades, handling etc. for the customer, at **$30/hour**.
 
 ### Service agreement
 
