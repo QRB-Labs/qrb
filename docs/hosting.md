@@ -6,7 +6,8 @@ title: QRB Labs hosting and colocation
 
 Colocation service consists of data center space, internet
 connectivity, power and all necessary infrastructure in secure
-facilities.
+facilities. Customers have remote access to their servers via VPN, as well as physical site access for installation and maintenance of their servers, at no extra cost. We also provide optional "hands & eyes" services on demand, whereby our technicians will do on-site repairs, upgrades, handling etc. for the customer, at **$30/hour**.
+
 
 ### Colocation prices in USD/month
 
@@ -23,12 +24,6 @@ facilities.
 <br />
 
 For full container colocation, please contact us: info@qrb-labs.com.
-
-### Additional services
-
-Customers have remote access to their servers via VPN, as well as physical site access for installation and maintenance of their servers, at no extra cost. 
-
-We also provide optional "hands & eyes" services on demand, whereby our technicians will do on-site repairs, upgrades, handling etc. for the customer, at **$30/hour**.
 
 ### Service agreement
 
