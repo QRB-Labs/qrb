@@ -13,17 +13,19 @@ facilities. Customers have remote access to their servers via VPN, as well as ph
 
 |  max power <br> per server  |  number <br> of servers  |  colocation <br> per server per month |
 | -----------: | -----------------: | ----------: |
-|  3.5 kW	     |  100               | $184        |
-|              |  300               | $116        | 
-|              |  1000               | $109	      | 
-|  6 kW	       |  100		            | $247	      | 
-|              |  300		            | $186        |
-|              |  1000               | $174	      | 
+|  3.5 kW	     |  144               | $128        |
+|              |  288               | $116        | 
+|              |  1152               | $109	      | 
+|  6 kW	       |  144		            | $200	      | 
+|              |  288		            | $188        |
+|              |  1152               | $182	      | 
 {:.custom-table}
 
 <br />
 
-For full container colocation, please contact us: info@qrb-labs.com.
+Colocation is priced at an all-in flat rate per server month. Any infrastructure downtime will be fully credited on a pro-rated basis on the monthly fee, i.e. 1% downtime results in 1% credit on the monthly fee.
+
+Server dimensions must be less than width < 430mm, length < 195mm and height< 292 mm. For non-standard sizes and quantities, please contact us: info@qrb-labs.com.
 
 ### Service agreement
 
