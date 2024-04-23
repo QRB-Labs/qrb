@@ -22,19 +22,20 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 |              |  1152               | $182	      | 
 {:.custom-table}
 
-<br />
 
-| Server dimensions | max (mm)|
+| server dimensions | max (mm)|
 | ------: | ------: |
 | Width   | 430   |
 | Length  | 195   | 
 | Height  | 292   |
 {:.custom-table}
 
+<br />
+
 For non-standard sizes, power and number of servers, please contact us: info@qrb-labs.com.
 
 ### Hands & eyes
-We also provide optional "hands & eyes" services on demand, whereby our technicians will do on-site repairs, upgrades, handling etc. for the customer, at **$30/hour**.
+We also provide optional "hands & eyes" services, whereby our technicians will do on-site repairs, upgrades, handling etc.  on demand for the customer, at **$30/hour**.
 
 ### Service agreement
 
