@@ -22,6 +22,7 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 |              |  1152               | $182	      | 
 {:.custom-table}
 
+<br />
 
 | server dimensions | max (mm)|
 | ------: | ------: |
