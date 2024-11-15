@@ -28,18 +28,22 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 
 If customer can perform any of these steps, corresponding fees will
 not be charged.
-
-  * Transportation and handling from cargo terminal to data center: $5 per server
-  * Deployment; $5 per server (up to and including remote access via VPN)
-  * Firmware update, configuration, testing: $5 per server (optional)
-  * Customs clearing: flat $70 per shipment
-  * Customs taxes and duties: 3% social welfare tax on assessed value. Other taxes and duties may apply.
-
+<div style="padding: 16px">
+ <ul>
+  <li> Transportation and handling from cargo terminal to data center: $5 per server</li>
+  <li> Deployment; $5 per server (up to and including remote access via VPN)</li>
+  <li> Firmware update, configuration, testing: $5 per server (optional)</li>
+  <li> Customs clearing: flat $70 per shipment</li>
+  <li> Customs taxes and duties: 3% social welfare tax on assessed value. Other taxes and duties may apply. </li>
+  </ul>
+</div>
 <br />
 
 ### Requirements
+<div style="padding: 16px">
+ <ul>
 
-  * **Dimensions**
+  <li> <b>Dimensions</b>
   
 |  | max (mm)|
 | ------: | ------: |
@@ -47,12 +51,14 @@ not be charged.
 | Length  | 195   | 
 | Height  | 292   |
 {:.custom-table}
-
-  * **New**: Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.
-  * **Network**: single Ethernet RJ-45 port
-  * **Power**: single phase 240V, max 16A. Customer servers must have a power cord with single C20 plug.
+</li>
+  <li> <b>Condition</b>: New. Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.</li>
+  <li> <b>Network</b>: single Ethernet RJ-45 port per server</li>
+  <li> <b>Power</b>: single phase 240V, max 16A, per server. Customer servers must have a power cord with single C20 plug.
   <img src="images/c20-plug.png" />
-
+  </li>
+  </ul>
+</div>
 <br />
 
 For non-standard sizes, power and number of servers, please contact us: info@qrb-labs.com.
