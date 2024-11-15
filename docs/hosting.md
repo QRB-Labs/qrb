@@ -24,12 +24,32 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 
 <br />
 
-| server dimensions | max (mm)|
+### One-time fees
+
+If customer can perform any of these steps, corresponding fees will
+not be charged.
+
+* Transportation and handling from cargo terminal to data center: $5 per server
+* Deployment; $5 per server (up to and including remote access via VPN)
+* Firmware update, configuration, testing: $5 per server (optional)
+* Customs clearing: flat $70 per shipment
+* Customs taxes and duties: 3% social welfare tax on assessed value. Other taxes and duties may apply.
+
+
+### Requirements
+
+* **Dimensions**
+  
+|  | max (mm)|
 | ------: | ------: |
 | Width   | 430   |
 | Length  | 195   | 
 | Height  | 292   |
 {:.custom-table}
+
+* **New**: Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.
+* **Network**: single Ethernet RJ-45 port
+* **Power**: single phase 240V, max 16A. Customer servers must have a power cord with single C20 plug. <img src="images/c20-plug.png" />
 
 <br />
 
