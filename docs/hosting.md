@@ -24,12 +24,17 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 
 <br />
 
+### Requirements
+
 | server dimensions | max (mm)|
 | ------: | ------: |
 | Width   | 430   |
 | Length  | 195   | 
 | Height  | 292   |
 {:.custom-table}
+
+Network: single Ethernet RJ-45 
+Power: single C20 socket
 
 <br />
 
