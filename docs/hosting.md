@@ -25,13 +25,15 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 
 If customer can perform any of these steps, corresponding fees will
 not be charged.
-
-    * Transportation and handling from cargo terminal to data center: $5 per server
-    * Deployment; $5 per server (up to and including remote access via VPN)
-    * Firmware update, configuration, testing: $5 per server (optional)
-    * Customs clearing: flat $70 per shipment
-    * Customs taxes and duties: 3% social welfare tax on assessed value. Other taxes and duties may apply.
- 
+<div style="padding: 16px">
+ <ul>
+    <li> Transportation and handling from cargo terminal to data center: $5 per server</li>
+    <li> Deployment; $5 per server (up to and including remote access via VPN)</li>
+    <li> Firmware update, configuration, testing: $5 per server (optional)</li>
+    <li> Customs clearing: flat $70 per shipment</li>
+    <li> Customs taxes and duties: 3% social welfare tax on assessed value. Other taxes and duties may apply.</li> 
+    </ul>
+</div>
 <br />
 
 ### Requirements
