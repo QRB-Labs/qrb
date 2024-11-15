@@ -23,8 +23,6 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 
 ### One-time fees
 
-If customer can perform any of these steps, corresponding fees will
-not be charged.
 <div style="padding: 16px">
  <ul>
     <li> Transportation and handling from cargo terminal to data center: $5 per server</li>
@@ -34,6 +32,8 @@ not be charged.
     <li> Customs taxes and duties: 3% social welfare tax on assessed value. Other taxes and duties may apply.</li> 
     </ul>
 </div>
+If customer can perform any of the above steps, corresponding fees will not be charged.
+
 <br />
 
 ### Requirements
@@ -47,12 +47,14 @@ not be charged.
 | Height  | 292   |
 {:.custom-table}
 
+
 #### Condition
 New. Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.
 #### Network
 Single Ethernet RJ-45 port per server
 #### Power
 Single phase 240V, max 16A, per server. Customer servers must have a power cord with single C20 plug.
+<br />
 <img src="images/c20-plug.png" />
   
 <br />
