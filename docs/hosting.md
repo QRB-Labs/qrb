@@ -12,14 +12,11 @@ facilities.  Customers have remote access to their servers via VPN, as well as p
 
 Colocation is priced at a flat rate per server month. Any infrastructure downtime will be fully credited on a pro-rated basis on the monthly fee, i.e. 1% downtime results in 1% credit on the monthly fee.
 
-|  max power <br> per server  |  number <br> of servers  |  price <br> USD/server/month |
-| -----------: | -----------------: | ----------: |
-|  3.5 kW	     |  144               | $128        |
-|              |  288               | $116        | 
-|              |  1152               | $109	      | 
-|  6.0 kW	       |  144		            | $200	      | 
-|              |  288		            | $188        |
-|              |  1152               | $182	      | 
+|    number <br> of servers  |  price <br> USD/server/month |
+|  -----------------: | ----------: |
+|   144               | $128        |
+|   288               | $116        | 
+|   1152               | $109	      | 
 {:.custom-table}
 
 <br />
@@ -28,17 +25,18 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 
 If customer can perform any of these steps, corresponding fees will
 not be charged.
-  * Transportation and handling from cargo terminal to data center: $5 per server
-  * Deployment; $5 per server (up to and including remote access via VPN)
-  * Firmware update, configuration, testing: $5 per server (optional)
-  * Customs clearing: flat $70 per shipment
-  * Customs taxes and duties: 3% social welfare tax on assessed value. Other taxes and duties may apply.
+
+    * Transportation and handling from cargo terminal to data center: $5 per server
+    * Deployment; $5 per server (up to and including remote access via VPN)
+    * Firmware update, configuration, testing: $5 per server (optional)
+    * Customs clearing: flat $70 per shipment
+    * Customs taxes and duties: 3% social welfare tax on assessed value. Other taxes and duties may apply.
  
 <br />
 
 ### Requirements
-
-  * **Dimensions**
+  
+#### Dimensions
   
 |  | max (mm)|
 | ------: | ------: |
@@ -47,10 +45,13 @@ not be charged.
 | Height  | 292   |
 {:.custom-table}
 
-  * **Condition**: New. Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.
-  * **Network**: single Ethernet RJ-45 port per server
-  * **Power**: single phase 240V, max 16A, per server. Customer servers must have a power cord with single C20 plug.
-    <img src="images/c20-plug.png" />
+#### Condition
+New. Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.
+#### Network
+Single Ethernet RJ-45 port per server
+#### Power
+Single phase 240V, max 16A, per server. Customer servers must have a power cord with single C20 plug.
+<img src="images/c20-plug.png" />
   
 <br />
 
