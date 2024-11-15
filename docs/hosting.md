@@ -35,8 +35,8 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 | Height  | 292   |
 {:.custom-table}
 
-* **Network**: single Ethernet RJ-45
-* **Power**: single C20 socket, single phase 240V, max 16A
+* **Network**: single Ethernet RJ-45 port
+* **Power**: single phase 240V, max 16A. Customer servers must have a power cord with single C20 plug. <img src="images/c20-plug.png" />
 
 <br />
 
