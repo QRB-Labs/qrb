@@ -39,6 +39,8 @@ If customer can perform any of the above steps, corresponding fees will not be c
 ### Requirements
   
 #### Dimensions
+<img style="float: right;" alt="mining rig" src="images/generic_whatsminer.png" />
+<div style="clear: right">
   
 |  | max (mm)|
 | ------: | ------: |
@@ -47,19 +49,20 @@ If customer can perform any of the above steps, corresponding fees will not be c
 | Height  | 292   |
 {:.custom-table}
 
-
-<img src="images/generic_whatsminer.png" />
+</div>
 
 #### Condition
 New. Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.
+
 #### Network
 Single Ethernet RJ-45 port per server
+
 #### Power
+
+<img style="float: right;" alt="C20 plug" src="images/c20-plug.png" />
+<div style="clear: right">
 Single phase 240V, max 16A, per server. Customer servers must have a power cord with single C20 plug.
-<br />
-<img src="images/c20-plug.png" />
-  
-<br />
+</div>
 
 For non-standard sizes, power and number of servers, please contact us: info@qrb-labs.com.
 
