@@ -49,6 +49,7 @@ If customer can perform any of the above steps, corresponding fees will not be c
 | Height  | 292   |
 {:.custom-table}
 
+<br />
 
 #### Condition
 New. Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.
