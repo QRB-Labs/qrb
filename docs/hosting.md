@@ -55,7 +55,8 @@ If customer can perform any of the above steps, corresponding fees will not be c
 New. Ethiopian government regulations prohibit import of used ASIC mining rigs at this time.
 
 #### Network
-Single Ethernet RJ-45 port per server
+<img style="float: right;" alt="RJ45 connector" src="images/rj45.png" />
+Single Ethernet RJ-45 port per server. We will provide the necessary patch cable to plug the customer server into our switches.
 
 #### Power
 <img style="float: right;" alt="C20 plug" src="images/c20-plug.png" />
