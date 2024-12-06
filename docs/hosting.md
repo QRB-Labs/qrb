@@ -60,7 +60,7 @@ Single Ethernet RJ-45 port per server. We will provide the necessary patch cable
 
 #### Power
 <img style="float: right;" alt="C20 plug" src="images/c20-plug.png" />
-Voltage: single phase 240V. Peak current: max 15.7A per server. Average power consumption: max *3.5kW*. Customer servers must have a power cord with single C20 plug. 
+Voltage: single phase 240V. Peak current: max 15.7A per server. Average power consumption: max **3.5kW**. Customer servers must have a power cord with single C20 plug. 
 
 For non-standard sizes, power and number of servers, please contact us: info@qrb-labs.com.
 
