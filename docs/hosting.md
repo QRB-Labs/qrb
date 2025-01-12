@@ -65,12 +65,12 @@ Single Ethernet RJ-45 port per server. We will provide the necessary patch cable
 #### Power
 <img style="float: right;" alt="C20 plug" src="images/c20-plug.png" />
 
-| Parameter | Specification|
+| Parameter | Specification <br> (per server)|
 | ------: | ------: |
 | Voltage  | 240V single phase   |
-| Current   | max 15.7A per server | 
+| Current   | max 15.7A | 
 | Power  | max **3.5kW** monthly average  |
-| Outlet | max 1 C20 plug <br> customer must supply power cord|
+| Outlet | max 1 C20 plug <br> customer supplies power cord|
 {:.custom-table}
 
 
