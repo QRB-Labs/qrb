@@ -34,10 +34,11 @@ Colocation is priced at a flat rate per server per month. Any infrastructure dow
 </div>
 If customer can perform any of the above steps, corresponding fees will not be charged.
 
-<br />
-
 ### Hands & eyes
+
 We also provide optional "hands & eyes" services, whereby our technicians will do on-site repairs, upgrades, handling etc.  upon request, at **$30/hour**.
+
+<br />
 
 ### Requirements
   
@@ -72,6 +73,8 @@ Single Ethernet RJ-45 port per server. We will provide the necessary patch cable
 | Outlet | max 1 C20 plug <br> customer must supply power cord|
 {:.custom-table}
 
+
+<br />
 
 For non-standard sizes, power and number of servers, please contact us: info@qrb-labs.com.
 
