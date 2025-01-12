@@ -10,9 +10,9 @@ facilities.  Customers have remote access to their servers via VPN, as well as p
 
 ### Colocation prices
 
-Colocation is priced at a flat rate per server month. Any infrastructure downtime will be fully credited on a pro-rated basis on the monthly fee, i.e. 1% downtime results in 1% credit on the monthly fee.
+Colocation is priced at a flat rate per server per month. Any infrastructure downtime will be fully credited on a pro-rated basis on the monthly fee, i.e. 1% downtime results in 1% credit on the monthly fee. All prices are in USD.
 
-|    number <br> of servers  |  price <br> USD/server/month |
+|    Number <br> of servers  |  Price <br> per server per month |
 |  -----------------: | ----------: |
 |   144               | $128        |
 |   288               | $116        | 
@@ -35,6 +35,9 @@ Colocation is priced at a flat rate per server month. Any infrastructure downtim
 If customer can perform any of the above steps, corresponding fees will not be charged.
 
 <br />
+
+### Hands & eyes
+We also provide optional "hands & eyes" services, whereby our technicians will do on-site repairs, upgrades, handling etc.  upon request, at **$30/hour**.
 
 ### Requirements
   
@@ -60,12 +63,18 @@ Single Ethernet RJ-45 port per server. We will provide the necessary patch cable
 
 #### Power
 <img style="float: right;" alt="C20 plug" src="images/c20-plug.png" />
-Voltage: single phase 240V. Peak current: max 15.7A per server. Average power consumption: max **3.5kW**. Customer servers must have a power cord with single C20 plug. 
+
+| Parameter | Specification|
+| ------: | ------: |
+| Voltage  | 240V single phase   |
+| Current   | max 15.7A per server | 
+| Power  | max **3.5kW** monthly average  |
+| Outlet | max 1 C20 plug <br> customer must supply power cord|
+{:.custom-table}
+
 
 For non-standard sizes, power and number of servers, please contact us: info@qrb-labs.com.
 
-### Hands & eyes
-We also provide optional "hands & eyes" services, whereby our technicians will do on-site repairs, upgrades, handling etc.  on demand for the customer, at **$30/hour**.
 
 ### Service agreement
 
