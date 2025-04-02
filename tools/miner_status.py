@@ -73,7 +73,6 @@ def main():
                 for octet3 in range(int(start_ip_octets[3]), int(end_ip_octets[3])+1):
                     ip = '.'.join(map(str, [octet0, octet1, octet2, octet3]))
                     # whatsminer_get_version(ip)
-                    print(ip)
                     try:
                         for stuff in whatsminer_get_error_code(ip):
                             my_logger.error(("miner_status", ip, stuff))
