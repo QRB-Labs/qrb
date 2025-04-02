@@ -75,9 +75,9 @@ def main():
                     # whatsminer_get_version(ip)
                     try:
                         for stuff in whatsminer_get_error_code(ip):
-                            my_logger.error(("miner_status", ip, stuff))
+                            my_logger.error("miner_status: {} {}".format(ip, stuff))
                     except OSError as e:
-                        my_logger.error(("miner_status", ip, e))
+                        my_logger.error("miner_status: {} {}".format(ip, e))
 
 
 if __name__ == "__main__":
