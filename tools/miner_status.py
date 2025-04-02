@@ -47,7 +47,7 @@ def whatsminer_get_error_code(address, port=4028):
                 code,         # integer  
                 whatsminer_codes.WHATSMINER_ERROR_CODES.get(
                     int(code),
-                    {"message": "Error code {} not in dictionary".format(code)})['message']
+                    {"message": "{} not in dictionary".format(code)})
             )
     
 

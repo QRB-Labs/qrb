@@ -1,3 +1,4 @@
+# https://www.whatsminer.com/file/WhatsminerAPI%20V2.0.3.pdf
 WHATSMINER_API_MESSAGE_CODES = {
     14: "invalid API command or data",
     23: "invalid json message",
@@ -13,80 +14,374 @@ def check_response(resp):
     assert resp['Code'] == 131, "API response error"
     assert resp['STATUS'] == 'S', "API response error"
 
+# https://whatsminer.net/wp-content/uploads/2021/07/Error-Code-Descriptions-20210406.pdf
 
 WHATSMINER_ERROR_CODES = {
-    70: {
-        "message": "Error",
-        "description": "Generic error; specific issue may be detailed in logs or additional response fields.",
-        "likely_cause": "Unspecified failure (check logs)."
+    110: {"message": "Fanin detect speed error",
+          "action": "Check whether the fan connection is normal,or replace the power supply, or replacethefan"
     },
-    71: {
-        "message": "Invalid Command",
-        "description": "The submitted command is not recognized or supported by the API version/firmware.",
-        "likely_cause": "Typo or outdated command (e.g., 'foobar')."
+    111: {"message": "Fanout detect speed error",
+          "action": "Check whether the fan connection is normal,or replace the power supply, or replacethefan"
     },
-    72: {
-        "message": "Permission Denied",
-        "description": "Command requires authentication or higher privileges, and no valid session/token was provided.",
-        "likely_cause": "Missing API token or insufficient rights."
+    130: {"message": "Fanin speed error",
+          "action": "Check whether the fan connection is normal,or replace the power supply, or replacethefan"
     },
-    80: {
-        "message": "Fan Error",
-        "description": "Fan malfunction detected (e.g., stopped, low RPM, or failure).",
-        "likely_cause": "Faulty fan or connection issue."
+    131: {"message": "Fanout speed error",
+          "action": "Check whether the fan connection is normal,or replace the power supply, or replacethefan"
     },
-    81: {
-        "message": "Temp Too High",
-        "description": "Temperature exceeds safe operational threshold (e.g., hashboard > 80°C).",
-        "likely_cause": "Overheating; check cooling or ambient conditions."
+    140: {"message": "Fan speed is too high",
+          "action": "Please check the environment temperature"
     },
-    82: {
-        "message": "Hashboard Missing",
-        "description": "One or more hashboards not detected by the control board.",
-        "likely_cause": "Loose connection, dead board, or firmware glitch."
+    200: {"message": "Power probing error, no power found",
+          "action": "Detecting power output wiring, updatingthelatest firmware, or replacing power supply"
     },
-    83: {
-        "message": "Power Supply Error",
-        "description": "PSU voltage or wattage issue detected, affecting miner operation.",
-        "likely_cause": "Unstable PSU or insufficient power."
+    201: {"message": "Power supply and configuration file mismatch",
+          "action": "Replace the correct PSU"
     },
-    84: {
-        "message": "Chain Error",
-        "description": "Communication failure between control board and hashboard chain.",
-        "likely_cause": "Cable issue or hashboard failure."
+    203: {"message": "Power protecting",
+          "action": "Please check the environment temperature"
     },
-    710: {
-        "message": "Hashrate Low",
-        "description": "Hashrate on one or more hashboards is below expected threshold.",
-        "likely_cause": "Overheating, faulty board, or power instability."
+    204: {"message": "Power current protecting",
+          "action": "Please check the environment temperature"
     },
-    711: {
-        "message": "Hashrate Zero",
-        "description": "No hashrate detected from a hashboard (complete failure).",
-        "likely_cause": "Dead hashboard or severe connection issue."
+    205: {"message": "Power current error",
+          "action": "Inspection of power supply in power grid"
     },
-    712: {
-        "message": "Overclock Failure",
-        "description": "Attempt to overclock (via custom firmware or settings) failed.",
-        "likely_cause": "Unsupported hardware or firmware limits exceeded."
+    206: {"message": "Power input voltage is low",
+          "action": "Improve power supply conditions and input voltage"
     },
-    1000: {
-        "message": "Busy",
-        "description": "Miner is processing another command or temporarily unavailable to respond.",
-        "likely_cause": "API overload or miner in reboot cycle."
+    207: {"message": "Power input current protecting",
+          "action": "Improve power supply conditions and input voltage"
     },
-    1001: {
-        "message": "Timeout",
-        "description": "Command execution timed out; no response from miner hardware.",
-        "likely_cause": "Network issue or miner unresponsive."
+    210: {"message": "Power error status",
+          "action": "Check power failure code",
     },
-    2000: {
-        "message": "Firmware Error",
-        "description": "Issue during firmware upgrade or validation (e.g., 'NeedUpgradeAgain' state).",
-        "likely_cause": "Corrupted firmware file or interrupted update."
+    213: {"message": "Power input voltage and current do not match the power",
+          "action": "Replace the PSU"
+    },
+    233: {"message": "Power output over temperature protection",
+          "action": "Please check the environment temperature"
+    },
+    234: {"message": "Power output over temperature protection",
+          "action": "Please check the environment temperature"
+    },
+    235: {"message": "Power output over temperature protection",
+          "action": "Please check the environment temperature"
+    },
+    236: {"message": "Overcurrent Protection of Power Output",
+          "action": "Please check the environment temperature，check copper row screw"
+    },
+    237: {"message": "Overcurrent Protection of Power Output",
+          "action": "Please check the environment temperature，check copper row screw"
+    },
+    238: {"message": "Overcurrent Protection of Power Output",
+          "action":  "Please check the environment temperature，check copper row screw"
+    },
+    239: {"message": "Overvoltage Protection of Power Output",
+          "action": "Inspection of power supply in power grid"
+    },
+    240: {"message": "Low Voltage Protection for Power Output",
+          "action": "Inspection of power supply in power grid"
+    },
+    241: {"message": "Power output current imbalance",
+          "action": "Replace the power"
+    },
+    243: {"message": "Over-temperature Protection for Power Input",
+          "action": "Please check the environment temperature"
+    },
+    244: {"message": "Over-temperature Protection for Power Input",
+          "action": "Please check the environment temperature"
+    },
+    245: {"message": "Over-temperature Protection for Power Input",
+          "action": "Please check the environment temperature"
+    },
+    246: {"message": "Overcurrent Protection for Power Input",
+          "action": "Please check the environment temperature"
+    },
+    247: {"message": "Overcurrent Protection for Power Input",
+          "action": "Please check the environment temperature"
+    },
+    248: {"message": "Overvoltage Protection for Power Input",
+          "action": "Inspection of input voltage in powergrid"
+    },
+    249: {"message": "Overvoltage Protection for Power Input",
+          "action": "Inspection of input voltage in powergrid"
+    },
+    250: {"message": "Undervoltage Protection for Power Input",
+          "action": "Inspection of input voltage in powergrid"
+    },
+    251: {"message": "Undervoltage Protection for Power Input",
+          "action": "Inspection of input voltage in power grid"
+    },
+    253: {"message": "Power Fan Error",
+          "action": "Replace the PSU"
+    },
+    254: {"message": "Power Fan Error",
+          "action": "Replace the PSU"
+    },
+    255: {"message": "Protection of over power output",
+          "action": "Please check the environment temperature"
+    },
+    256: {"message": "Protection of over power output",
+          "action": "Please check the environment temperature"
+    },
+    257: {"message": "Input over current protection of power supply primary side",
+          "action": "Try to power off and restart, no effect to replace the power supply"
+    },
+    263: {"message": "Power communication warning",
+          "action": "Check whether the screws of the controlboard are locked"
+    },
+    264: {"message": "Power communication error",
+          "action": "Check whether the screws of the controlboard are locked"
+    },
+    267: {"message": "Power watchdog protection",
+          "action": "Contact the technician in time"
+    },
+    268: {"message": "Power output over-current protection",
+          "action": "Check the ambient temperature, checkthecopper bar screw"
+    },
+    269: {"message": "Power input over-current protection",
+          "action": "Improve power supply conditions and input voltage"
+    },
+    270: {"message": "Power input over-voltage protection",
+          "action": "Inspection of input voltage in power grid"
+    },
+    271: {"message":
+          "Power input under-voltage protection",
+          "action": "Inspection of input voltage in power grid"
+    },
+    272: {"message": "Warning of excessive power output of power supply",
+          "action": "Please check the environment temperature"
+    },
+    273: {"message": "Power input power too high warning",
+          "action": "Please check the environment temperature"
+    },
+    274: {"message": "Power fan warning",
+          "action": "Check if the power fan is blocked andmayneed to be replaced"
+    },
+    275: {"message": "Power over temperature warning",
+          "action": "Please check the environment temperature"
+    },
+    300: {"message": "SM0 temperature sensor detection error",
+          "action": "Check the connection of the hashboard"
+    },
+    301: {"message": "SM1 temperature sensor detection error",
+          "action": "Check the connection of the hashboard"
+    },
+    302: {"message": "SM2 temperature sensor detection error",
+          "action": "Check the connection of the hashboard"
+    },
+    320: {"message": "SM0 temperature reading error",
+          "action": "Check whether the control board screwislocked properly, check the connection board and the arrangement contact"
+    },
+    321: {"message": "SM1 temperature reading error",
+          "action": "Check whether the control board screwislocked properly, check the connectionboardand the arrangement contact"
+    },
+    322: {"message": "SM2 temperature reading error",
+          "action": "Check whether the control board screwislocked properly, check the connectionboardand the arrangement contact"
+    },
+    329: {"message": "Control board temperature sensor communication error",
+          "action": "Replace the power supply"
+    },
+    350: {"message": "SM0 temperature protecting",
+          "action": "Please check the environment temperature"
+    },
+    351: {"message": "SM1 temperature protecting",
+          "action": "Please check the environment temperature"
+    },
+    352: {"message": "SM2 temperature protecting",
+          "action": "Please check the environment temperature"
+    },
+    410: {"message": "SM0 detect eeprom error",
+          "action": "Check adapter board and wiring contact"
+    },
+    411: {"message": "SM1 detect eeprom error",
+          "action": "Check adapter board and wiring contact"
+    },
+    412: {"message": "SM2 detect eeprom error",
+          "action": "Check adapter board and wiring contact"
+    },
+    420: {"message": "SM0 parser eeprom error",
+          "action": "Contact the technician in time"
+    },
+    421: {"message": "SM1 parser eeprom error",
+          "action": "Contact the technician in time"
+    },
+    422: {"message": "SM2 parser eeprom error",
+          "action": "Contact the technician in time"
+    },
+    430: {"message": "SM0 chip bin type error",
+          "action": "Contact the technician in time"
+    },
+    431: {"message": "SM1 chip bin type error",
+          "action": "Contact the technician in time"
+    },
+    432: {"message": "SM2 chip bin type error",
+          "action": "Contact the technician in time"
+    },
+    440: {"message":
+          "SM0 eeprom chip num X error",
+          "action": "Contact the technician in time"
+    },
+
+441: {"message":
+      "SM1 eeprom chip num X error",
+      "action": "Contact the technician in time"
+},
+    442: {"message":
+          "SM2 eeprom chip num X error",
+          "action": "Contact the technician in time"
+    },
+    510: {"message": "SM0 miner type error",
+          "action": "The version and type of hashboard areinconsistent, replace the correct hashboard"
+    },
+    511: {"message": "SM1 miner type error",
+          "action": "The version and type of hashboard areinconsistent, replace the correct hashboard"
+    },
+    512: {"message": "SM2 miner type error",
+          "action": "The version and type of hashboard areinconsistent, replace the correct hashboard"
+    },
+    530: {"message": "SM0 not found",
+          "action": "Check the connection and arrangement oftheadapter board, or replace the controlboard, check whether the hash boardconnector is empty welded"
+    },
+    531: {"message": "SM1 not found",
+          "action": "Check the connection and arrangement oftheadapter board, or replace the controlboard, check whether the hash boardconnector is empty welded"
+    },
+    532: {"message": "SM2 not found",
+          "action": "Check the connection and arrangement oftheadapter board, or replace the controlboard, check whether the hash boardconnector is empty welded"
+    },
+    540: {"message": "SM0 reading chip id error",
+          "action": "Check adapter board and wiring contact，Clean the dust on the hashboard"
+    },
+    541: {"message": "SM1 reading chip id error",
+          "action": "Check adapter board and wiring contact，Clean the dust on the hashboard"
+    },
+    542: {"message": "SM2 reading chip id error",
+          "action": "Check adapter board and wiring contact，Clean the dust on the hashboard"
+    },
+    550: {"message": "SM0 have bad chips",
+          "action": "Replacement of bad chips"
+    },
+    551: {"message": "SM1 have bad chips",
+          "action": "Replacement of bad chips"
+    },
+    552: {"message": "SM2 have bad chips",
+          "action": "Replacement of bad chips"
+    },
+    560: {"message": "SM0 loss balance",
+          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+    },
+    561: {"message": "SM1 loss balance",
+          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+    },
+    562: {"message": "SM2 loss balance",
+          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+    },
+    600: {"message":
+          "Environment temperature is high",
+          "action": "Please check the environment temperature"
+    },
+
+    610: {"message": "If the ambient temperature is too high in high performance mode, return to normal mode",
+          "action": "Check the ambient temperature, highperformance mode needs to be controlled below 30 ℃"
+    },
+    710: {"message":
+          "Control board rebooted as exception",
+          "action": "Updating the latest firmware. Check whether the control board screw is locked properly"
+    },
+    800: {"message": "cgminer checksum error",
+          "action": "Re-upgrade firmware"
+    },
+    801: {"message":
+          "system-monitor checksum error",
+          "action": "Re-upgrade firmware"
+    },
+    802: {"message":
+          "remote-daemon checksum error",
+          "action": "Re-upgrade firmware"
+    },
+    2010: {"message": "All pools are disable",
+           "action": "Please check the network or pools configure"
+    },
+    2020: {"message": "Pool0 connect failed",
+           "action": "Please check the network or pools configure"
+    },
+    2021: {"message": "Pool1 connect failed",
+           "action": "Please check the network or pools configure"
+    },
+    2022: {"message": "Pool2 connect failed",
+           "action": "Please check the network or pools configure"
+    },
+    2030: {"message": "High rejection rate of pool",
+           "action": "Please check the network or poolsconfigure.Setting of mining currency"
+    },
+    2040: {"message":
+           "The pool does not support the asicboost mode",
+           "action": "Check pool configuration"
+    },
+    5110: {"message": "SM0 Frequency Up Timeout",
+           "action": "reboot"
+    },
+    5111: {"message": "SM1 Frequency Up Timeout",
+           "action": "reboot"
+    },
+    5112: {"message": "SM2 Frequency Up Timeout",
+           "action": "reboot"
+    },
+    8410: {"message":
+           "Software version error (M2x miner with M3x firmware, or M3x with M2x firmware).",
+           "action": "Upgrade to the correct firmware version"
+    },
+    # PSU error codes
+
+    0x0001: {"message": "Input undervoltage",
+             "action": "Check the power supply"
+    },
+    0x0002: {"message":
+             "Temperature sampling over temperature protection of power radiator",
+             "action": "Power on again after 10 minutes of power failure. If it occurs again, replace the power supply"
+    },
+    0x0004: {"message":
+             "Temperature sampling over temperature protection of power radiator",
+             "action": "Power on again after 10 minutes of powerfailure. If it occurs again, replace the power supply"
+    },
+
+0x0008: {"message":
+         "Over temperature protection of environmental temperature sampling in power supply",
+         "action": "Power on again after 10 minutes of power failure. If it occurs again, replace the power supply"
+},
+    0x0010: {"message": "Primary side over current",
+             "action": "Power on again after 10 minutes of power failure. If it occurs again, replace the power supply"
+    },
+    0x0020: {"message": "Output undervoltage" ,
+             "action": "Check the power supply",
+    },
+    0x0040: {"message": "Output over current (continuous load 320A for more than 2S)",
+             "action": "Tighten the copper bar screw again"
+    },
+    0x0080: {"message": "Primary side over current",
+             "action": "Power on again after 10 minutes of powerfailure. If it occurs again, replace the power supply"
+    },
+    0x0100: {"message":
+             "Single circuit overcurrent (protection point 120a)",
+             "action": "Check the PSU"
+    },
+    0x0200: {"message":
+             "Single circuit overcurrent (protection point 120a)",
+             "action": "Check the PSU"
+    },
+    0x0400: {"message":
+             "Single circuit overcurrent (protection point 120a)",
+             "action": "Check the PSU"
+    },
+    0x0800: {"message": "Fan failure",
+             "action": "Replace the PSU"
+    },
+    0x1000: {"message": "Output over current (continuous load of 310A for more than 5min)",
+             "action": "Check the PSU"
+    },
+    0x2000: {"message":
+             "Output over current (continuous load 295A for more than 10min)",
+             "action": "Check the PSU"
     }
 }
-
-
-    
-
