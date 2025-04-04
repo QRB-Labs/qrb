@@ -10,30 +10,38 @@ WHATSMINER_API_MESSAGE_CODES = {
     136: "token over max time"
 }
 
+
+# https://auradine.com/wp-content/uploads/2025/02/TeraFlux-Miner-API-Reference.pdf
+TERAFLUX_API_MESSAGE_CODES = {
+    9: "devs",
+    11: "summary",
+    69: "devdetails",
+}
+
+
 def check_response(resp):
-    assert resp['Code'] == 131, "API response error"
     assert resp['STATUS'] == 'S', "API response error"
 
-# https://whatsminer.net/wp-content/uploads/2021/07/Error-Code-Descriptions-20210406.pdf
 
+# https://whatsminer.net/wp-content/uploads/2021/07/Error-Code-Descriptions-20210406.pdf
 WHATSMINER_ERROR_CODES = {
     110: {"message": "Fanin detect speed error",
-          "action": "Check whether the fan connection is normal,or replace the power supply, or replacethefan"
+          "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
     },
     111: {"message": "Fanout detect speed error",
-          "action": "Check whether the fan connection is normal,or replace the power supply, or replacethefan"
+          "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
     },
     130: {"message": "Fanin speed error",
-          "action": "Check whether the fan connection is normal,or replace the power supply, or replacethefan"
+          "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
     },
     131: {"message": "Fanout speed error",
-          "action": "Check whether the fan connection is normal,or replace the power supply, or replacethefan"
+          "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
     },
     140: {"message": "Fan speed is too high",
           "action": "Please check the environment temperature"
     },
     200: {"message": "Power probing error, no power found",
-          "action": "Detecting power output wiring, updatingthelatest firmware, or replacing power supply"
+          "action": "Detecting power output wiring, updating the latest firmware, or replacing power supply"
     },
     201: {"message": "Power supply and configuration file mismatch",
           "action": "Replace the correct PSU"
