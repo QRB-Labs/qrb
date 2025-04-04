@@ -23,7 +23,7 @@ import socket
 import logging
 import logging.handlers
 
-import whatsminer_codes
+import miner_api_codes
 
 
 RECV_BUF_SIZE=4096
@@ -54,12 +54,12 @@ def whatsminer_get_error_code(address, port=4028):
     sock.connect((address, port))
     sock.send('{"cmd":"get_error_code"}'.encode())
     resp = json.loads(sock.recv(RECV_BUF_SIZE))
-    whatsminer_codes.check_response(resp)
+    miner_api_codes.check_response(resp)
 
     for error in resp['Msg']['error_code']:
         # error is a dict with key=code, value=date and time
         for code in error:
-            r= whatsminer_codes.WHATSMINER_ERROR_CODES.get(
+            r= miner_api_codes.WHATSMINER_ERROR_CODES.get(
                 int(code),
                 {"message": "{} not in dictionary".format(code)})
             r['ip_address'] = address
@@ -77,7 +77,7 @@ def teraflux_summary(address, port=4028):
     sock.connect((address, port))
     sock.send('{"command":"summary"}'.encode())
     resp = json.loads(sock.recv(RECV_BUF_SIZE))
-    whatsminer_codes.check_response(resp['STATUS'][0])
+    miner_api_codes.check_response(resp['STATUS'][0])
 
     for r in resp['SUMMARY']:
         if r['Hardware Errors'] > 0:
@@ -114,8 +114,7 @@ def main():
                         if args.miner_type == "whatsminer":
                             func = whatsminer_get_error_code
                         elif args.miner_type == "teraflux":
-                            func = teraflux_get_error_code
-                            teraflux_get_version(ip)
+                            func = teraflux_summary
                         for stuff in func(ip):
                             my_logger.error("miner_status: {}".format(stuff))
                     except OSError as e:
