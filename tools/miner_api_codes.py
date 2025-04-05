@@ -76,7 +76,7 @@ WHATSMINER_ERROR_CODES = {
     235: {"message": "Power output over temperature protection",
           "action": "Please check the environment temperature"
     },
-    236: {"message": "Overcurrent Protection of Power Output",
+    236: {"message": "Power output over-current protection 0. code: 0x40008",
           "action": "Please check the environment temperature，check copper row screw"
     },
     237: {"message": "Overcurrent Protection of Power Output",
@@ -321,7 +321,7 @@ WHATSMINER_ERROR_CODES = {
            "action": "Please check the network or pools configure"
     },
     2030: {"message": "High rejection rate of pool",
-           "action": "Please check the network or poolsconfigure.Setting of mining currency"
+           "action": "Please check the network or pools configure. Setting of mining currency"
     },
     2040: {"message":
            "The pool does not support the asicboost mode",
