@@ -24,6 +24,7 @@ def check_response(resp):
 
 
 # https://whatsminer.net/wp-content/uploads/2021/07/Error-Code-Descriptions-20210406.pdf
+# https://www.zeusbtc.com/articles/asic-miner-troubleshooting/1688-how-to-deal-with-fault-codes-of-whatsminer-series
 WHATSMINER_ERROR_CODES = {
     110: {"message": "Fanin detect speed error",
           "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
@@ -227,17 +228,13 @@ WHATSMINER_ERROR_CODES = {
     432: {"message": "SM2 chip bin type error",
           "action": "Contact the technician in time"
     },
-    440: {"message":
-          "SM0 eeprom chip num X error",
+    440: {"message": "SM0 eeprom chip num X error",
           "action": "Contact the technician in time"
     },
-
-441: {"message":
-      "SM1 eeprom chip num X error",
-      "action": "Contact the technician in time"
-},
-    442: {"message":
-          "SM2 eeprom chip num X error",
+    441: {"message": "SM1 eeprom chip num X error",
+          "action": "Contact the technician in time"
+    },
+    442: {"message": "SM2 eeprom chip num X error",
           "action": "Contact the technician in time"
     },
     510: {"message": "SM0 miner type error",
@@ -289,9 +286,8 @@ WHATSMINER_ERROR_CODES = {
           "Environment temperature is high",
           "action": "Please check the environment temperature"
     },
-
     610: {"message": "If the ambient temperature is too high in high performance mode, return to normal mode",
-          "action": "Check the ambient temperature, highperformance mode needs to be controlled below 30 ℃"
+          "action": "Check the ambient temperature, high performance mode needs to be controlled below 30 ℃"
     },
     710: {"message":
           "Control board rebooted as exception",
@@ -323,9 +319,23 @@ WHATSMINER_ERROR_CODES = {
     2030: {"message": "High rejection rate of pool",
            "action": "Please check the network or pools configure. Setting of mining currency"
     },
-    2040: {"message":
-           "The pool does not support the asicboost mode",
+    2040: {"message": "The pool does not support the asicboost mode",
            "action": "Check pool configuration"
+    },
+    2050: {"message": "Failed to switch to new pool",
+           "action": "check the network or pools configure"
+    },
+    2310: {"message": "Hash rate is too low",
+           "action": "Check input voltage, network environment, and ambient temperature"
+    },
+    2320: {"message": "Hash rate is too low",
+           "action": "Check input voltage, network environment, and ambient temperature"
+    },
+    2340: {"message": "The loss of hash rate is too high",
+           "action": ""
+    },
+    2350: {"message": "The loss of hash rate is too high",
+           "action": ""
     },
     5110: {"message": "SM0 Frequency Up Timeout",
            "action": "reboot"
@@ -340,6 +350,10 @@ WHATSMINER_ERROR_CODES = {
            "Software version error (M2x miner with M3x firmware, or M3x with M2x firmware).",
            "action": "Upgrade to the correct firmware version"
     },
+    9100: {"message": "Process blocked",
+           "action": ""
+    },
+    
     # PSU error codes
 
     0x0001: {"message": "Input undervoltage",
