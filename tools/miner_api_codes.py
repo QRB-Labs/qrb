@@ -332,10 +332,10 @@ WHATSMINER_ERROR_CODES = {
            "action": "Check input voltage, network environment, and ambient temperature"
     },
     2340: {"message": "The loss of hash rate is too high",
-           "action": ""
+           "action": "Check input voltage, network environment, and ambient temperature"
     },
     2350: {"message": "The loss of hash rate is too high",
-           "action": ""
+           "action": "Check input voltage, network environment, and ambient temperature"
     },
     5110: {"message": "SM0 Frequency Up Timeout",
            "action": "reboot"
