@@ -353,25 +353,22 @@ WHATSMINER_ERROR_CODES = {
     9100: {"message": "Process blocked",
            "action": ""
     },
-    
+
     # PSU error codes
 
     0x0001: {"message": "Input undervoltage",
              "action": "Check the power supply"
     },
-    0x0002: {"message":
-             "Temperature sampling over temperature protection of power radiator",
+    0x0002: {"message": "Temperature sampling over temperature protection of power radiator",
              "action": "Power on again after 10 minutes of power failure. If it occurs again, replace the power supply"
     },
     0x0004: {"message":
              "Temperature sampling over temperature protection of power radiator",
              "action": "Power on again after 10 minutes of powerfailure. If it occurs again, replace the power supply"
     },
-
-0x0008: {"message":
-         "Over temperature protection of environmental temperature sampling in power supply",
-         "action": "Power on again after 10 minutes of power failure. If it occurs again, replace the power supply"
-},
+    0x0008: {"message": "Over temperature protection of environmental temperature sampling in power supply",
+             "action": "Power on again after 10 minutes of power failure. If it occurs again, replace the power supply"
+    },
     0x0010: {"message": "Primary side over current",
              "action": "Power on again after 10 minutes of power failure. If it occurs again, replace the power supply"
     },
@@ -384,16 +381,13 @@ WHATSMINER_ERROR_CODES = {
     0x0080: {"message": "Primary side over current",
              "action": "Power on again after 10 minutes of powerfailure. If it occurs again, replace the power supply"
     },
-    0x0100: {"message":
-             "Single circuit overcurrent (protection point 120a)",
+    0x0100: {"message": "Single circuit overcurrent (protection point 120a)",
              "action": "Check the PSU"
     },
-    0x0200: {"message":
-             "Single circuit overcurrent (protection point 120a)",
+    0x0200: {"message": "Single circuit overcurrent (protection point 120a)",
              "action": "Check the PSU"
     },
-    0x0400: {"message":
-             "Single circuit overcurrent (protection point 120a)",
+    0x0400: {"message": "Single circuit overcurrent (protection point 120a)",
              "action": "Check the PSU"
     },
     0x0800: {"message": "Fan failure",
@@ -402,8 +396,7 @@ WHATSMINER_ERROR_CODES = {
     0x1000: {"message": "Output over current (continuous load of 310A for more than 5min)",
              "action": "Check the PSU"
     },
-    0x2000: {"message":
-             "Output over current (continuous load 295A for more than 10min)",
+    0x2000: {"message": "Output over current (continuous load 295A for more than 10min)",
              "action": "Check the PSU"
     }
 }
