@@ -68,6 +68,9 @@ WHATSMINER_ERROR_CODES = {
     213: {"message": "Power input voltage and current do not match the power",
           "action": "Replace the PSU"
     },
+    217: {"message": "Power set enable error. set: 1, get: 0",
+          "action": ""
+    },
     233: {"message": "Power output over temperature protection",
           "action": "Please check the environment temperature"
     },
