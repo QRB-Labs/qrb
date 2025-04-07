@@ -27,16 +27,16 @@ def check_response(resp):
 # https://www.zeusbtc.com/articles/asic-miner-troubleshooting/1688-how-to-deal-with-fault-codes-of-whatsminer-series
 WHATSMINER_ERROR_CODES = {
     110: {"message": "Fanin detect speed error",
-          "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
+          "action": "Check whether the fan connection is normal, or replace the power supply, or replace the fan"
     },
     111: {"message": "Fanout detect speed error",
-          "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
+          "action": "Check whether the fan connection is normal, or replace the power supply, or replace the fan"
     },
     130: {"message": "Fanin speed error",
-          "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
+          "action": "Check whether the fan connection is normal, or replace the power supply, or replace the fan"
     },
     131: {"message": "Fanout speed error",
-          "action": "Check whether the fan connection is normal, or replace the power supply, or replacethefan"
+          "action": "Check whether the fan connection is normal, or replace the power supply, or replace the fan"
     },
     140: {"message": "Fan speed is too high",
           "action": "Please check the environment temperature"
