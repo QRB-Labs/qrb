@@ -19,9 +19,11 @@ Tested with
 import argparse
 from datetime import datetime
 import json
-import socket
+from logstash import TCPLogstashHandler
+from logstash.formatter import LogstashFormatterBase
 import logging
 import logging.handlers
+import socket
 
 import miner_api_codes
 
@@ -55,7 +57,6 @@ def whatsminer_get_error_code(address, port=4028):
     sock.send('{"cmd":"get_error_code"}'.encode())
     resp = json.loads(sock.recv(RECV_BUF_SIZE))
     miner_api_codes.check_response(resp)
-
     for error in resp['Msg']['error_code']:
         # error is a dict with key=code, value=date and time
         for code in error:
@@ -63,7 +64,8 @@ def whatsminer_get_error_code(address, port=4028):
                 int(code),
                 {"message": "{} not in dictionary".format(code)})
             r['ip_address'] = address
-            r['datetime'] = error[code]
+            if error[code]:
+                r['datetime'] = datetime.strptime(error[code], '%Y-%m-%d %H:%M:%S')
             r['code'] = int(code)
             yield r
 
@@ -82,9 +84,28 @@ def teraflux_summary(address, port=4028):
     for r in resp['SUMMARY']:
         if r['Hardware Errors'] > 0:
             r['ip_address'] = address
-            r['datetime'] = '{}'.format(datetime.fromtimestamp(resp['STATUS'][0]['When']))
+            r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
             r['code'] = resp['STATUS'][0]['Code']
             yield r
+
+
+class LogstashFormatter(LogstashFormatterBase):
+    def format(self, record):
+        message = record.msg
+        if 'datetime' in message:
+            message['@timestamp'] = message['datetime'].strftime('%Y-%m-%dT%H:%M:%S')
+            del message['datetime']
+
+        message.update({
+            'host': {'ip': record.msg['ip_address']},
+            'path': record.pathname,
+            'tags': self.tags,
+            'type': self.message_type,
+            'level': record.levelname,
+            'logger_name': record.name,
+        })
+        del message['ip_address']
+        return self.serialize(message)
 
 
 def main():
@@ -93,6 +114,7 @@ def main():
     parser.add_argument("--end_ip", required=True)
     parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux'],
                         default='whatsminer')
+    parser.add_argument("--output", choices=['logstash', 'syslog'], default='logstash')
     args = parser.parse_args()
 
     start_ip_octets = args.start_ip.split('.')
@@ -102,8 +124,13 @@ def main():
 
     my_logger = logging.getLogger("miner_status")
     my_logger.setLevel(logging.DEBUG)
-    handler = logging.handlers.SysLogHandler('/dev/log')
-    my_logger.addHandler(handler)
+
+    if args.output == 'syslog':
+        my_logger.addHandler(logging.handlers.SysLogHandler('/dev/log'))
+    if args.output == 'logstash':
+        handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
+        handler.setFormatter(LogstashFormatter())
+        my_logger.addHandler(handler)
 
     for octet0 in range(int(start_ip_octets[0]), int(end_ip_octets[0])+1):
         for octet1 in range(int(start_ip_octets[1]), int(end_ip_octets[1])+1):
@@ -116,13 +143,13 @@ def main():
                         elif args.miner_type == "teraflux":
                             func = teraflux_summary
                         for stuff in func(ip):
-                            my_logger.error("miner_status: {}".format(stuff))
+                            my_logger.error(stuff)
                     except OSError as e:
                         stuff = {
                             'ip_address': ip,
                             'message:': '{}'.format(e)
                         }
-                        my_logger.error("miner_status: {}".format(stuff))
+                        my_logger.error(stuff)
 
 
 if __name__ == "__main__":
