@@ -292,15 +292,25 @@ WHATSMINER_ERROR_CODES = {
     610: {"message": "If the ambient temperature is too high in high performance mode, return to normal mode",
           "action": "Check the ambient temperature, high performance mode needs to be controlled below 30 ℃"
     },
-    710: {"message":
-          "Control board rebooted as exception",
+    701: {"message": "Control board no support chip",
+          "action:": "Upgrade the corresponding type of firmware"
+    },
+    702: {"message": "Control board version unknown",
+          "action": "Contact after-sales"
+    },
+    710: {"message": "Control board rebooted as exception",
           "action": "Updating the latest firmware. Check whether the control board screw is locked properly"
+    },
+    712: {"message": "Control board rebooted as exception",
+          "action": "Updating the latest firmware. Check whether the control board screw is locked properly"
+    },
+    714: {"message": "The network connection is seriously unstable",
+          "action": "Check the network cable connection or replace the control board"
     },
     800: {"message": "cgminer checksum error",
           "action": "Re-upgrade firmware"
     },
-    801: {"message":
-          "system-monitor checksum error",
+    801: {"message": "system-monitor checksum error",
           "action": "Re-upgrade firmware"
     },
     802: {"message":
