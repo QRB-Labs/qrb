@@ -147,7 +147,7 @@ def main():
                     except OSError as e:
                         stuff = {
                             'ip_address': ip,
-                            'message:': '{}'.format(e)
+                            'message': '{}'.format(e)
                         }
                         my_logger.error(stuff)
 
