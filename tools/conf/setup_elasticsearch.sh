@@ -48,7 +48,7 @@ curl --user elastic:$ELASTIC_PASSWORD  -X PUT http://localhost:9200/_security/ro
 
 curl --user elastic:$ELASTIC_PASSWORD -X POST "localhost:9200/_security/role_mapping/mapping2?pretty" -H 'Content-Type: application/json' -d'
 {
-  "roles": [ "anonymous_search"],
+  "roles": [ "anonymous_search", "kibana_user"],
   "enabled": true,
   "rules": {
     "field" : { "username" : "*"}
