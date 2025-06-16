@@ -204,6 +204,12 @@ WHATSMINER_ERROR_CODES = {
     352: {"message": "SM2 temperature protecting",
           "action": "Please check the environment temperature"
     },
+    360: {"message": "The temperature of the hashboard is overheating",
+          "action": "Replace the thermal interface of the boards."
+    },
+    370: {"message": "The environment temperature fluctuates too much.",
+          "action": "Check the environment temperature, or check the environment wind direction and wind speed."
+    },
     410: {"message": "SM0 detect eeprom error",
           "action": "Check adapter board and wiring contact"
     },
