@@ -1,8 +1,8 @@
 ---
-title: QRB Labs Ethiopian government public docs archive
+title: QRB Labs Ethiopian government docs
 ---
 
-Ethiopian government public docs archive
+Selected Ethiopian government public docs
 
 <div style="padding: 16px"> 
  <ul>
