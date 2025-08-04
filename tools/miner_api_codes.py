@@ -374,13 +374,13 @@ WHATSMINER_ERROR_CODES = {
            "action": ""
     },
     100001: {"message":  "/antiv/signature Illegal",
-             "action":  ""
+             "action":  "Flash the ASIC with SD card, then with WhatsMinerTool."
     },
     100002: {"message": "/antiv/dig/initd.dig Illegal",
-             "action": ""
+             "action": "Flash the ASIC with SD card, then with WhatsMinerTool."
     },
     100003: {"message": "/antiv/dig/pf_partial.dig Illegal",
-             "action": ""
+             "action": "Flash the ASIC with SD card, then with WhatsMinerTool."
     },
     
     # PSU error codes
