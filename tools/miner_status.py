@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-'''Query miner API for status and log results to syslgog.
+'''Query miner API for status and log results to syslgog or logstash.
 
 Output log record format is
 
