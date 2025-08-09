@@ -24,6 +24,7 @@ def check_response(resp):
 
 
 # https://whatsminer.net/wp-content/uploads/2021/07/Error-Code-Descriptions-20210406.pdf
+# https://whatsminer.net/wp-content/uploads/2021/11/Whatsminer-Error-Code-Description-20210930.pdf
 # https://www.zeusbtc.com/articles/asic-miner-troubleshooting/1688-how-to-deal-with-fault-codes-of-whatsminer-series
 WHATSMINER_ERROR_CODES = {
     110: {"message": "Fanin detect speed error",
@@ -372,7 +373,16 @@ WHATSMINER_ERROR_CODES = {
     9100: {"message": "Process blocked",
            "action": ""
     },
-
+    100001: {"message":  "/antiv/signature Illegal",
+             "action":  "Flash the ASIC with SD card, then with WhatsMinerTool."
+    },
+    100002: {"message": "/antiv/dig/initd.dig Illegal",
+             "action": "Flash the ASIC with SD card, then with WhatsMinerTool."
+    },
+    100003: {"message": "/antiv/dig/pf_partial.dig Illegal",
+             "action": "Flash the ASIC with SD card, then with WhatsMinerTool."
+    },
+    
     # PSU error codes
 
     0x0001: {"message": "Input undervoltage",
