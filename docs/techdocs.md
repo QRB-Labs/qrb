@@ -6,7 +6,7 @@ Technical documents from QRB and [GAMA](http://gama.africa)
 
 <div style="padding: 16px"> 
  <ul>
-   <li><a href="Electricity Pricing Strategy for Ethiopia.pdf">Electricity Pricing Strtegy for Ethiopia</a>, strategy whitepaper for power providers</li>
+   <li><a href="Electricity Pricing Strategy for Ethiopia.pdf">Electricity Pricing Strategy for Ethiopia</a>, strategy whitepaper for power providers</li>
   <li><a href="QRB @ ABC Mining in Ethiopia.pdf">Bitcoin &amp; Ethiopia’s journey to electrification</a>, presentation at <a href="https://afrobitcoin.org/">Africa Bitcoin Conference 2024</a></li>
   <li><a href="Dynamics of Bitcoin Mining.pdf">Dynamics of Bitcoin Mining</a> presentation at <a href="https://africanbitcoinmining.com">Africa Bitcoin Mining Summit 2023</a></li>
   <li><a href="QRB power system requirements.pdf">Modular data center power requirements and simulation</a> -- QRB Labs (Ethiopia)</li>
