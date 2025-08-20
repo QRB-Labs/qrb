@@ -12,7 +12,7 @@ import logging
 import socket
 import time
 
-from hashlib import sha256
+from hashlib import sha256, md5
 from base64 import b64encode
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
@@ -24,7 +24,7 @@ RECV_BUF_SIZE=4096
 def get_version(address, port=4028):
     '''
     Get data needed to construct a token for writeable API.
-    
+
     @returns a dict like {'STATUS': 'S',
                           'When': 1754491136,
                           'Code': 134,
@@ -41,7 +41,7 @@ def get_version(address, port=4028):
 def get_token(address, port=4028):
     '''
     Get data needed to construct a token for writeable API.
-    
+
     @returns a dict like {'STATUS': 'S',
                           'When': 1754491136,
                           'Code': 134,
@@ -50,7 +50,7 @@ def get_token(address, port=4028):
     '''
     sock = socket.socket()
     sock.connect((address, port))
-    sock.send('{"cmd":"get_token"}'.encode())
+    sock.send(json.dumps({"cmd":"get_token"}).encode())
     resp = json.loads(sock.recv(RECV_BUF_SIZE))
     return resp
 
@@ -65,7 +65,7 @@ def whatsminer_set_time_zone_v3(password, salt, ip, port=4028):
     token = encodedtxt[:8]
 
     param = {
-        "timezone": "UTC-0", 
+        "timezone": "UTC-0",
         "zonename": "Etc/UTC"
     }
     param_json_string = json.dumps(param)
@@ -84,40 +84,44 @@ def whatsminer_set_time_zone_v3(password, salt, ip, port=4028):
         "param": "{}"
     }}""".format(timestamp, token, encrypted_param_b64)
     logging.debug(payload)
-    
-    with socket.socket() as sock: 
+
+    with socket.socket() as sock:
         sock.connect((ip, port))
         sock.settimeout(5)
         sock.send(payload.encode())
         resp = json.loads(sock.recv(RECV_BUF_SIZE))
+        sock.close()
+        logging.debug(json.dumps(resp))
         return resp
 
 
-def whatsminer_set_time_zone_v2(password, salt, ip, port=4028):
-    command = "set_zone"
-    timestamp = int(time.time())
-    hash_string = f"{command}{password}{salt}{timestamp}"
-    hashtxt = sha256(hash_string.encode('utf-8')).digest()
-    encodedtxt = b64encode(hashtxt).decode('utf-8')
-    logging.debug(encodedtxt)
-    token = encodedtxt[:8]
+def whatsminer_set_time_zone_v2(password, token_info_msg, ip, port=4028):
+    key_str = token_info_msg['salt'] + password
+    key_bytes = md5(key_str.encode('utf-8')).digest()
 
-    payload = json.dumps(
+    sign = md5()
+    sign.update(token_info_msg['newsalt'].encode('utf-8'))
+    sign.update(key_bytes)
+    sign.update(token_info_msg['time'].encode('utf-8'))
+    sign_bytes = sign.digest()
+
+    token = b64encode(sign_bytes).decode('utf-8')[:8]
+
+    # The 'set_zone' command expects the IANA timezone identifier in the 'para' field.
+    api_cmd = json.dumps(
         { "cmd": "set_zone",
-          "token": token,
-          "zone": "Etc/UTC",
-          "id": 1
-        })  + "\n"
-    logging.debug(payload)
-    payload_bytes = payload.encode('utf-8')
-    
-    with socket.socket() as sock: 
+          "timezone": "EAT-3",
+          "zonename": "Africa/Nairobi",
+          "token": token
+        }) + "\n"
+    logging.debug(api_cmd)
+
+    with socket.socket() as sock:
         sock.settimeout(5)
         sock.connect((ip, port))
-        # sock.sendall(len(payload_bytes).to_bytes(4, 'little'))
-        sock.sendall(payload_bytes)
-        # resp_len = int.from_bytes(sock.recv(4), 'little')
+        sock.sendall(api_cmd.encode('utf-8'))
         resp = json.loads(sock.recv(RECV_BUF_SIZE).decode('utf-8'))
+        sock.close()
         logging.debug(json.dumps(resp))
         return resp
 
@@ -152,9 +156,7 @@ def main():
                     logging.debug(token_info)
                     assert token_info['STATUS'] == 'S', "Unable to get token: {}".format(token_info)
 
-                    whatsminer_set_time_zone_v3(args.password, token_info['Msg']['salt'], ip)
-
-
+                    whatsminer_set_time_zone_v2(args.password, token_info['Msg'], ip)
 
 
 if __name__ == "__main__":
