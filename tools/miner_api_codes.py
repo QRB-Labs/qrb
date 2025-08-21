@@ -26,12 +26,19 @@ def check_response(resp):
 # https://whatsminer.net/wp-content/uploads/2021/07/Error-Code-Descriptions-20210406.pdf
 # https://whatsminer.net/wp-content/uploads/2021/11/Whatsminer-Error-Code-Description-20210930.pdf
 # https://www.zeusbtc.com/articles/asic-miner-troubleshooting/1688-how-to-deal-with-fault-codes-of-whatsminer-series
+# https://aryaminer.com/blogs/artical/whatsminer-error-code
 WHATSMINER_ERROR_CODES = {
     110: {"message": "Fanin detect speed error",
           "action": "Check whether the fan connection is normal, or replace the power supply, or replace the fan"
     },
     111: {"message": "Fanout detect speed error",
           "action": "Check whether the fan connection is normal, or replace the power supply, or replace the fan"
+    },
+    120: {"message": "Inlet fan speed error (Deviation 2000+)",
+          "action": "Check fan connection, replace if necessary"
+    },
+    121: {"message": "Outlet fan speed error (Deviation 2000+)",
+          "action": "Replace the fan"
     },
     130: {"message": "Fanin speed error",
           "action": "Check whether the fan connection is normal, or replace the power supply, or replace the fan"
@@ -62,6 +69,9 @@ WHATSMINER_ERROR_CODES = {
     },
     207: {"message": "Power input current protecting",
           "action": "Improve power supply conditions and input voltage"
+    },
+    208: {"message": "PSU changes too much",
+          "action": "Replace the power supply"
     },
     210: {"message": "Power error status",
           "action": "Check power failure code",
@@ -182,6 +192,9 @@ WHATSMINER_ERROR_CODES = {
           "action": "Check the connection of the hashboard"
     },
     302: {"message": "SM2 temperature sensor detection error",
+          "action": "Check the connection of the hashboard"
+    },
+    309: {"message": "All temperature sensor detection errors",
           "action": "Check the connection of the hashboard"
     },
     320: {"message": "SM0 temperature reading error",
@@ -324,6 +337,9 @@ WHATSMINER_ERROR_CODES = {
           "remote-daemon checksum error",
           "action": "Re-upgrade firmware"
     },
+    2000: {"message": "No pool information configured",
+           "action": "Check pool configuration"
+    },
     2010: {"message": "All pools are disable",
            "action": "Please check the network or pools configure"
     },
@@ -366,11 +382,28 @@ WHATSMINER_ERROR_CODES = {
     5112: {"message": "SM2 Frequency Up Timeout",
            "action": "reboot"
     },
-    8410: {"message":
-           "Software version error (M2x miner with M3x firmware, or M3x with M2x firmware).",
-           "action": "Upgrade to the correct firmware version"
+    8000: {"message": "WhatsMinerTool version too low",
+           "action": "Download and install the latest WhatsMinerTool"
+    },
+    8010: {"message": "Frequency not up to standard",
+           "action": "Upgrade to the latest software"
+    },
+    8020: {"message": "Hashrate not up to standard",
+           "action": "Ensure proper cooling and update software"
+    },
+    8400: {"message": "Wrong software version installed",
+           "action": "Upgrade to the correct version"
+    },
+    8410: {"message": "Incorrect firmware version for miner model",
+           "action": "Flash the correct firmware"
+    },
+    8700: {"message": "Miner and PSU model mismatch",
+           "action": "Replace with the correct PSU"
     },
     9100: {"message": "Process blocked",
+           "action": ""
+    },
+    9110: {"message": "Process blocked",
            "action": ""
     },
     100001: {"message":  "/antiv/signature Illegal",
