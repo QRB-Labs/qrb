@@ -26,25 +26,7 @@ import logging.handlers
 import socket
 
 import miner_api_codes
-
-
-RECV_BUF_SIZE=4096
-
-
-def whatsminer_get_version(address, port=4028):
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"cmd":"get_version"}'.encode())
-    resp = json.loads(sock.recv(RECV_BUF_SIZE))
-    return resp
-
-
-def teraflux_get_version(address, port=4028):
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"command":"version"}'.encode())
-    resp = json.loads(sock.recv(RECV_BUF_SIZE))
-    print(resp)
+import miner_lib
 
 
 def whatsminer_get_error_code(address, port=4028):
@@ -55,7 +37,7 @@ def whatsminer_get_error_code(address, port=4028):
     sock = socket.socket()
     sock.connect((address, port))
     sock.send('{"cmd":"get_error_code"}'.encode())
-    resp = json.loads(sock.recv(RECV_BUF_SIZE))
+    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
     miner_api_codes.check_response(resp)
     for error in resp['Msg']['error_code']:
         # error is a dict with key=code, value=date and time
@@ -78,7 +60,7 @@ def teraflux_summary(address, port=4028):
     sock = socket.socket()
     sock.connect((address, port))
     sock.send('{"command":"summary"}'.encode())
-    resp = json.loads(sock.recv(RECV_BUF_SIZE))
+    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
     miner_api_codes.check_response(resp['STATUS'][0])
 
     for r in resp['SUMMARY']:
