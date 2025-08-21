@@ -5,7 +5,7 @@ For WhatsMiner API,
 - change the default password via WhatsMinerTool
 - must use the "super" account in API v3, not "admin"
 
-Uses https://github.com/DAAMCS/PyWhatsminer
+Uses https://github.com/QRB-Labs/PyWhatsminer
 '''
 
 import argparse
