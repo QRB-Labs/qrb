@@ -17,7 +17,7 @@ import miner_lib
 
 
 
-def whatsminer_set_time_zone(password, token_info_msg, ip, port=4028):
+def whatsminer_set_time_zone(password, ip, port=4028):
     access_token = WhatsminerAccessToken(ip, port, password)
     resp = WhatsminerAPI.exec_command(access_token, "set_zone", {"timezone": "UTC", "zonename": "Etc/UTC"})
     logging.debug(json.dumps(resp))
@@ -45,17 +45,15 @@ def main():
 
                     ip = '.'.join(map(str, [octet0, octet1, octet2, octet3]))
 
-                    api_version = miner_lib.whatsminer_get_version(ip)
-                    logging.debug(api_version)
-                    assert api_version['Msg']['api_ver'].split('.')[0] == '2', \
-                        "Unsupported WhatsMiner API version {}".format(api_version['Msg']['api_ver'])
+                    try:
+                        api_version = miner_lib.whatsminer_get_version(ip)
+                        logging.debug(f"{ip}: {api_version}")
+                        assert api_version['Msg']['api_ver'].split('.')[0] == '2', \
+                            "Unsupported WhatsMiner API version {}".format(api_version['Msg']['api_ver'])
 
-                    token_info = miner_lib.get_token(ip)
-                    logging.debug(token_info)
-                    assert token_info['STATUS'] == 'S', "Unable to get token: {}".format(token_info)
-
-                    whatsminer_set_time_zone(args.password, token_info['Msg'], ip)
-
+                        whatsminer_set_time_zone(args.password, ip)
+                    except OSError as e:
+                        logging.error(f"{ip}: {e}")
 
 if __name__ == "__main__":
     main()
