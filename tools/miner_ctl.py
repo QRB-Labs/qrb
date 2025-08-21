@@ -20,7 +20,7 @@ import miner_lib
 def whatsminer_set_time_zone(password, ip, port=4028):
     access_token = WhatsminerAccessToken(ip, port, password)
     resp = WhatsminerAPI.exec_command(access_token, "set_zone", {"timezone": "UTC", "zonename": "Etc/UTC"})
-    logging.debug(json.dumps(resp))
+    logging.info(f"{ip}: {json.dumps(resp)}")
     return resp
 
 
@@ -36,7 +36,7 @@ def main():
     assert len(start_ip_octets) == 4
     assert len(end_ip_octets) == 4
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     for octet0 in range(int(start_ip_octets[0]), int(end_ip_octets[0])+1):
         for octet1 in range(int(start_ip_octets[1]), int(end_ip_octets[1])+1):
