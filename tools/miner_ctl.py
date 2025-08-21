@@ -54,6 +54,10 @@ def main():
                         whatsminer_set_time_zone(args.password, ip)
                     except OSError as e:
                         logging.error(f"{ip}: {e}")
+                    except Exception as e2:
+                        logging.error(f"{ip}: {e2}")
+
+
 
 if __name__ == "__main__":
     main()
