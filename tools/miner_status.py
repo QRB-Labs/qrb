@@ -72,7 +72,7 @@ def teraflux_summary(address, port=4028):
             yield r
 
 
-def teraflux_devs(address, port=4028):
+def edevs(address, port=4028):
     """
     Get temperature of miner
     Yields a dictionary
@@ -85,8 +85,8 @@ def teraflux_devs(address, port=4028):
 
     for r in resp['DEVS']:
         r['ip_address'] = address
-        r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
-        r['code'] = resp['STATUS'][0]['Code']
+        r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0].get('When', datetime.now().timestamp()))
+        r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
         yield r
 
@@ -143,10 +143,12 @@ def main():
                         if args.miner_type == "whatsminer":
                             for stuff in whatsminer_get_error_code(ip):
                                 my_logger.error(stuff)
+                            for stuff in edevs(ip):
+                                my_logger.error(stuff)
                         elif args.miner_type == "teraflux":
                             for stuff in teraflux_summary(ip):
                                 my_logger.error(stuff)
-                            for stuff in teraflux_devs(ip):
+                            for stuff in edevs(ip):
                                 my_logger.error(stuff)
                     except OSError as e:
                         stuff = {
