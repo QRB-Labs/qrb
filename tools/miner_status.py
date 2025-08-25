@@ -68,9 +68,27 @@ def teraflux_summary(address, port=4028):
             r['ip_address'] = address
             r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
             r['code'] = resp['STATUS'][0]['Code']
-            if 'message' not in r:
-                r['message'] = 'Hardware errors'
+            r['message'] = resp['STATUS'][0]['Msg']
             yield r
+
+
+def teraflux_devs(address, port=4028):
+    """
+    Get temperature of miner
+    Yields a dictionary
+    """
+    sock = socket.socket()
+    sock.connect((address, port))
+    sock.send('{"command":"edevs"}'.encode())
+    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
+    miner_api_codes.check_response(resp['STATUS'][0])
+
+    for r in resp['DEVS']:
+        r['ip_address'] = address
+        r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
+        r['code'] = resp['STATUS'][0]['Code']
+        r['message'] = resp['STATUS'][0]['Msg']
+        yield r
 
 
 class LogstashFormatter(LogstashFormatterBase):
@@ -123,11 +141,13 @@ def main():
                     ip = '.'.join(map(str, [octet0, octet1, octet2, octet3]))
                     try:
                         if args.miner_type == "whatsminer":
-                            func = whatsminer_get_error_code
+                            for stuff in whatsminer_get_error_code(ip):
+                                my_logger.error(stuff)
                         elif args.miner_type == "teraflux":
-                            func = teraflux_summary
-                        for stuff in func(ip):
-                            my_logger.error(stuff)
+                            for stuff in teraflux_summary(ip):
+                                my_logger.error(stuff)
+                            for stuff in teraflux_devs(ip):
+                                my_logger.error(stuff)
                     except OSError as e:
                         stuff = {
                             'ip_address': ip,
@@ -135,6 +155,11 @@ def main():
                             'code': e.errno
                         }
                         my_logger.error(stuff)
+                    except Exception as e:
+                        my_logger.error({
+                            'ip_address': ip,
+                            'message': '{}'.format(e)
+                        })
 
 
 if __name__ == "__main__":
