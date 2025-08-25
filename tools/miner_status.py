@@ -38,11 +38,11 @@ def whatsminer_get_error_code(address, port=4028):
     sock.connect((address, port))
     sock.send('{"cmd":"get_error_code"}'.encode())
     resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
-    miner_api_codes.check_response(resp)
+    miner_lib.check_response(resp)
     for error in resp['Msg']['error_code']:
         # error is a dict with key=code, value=date and time
         for code in error:
-            r= miner_api_codes.WHATSMINER_ERROR_CODES.get(
+            r = miner_api_codes.WHATSMINER_ERROR_CODES.get(
                 int(code),
                 {"message": "{} not in dictionary".format(code)})
             r['ip_address'] = address
@@ -61,7 +61,7 @@ def teraflux_summary(address, port=4028):
     sock.connect((address, port))
     sock.send('{"command":"summary"}'.encode())
     resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
-    miner_api_codes.check_response(resp['STATUS'][0])
+    miner_lib.check_response(resp)
 
     for r in resp['SUMMARY']:
         if r['Hardware Errors'] > 0:
@@ -81,7 +81,7 @@ def edevs(address, port=4028):
     sock.connect((address, port))
     sock.send('{"command":"edevs"}'.encode())
     resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
-    miner_api_codes.check_response(resp['STATUS'][0])
+    miner_lib.check_response(resp)
 
     for r in resp['DEVS']:
         r['ip_address'] = address
@@ -154,14 +154,23 @@ def main():
                         stuff = {
                             'ip_address': ip,
                             'message': '{}'.format(e),
-                            'code': e.errno
+                            'code': -e.errno
                         }
                         my_logger.error(stuff)
-                    except Exception as e:
-                        my_logger.error({
+                    except json.decoder.JSONDecodeError as e:
+                        my_logger.debug({
                             'ip_address': ip,
-                            'message': '{}'.format(e)
+                            'message': '{}'.format(e),
+                            'code': -1
                         })
+                    except miner_lib.MinerAPIError as e:
+                        stuff = e.resp
+                        stuff['ip_address'] = ip
+                        stuff['code'] = stuff['Code']
+                        stuff['message'] = stuff['Msg']
+                        stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
+                        my_logger.error(stuff)
+
 
 
 if __name__ == "__main__":

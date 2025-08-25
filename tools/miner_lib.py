@@ -5,6 +5,21 @@ import socket
 RECV_BUF_SIZE=4096
 
 
+class MinerAPIError(Exception):
+    def __init__(self, message, resp):
+        super().__init__(message)
+        self.resp = resp
+
+
+def check_response(resp):
+    if type(resp['STATUS']) == list:  # teraflux
+        status = resp['STATUS'][0]
+    else:  # whatsminer
+        status = resp
+    if status.get('STATUS') != 'S':
+        raise MinerAPIError("", resp)
+
+
 def whatsminer_get_version(address, port=4028):
     sock = socket.socket()
     sock.connect((address, port))
