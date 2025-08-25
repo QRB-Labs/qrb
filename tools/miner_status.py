@@ -68,8 +68,7 @@ def teraflux_summary(address, port=4028):
             r['ip_address'] = address
             r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
             r['code'] = resp['STATUS'][0]['Code']
-            if 'message' not in r:
-                r['message'] = 'Hardware errors'
+            r['message'] = resp['STATUS'][0]['Msg']
             yield r
 
 
