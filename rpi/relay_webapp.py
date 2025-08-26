@@ -2,6 +2,12 @@ from flask import Flask, render_template, Response
 import RPi.GPIO as GPIO
 import time
 import threading
+from logstash import TCPLogstashHandler
+import logging
+
+mylogger =  logging.getLogger(__name__)
+handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
+mylogger.addHandler(handler)
 
 app = Flask(__name__)
 
@@ -19,9 +25,11 @@ def toggle_relay():
     relay_busy = True
     try:
         print("Turning ON normally-off outlets")
+        mylogger.warning("Turning ON")
         GPIO.output(RELAY_PIN, GPIO.HIGH)  # Turn on relay
         time.sleep(120)  # Keep on for 120 seconds
         print("Turning OFF normally-off outlets")
+        mylogger.warning("Turning OFF")
         GPIO.output(RELAY_PIN, GPIO.LOW)  # Turn off relay
     finally:
         relay_busy = False
