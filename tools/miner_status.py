@@ -88,6 +88,10 @@ def edevs(address, port=4028):
         r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0].get('When', datetime.now().timestamp()))
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
+        if r.get('Enabled') == 'Y':
+            r['Enabled'] = True  # whatsminer returns 'Y'/'N' instead of boolean
+        if r.get('Enabled') == 'N':
+            r['Enabled'] = False
         yield r
 
 
