@@ -1,4 +1,4 @@
-h# https://www.whatsminer.com/file/WhatsminerAPI%20V2.0.3.pdf
+# https://www.whatsminer.com/file/WhatsminerAPI%20V2.0.3.pdf
 WHATSMINER_API_MESSAGE_CODES = {
     14: "invalid API command or data",
     23: "invalid json message",
