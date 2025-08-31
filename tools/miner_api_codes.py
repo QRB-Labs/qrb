@@ -1,4 +1,4 @@
-# https://www.whatsminer.com/file/WhatsminerAPI%20V2.0.3.pdf
+h# https://www.whatsminer.com/file/WhatsminerAPI%20V2.0.3.pdf
 WHATSMINER_API_MESSAGE_CODES = {
     14: "invalid API command or data",
     23: "invalid json message",
@@ -50,6 +50,9 @@ WHATSMINER_ERROR_CODES = {
     },
     201: {"message": "Power supply and configuration file mismatch",
           "action": "Replace the correct PSU"
+    },
+    202: {"message": "Power vout error, set: 1050, get: 0",
+          "action": ''
     },
     203: {"message": "Power protecting",
           "action": "Please check the environment temperature"
