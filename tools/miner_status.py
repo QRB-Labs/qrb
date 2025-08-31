@@ -80,7 +80,14 @@ def edevs(address, port=4028):
     sock = socket.socket()
     sock.connect((address, port))
     sock.send('{"command":"edevs"}'.encode())
-    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
+    recv_bytes = b''
+    while True:
+        chunk = sock.recv(miner_lib.RECV_BUF_SIZE)
+        if not chunk:
+            break
+        recv_bytes += chunk
+    assert len(recv_bytes) < miner_lib.RECV_BUF_SIZE
+    resp = json.loads(recv_bytes)
     miner_lib.check_response(resp)
 
     for r in resp['DEVS']:
@@ -147,13 +154,12 @@ def main():
                         if args.miner_type == "whatsminer":
                             for stuff in whatsminer_get_error_code(ip):
                                 my_logger.error(stuff)
-                            for stuff in edevs(ip):
-                                my_logger.error(stuff)
                         elif args.miner_type == "teraflux":
                             for stuff in teraflux_summary(ip):
                                 my_logger.error(stuff)
-                            for stuff in edevs(ip):
-                                my_logger.error(stuff)
+                        # edevs is cgminer same or both
+                        for stuff in edevs(ip):
+                            my_logger.error(stuff)
                     except OSError as e:
                         stuff = {
                             'ip_address': ip,
@@ -174,7 +180,6 @@ def main():
                         stuff['message'] = stuff['Msg']
                         stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
                         my_logger.error(stuff)
-
 
 
 if __name__ == "__main__":
