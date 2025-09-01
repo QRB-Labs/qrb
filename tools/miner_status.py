@@ -106,7 +106,7 @@ class LogstashFormatter(LogstashFormatterBase):
     def format(self, record):
         message = record.msg
         if 'datetime' in message:
-            message['@timestamp'] = message['datetime'].strftime('%Y-%m-%dT%H:%M:%S')
+            message['@timestamp'] = message['datetime'].strftime('%Y-%m-%dT%H:%M:%S.%f')
             del message['datetime']
 
         message.update({
