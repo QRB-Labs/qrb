@@ -51,6 +51,9 @@ WHATSMINER_ERROR_CODES = {
     201: {"message": "Power supply and configuration file mismatch",
           "action": "Replace the correct PSU"
     },
+    202: {"message": "Power vout error, set: 1050, get: 0",
+          "action": ''
+    },
     203: {"message": "Power protecting",
           "action": "Please check the environment temperature"
     },

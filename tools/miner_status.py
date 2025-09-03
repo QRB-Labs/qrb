@@ -29,7 +29,7 @@ import miner_api_codes
 import miner_lib
 
 
-def whatsminer_get_error_code(address, port=4028):
+def whatsminer_get_error_codes(address, port=4028):
     """
     Get any current errors being reported by the miner.
     Yields a dictionary
@@ -52,15 +52,12 @@ def whatsminer_get_error_code(address, port=4028):
             yield r
 
 
-def teraflux_summary(address, port=4028):
+def teraflux_get_error_codes(address, port=4028):
     """
     Get summary of miner status for any miner where there is 'Harware Errors'
     Yields a dictionary
     """
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"command":"summary"}'.encode())
-    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
+    resp = miner_lib.get_summary(address, port)
     miner_lib.check_response(resp)
 
     for r in resp['SUMMARY']:
@@ -68,7 +65,7 @@ def teraflux_summary(address, port=4028):
             r['ip_address'] = address
             r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
             r['code'] = resp['STATUS'][0]['Code']
-            r['message'] = resp['STATUS'][0]['Msg']
+            r['message'] = "Hardware errors" # teraflux msg resp['STATUS'][0]['Msg'] is just "Summary"
             yield r
 
 
@@ -80,7 +77,14 @@ def edevs(address, port=4028):
     sock = socket.socket()
     sock.connect((address, port))
     sock.send('{"command":"edevs"}'.encode())
-    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
+    recv_bytes = b''
+    while True:
+        chunk = sock.recv(miner_lib.RECV_BUF_SIZE)
+        if not chunk:
+            break
+        recv_bytes += chunk
+    assert len(recv_bytes) < miner_lib.RECV_BUF_SIZE
+    resp = json.loads(recv_bytes)
     miner_lib.check_response(resp)
 
     for r in resp['DEVS']:
@@ -88,6 +92,10 @@ def edevs(address, port=4028):
         r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0].get('When', datetime.now().timestamp()))
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
+        if r.get('Enabled') == 'Y':
+            r['Enabled'] = True  # whatsminer returns 'Y'/'N' instead of boolean
+        if r.get('Enabled') == 'N':
+            r['Enabled'] = False
         yield r
 
 
@@ -95,7 +103,7 @@ class LogstashFormatter(LogstashFormatterBase):
     def format(self, record):
         message = record.msg
         if 'datetime' in message:
-            message['@timestamp'] = message['datetime'].strftime('%Y-%m-%dT%H:%M:%S')
+            message['@timestamp'] = message['datetime'].strftime('%Y-%m-%dT%H:%M:%S.%f')
             del message['datetime']
 
         message.update({
@@ -141,15 +149,14 @@ def main():
                     ip = '.'.join(map(str, [octet0, octet1, octet2, octet3]))
                     try:
                         if args.miner_type == "whatsminer":
-                            for stuff in whatsminer_get_error_code(ip):
-                                my_logger.error(stuff)
-                            for stuff in edevs(ip):
+                            for stuff in whatsminer_get_error_codes(ip):
                                 my_logger.error(stuff)
                         elif args.miner_type == "teraflux":
-                            for stuff in teraflux_summary(ip):
+                            for stuff in teraflux_get_error_codes(ip):
                                 my_logger.error(stuff)
-                            for stuff in edevs(ip):
-                                my_logger.error(stuff)
+                        # edevs is cgminer same or both
+                        for stuff in edevs(ip):
+                            my_logger.error(stuff)
                     except OSError as e:
                         stuff = {
                             'ip_address': ip,
@@ -170,7 +177,6 @@ def main():
                         stuff['message'] = stuff['Msg']
                         stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
                         my_logger.error(stuff)
-
 
 
 if __name__ == "__main__":
