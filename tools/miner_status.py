@@ -29,7 +29,7 @@ import miner_api_codes
 import miner_lib
 
 
-def whatsminer_get_error_code(address, port=4028):
+def whatsminer_get_error_codes(address, port=4028):
     """
     Get any current errors being reported by the miner.
     Yields a dictionary
@@ -52,7 +52,7 @@ def whatsminer_get_error_code(address, port=4028):
             yield r
 
 
-def teraflux_summary(address, port=4028):
+def teraflux_get_error_codes(address, port=4028):
     """
     Get summary of miner status for any miner where there is 'Harware Errors'
     Yields a dictionary
@@ -149,10 +149,10 @@ def main():
                     ip = '.'.join(map(str, [octet0, octet1, octet2, octet3]))
                     try:
                         if args.miner_type == "whatsminer":
-                            for stuff in whatsminer_get_error_code(ip):
+                            for stuff in whatsminer_get_error_codes(ip):
                                 my_logger.error(stuff)
                         elif args.miner_type == "teraflux":
-                            for stuff in teraflux_summary(ip):
+                            for stuff in teraflux_get_error_codes(ip):
                                 my_logger.error(stuff)
                         # edevs is cgminer same or both
                         for stuff in edevs(ip):
