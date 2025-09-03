@@ -57,10 +57,7 @@ def teraflux_summary(address, port=4028):
     Get summary of miner status for any miner where there is 'Harware Errors'
     Yields a dictionary
     """
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"command":"summary"}'.encode())
-    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
+    resp = miner_lib.get_summary(address, port)
     miner_lib.check_response(resp)
 
     for r in resp['SUMMARY']:
@@ -68,7 +65,7 @@ def teraflux_summary(address, port=4028):
             r['ip_address'] = address
             r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
             r['code'] = resp['STATUS'][0]['Code']
-            r['message'] = resp['STATUS'][0]['Msg']
+            r['message'] = "Hardware errors" # teraflux msg resp['STATUS'][0]['Msg'] is just "Summary"
             yield r
 
 

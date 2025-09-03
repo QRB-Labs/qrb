@@ -51,3 +51,11 @@ def get_token(address, port=4028):
     sock.send(json.dumps({"cmd":"get_token"}).encode())
     resp = json.loads(sock.recv(RECV_BUF_SIZE))
     return resp
+
+
+def get_summary(address, port=4028):
+    sock = socket.socket()
+    sock.connect((address, port))
+    sock.send('{"command":"summary"}'.encode())
+    resp = json.loads(sock.recv(RECV_BUF_SIZE))
+    return resp
