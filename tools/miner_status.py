@@ -85,8 +85,8 @@ def main():
     parser = argparse.ArgumentParser(description='Tool to get error codes from miner APIs')
     parser.add_argument("--start_ip", required=True)
     parser.add_argument("--end_ip", required=True)
-    parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux', 'luxminer'],
-                        default='whatsminer')
+    parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux', 'luxminer', "antminer"],
+                        default='generic')
     parser.add_argument("--output", choices=['logstash', 'syslog'], default='logstash')
     args = parser.parse_args()
 
@@ -114,12 +114,13 @@ def main():
                         if args.miner_type == "whatsminer":
                             for stuff in whatsminer_get_error_codes(ip):
                                 my_logger.error(stuff)
-                        elif args.miner_type == "teraflux" or args.miner_type == "luxminer":
+                        elif args.miner_type == "teraflux" or args.miner_type == "luxminer" or args.miner_type == "antminer":
                             for stuff in get_summary_hardware_errors(ip):
                                 my_logger.error(stuff)
-                        # edevs is same or all
-                        for stuff in miner_lib.edevs(ip):
-                            my_logger.error(stuff)
+                        # edevs is same or all except antminer
+                        if args.miner_type != "antminer":
+                            for stuff in miner_lib.edevs(ip):
+                                my_logger.error(stuff)
                     except OSError as e:
                         stuff = {
                             'ip_address': ip,
@@ -136,7 +137,7 @@ def main():
                     except miner_lib.MinerAPIError as e:
                         stuff = e.resp
                         stuff['ip_address'] = ip
-                        stuff['code'] = stuff.get('Code', -1)
+                        stuff['code'] = stuff.get('Code', -2)
                         stuff['message'] = stuff.get('Msg')
                         if 'When' in stuff:
                             stuff['datetime'] = datetime.fromtimestamp(stuff['When'])

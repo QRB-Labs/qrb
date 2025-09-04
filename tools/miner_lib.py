@@ -31,6 +31,9 @@ def send_json(json_cmd, address, port):
                 break
             recv_bytes += chunk
         assert len(recv_bytes) < RECV_BUF_SIZE
+        # some miners, e.g. antminer, append null character 0x00 to the end of the resppnse
+        if recv_bytes[-1] == 0x00:
+            recv_bytes = recv_bytes[0:-1]
         resp = json.loads(recv_bytes)
         return resp
 
