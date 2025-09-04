@@ -89,7 +89,8 @@ def edevs(address, port=4028):
 
     for r in resp['DEVS']:
         r['ip_address'] = address
-        r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0].get('When', datetime.now().timestamp()))
+        if 'When' in resp['STATUS'][0]:
+            r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
         if r.get('Enabled') == 'Y':
