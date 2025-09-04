@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Cooling System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            margin: auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        .status {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .status.on {
+            color: #4CAF50;
+        }
+        .status.off {
+            color: #e74c3c;
+        }
+        .countdown {
+            font-size: 2rem;
+            color: #333;
+            margin: 0.5rem 0;
+        }
+        .countdown-circle {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .countdown-circle svg {
+            transform: rotate(-90deg);
+        }
+        .countdown-circle circle {
+            fill: none;
+            stroke: #4CAF50;
+            stroke-width: 10;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 120s linear;
+        }
+        .countdown-circle.running circle {
+            stroke-dashoffset: 283;
+        }
+        button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            width: 100%;
+            max-width: 200px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        footer {
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: #666;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .status {
+                font-size: 1.25rem;
+            }
+            .countdown {
+                font-size: 1.75rem;
+            }
+            .countdown-circle {
+                width: 80px;
+                height: 80px;
+            }
+            .countdown-circle svg {
+                width: 80px;
+                height: 80px;
+            }
+            .countdown-circle circle {
+                cx: 40;
+                cy: 40;
+                r: 35;
+            }
+            button {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+                max-width: 150px;
+            }
+            footer {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Water Cooling system - በውሀ የማቀዝቀዝ ስርዓት</h1>
+        <div class="status off" id="status">Powered Off - ዉሀው መፍሰስ አቁሟል</div>
+        <div class="countdown" id="countdown" style="display: none;">120</div>
+        <div class="countdown-circle" id="circle" style="display: none;">
+            <svg width="100" height="100">
+                <circle cx="50" cy="50" r="45" />
+            </svg>
+        </div>
+        <button id="triggerButton" onclick="triggerRelay()">Power On - ማቀዝቀዝ ጀምር (120s)</button>
+	<p><em><snall></small>2025 © QRB Labs</small></em></p>
+    </div>
+    <footer></footer>
+
+    <script>
+        let countdownInterval = null;
+
+        async function triggerRelay() {
+            const button = document.getElementById('triggerButton');
+            const status = document.getElementById('status');
+            const countdown = document.getElementById('countdown');
+            const circle = document.getElementById('circle');
+
+            button.disabled = true;
+            status.textContent = 'Powered On - ዉሀው እየፈሰሰ ነዉ';
+            status.className = 'status on';
+            countdown.textContent = '120';
+            countdown.style.display = 'block';
+            circle.style.display = 'block';
+            circle.classList.add('running');
+
+            try {
+                const response = await fetch('/trigger');
+                const message = await response.text();
+
+                if (response.status === 200) {
+                    let seconds = 120;
+                    countdownInterval = setInterval(() => {
+                        seconds--;
+                        countdown.textContent = seconds;
+                        if (seconds <= 0) {
+                            clearInterval(countdownInterval);
+                            status.textContent = 'Powered Off - ዉሀው መፍሰስ አቁሟል';
+                            status.className = 'status off';
+                            countdown.style.display = 'none';
+                            circle.style.display = 'none';
+                            circle.classList.remove('running');
+                            button.disabled = false;
+                        }
+                    }, 1000);
+                } else {
+                    status.textContent = message;
+                    status.className = 'status off';
+                    countdown.style.display = 'none';
+                    circle.style.display = 'none';
+                    circle.classList.remove('running');
+                    button.disabled = false;
+                }
+            } catch (error) {
+                status.textContent = 'Error: ' + error.message;
+                status.className = 'status off';
+                countdown.style.display = 'none';
+                circle.style.display = 'none';
+                circle.classList.remove('running');
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
