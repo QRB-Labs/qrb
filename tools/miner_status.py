@@ -137,9 +137,9 @@ def main():
                     except miner_lib.MinerAPIError as e:
                         stuff = e.resp
                         stuff['ip_address'] = ip
-                        stuff['code'] = stuff.get('Code')
+                        stuff['code'] = stuff.get('Code', -1)
                         stuff['message'] = stuff.get('Msg')
-                        if 'Hhen' in stuff:
+                        if 'When' in stuff:
                             stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
                         my_logger.error(stuff)
 
