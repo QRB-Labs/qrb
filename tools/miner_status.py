@@ -23,7 +23,6 @@ from logstash import TCPLogstashHandler
 from logstash.formatter import LogstashFormatterBase
 import logging
 import logging.handlers
-import socket
 
 import miner_api_codes
 import miner_lib
