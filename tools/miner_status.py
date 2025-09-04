@@ -48,14 +48,13 @@ def whatsminer_get_error_codes(address, port=4028):
             yield r
 
 
-def teraflux_get_error_codes(address, port=4028):
+def get_summary_hardware_errors(address, port=4028):
     """
     Get summary of miner status for any miner where there is 'Harware Errors'
     Yields a dictionary
     """
     resp = miner_lib.get_summary(address, port)
     miner_lib.check_response(resp)
-
     for r in resp['SUMMARY']:
         if r['Hardware Errors'] > 0:
             r['ip_address'] = address
@@ -86,7 +85,7 @@ def main():
     parser = argparse.ArgumentParser(description='Tool to get error codes from miner APIs')
     parser.add_argument("--start_ip", required=True)
     parser.add_argument("--end_ip", required=True)
-    parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux'],
+    parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux', 'luxminer'],
                         default='whatsminer')
     parser.add_argument("--output", choices=['logstash', 'syslog'], default='logstash')
     args = parser.parse_args()
@@ -115,10 +114,10 @@ def main():
                         if args.miner_type == "whatsminer":
                             for stuff in whatsminer_get_error_codes(ip):
                                 my_logger.error(stuff)
-                        elif args.miner_type == "teraflux":
-                            for stuff in teraflux_get_error_codes(ip):
+                        elif args.miner_type == "teraflux" or args.miner_type == "luxminer":
+                            for stuff in get_summary_hardware_errors(ip):
                                 my_logger.error(stuff)
-                        # edevs is cgminer same or both
+                        # edevs is same or all
                         for stuff in miner_lib.edevs(ip):
                             my_logger.error(stuff)
                     except OSError as e:
