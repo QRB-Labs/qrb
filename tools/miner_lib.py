@@ -21,19 +21,18 @@ def check_response(resp):
 
 
 def send_json(json_cmd, address, port):
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send(json_cmd.encode())
-
-    recv_bytes = b''
-    while True:
-        chunk = sock.recv(RECV_BUF_SIZE)
-        if not chunk:
-            break
-        recv_bytes += chunk
-    assert len(recv_bytes) < RECV_BUF_SIZE
-    resp = json.loads(recv_bytes)
-    return resp
+    with socket.socket() as sock:
+        sock.connect((address, port))
+        sock.send(json_cmd.encode())
+        recv_bytes = b''
+        while True:
+            chunk = sock.recv(RECV_BUF_SIZE)
+            if not chunk:
+                break
+            recv_bytes += chunk
+        assert len(recv_bytes) < RECV_BUF_SIZE
+        resp = json.loads(recv_bytes)
+        return resp
 
 
 def whatsminer_get_version(address, port=4028):
