@@ -34,10 +34,7 @@ def whatsminer_get_error_codes(address, port=4028):
     Get any current errors being reported by the miner.
     Yields a dictionary
     """
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"cmd":"get_error_code"}'.encode())
-    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
+    resp = miner_lib.send_json('{"cmd":"get_error_code"}', address, port)
     miner_lib.check_response(resp)
     for error in resp['Msg']['error_code']:
         # error is a dict with key=code, value=date and time
@@ -67,37 +64,6 @@ def teraflux_get_error_codes(address, port=4028):
             r['code'] = resp['STATUS'][0]['Code']
             r['message'] = "Hardware errors" # teraflux msg resp['STATUS'][0]['Msg'] is just "Summary"
             yield r
-
-
-def edevs(address, port=4028):
-    """
-    Get temperature of miner
-    Yields a dictionary
-    """
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"command":"edevs"}'.encode())
-    recv_bytes = b''
-    while True:
-        chunk = sock.recv(miner_lib.RECV_BUF_SIZE)
-        if not chunk:
-            break
-        recv_bytes += chunk
-    assert len(recv_bytes) < miner_lib.RECV_BUF_SIZE
-    resp = json.loads(recv_bytes)
-    miner_lib.check_response(resp)
-
-    for r in resp['DEVS']:
-        r['ip_address'] = address
-        if 'When' in resp['STATUS'][0]:
-            r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
-        r['code'] = resp['STATUS'][0].get('Code', 9)
-        r['message'] = resp['STATUS'][0]['Msg']
-        if r.get('Enabled') == 'Y':
-            r['Enabled'] = True  # whatsminer returns 'Y'/'N' instead of boolean
-        if r.get('Enabled') == 'N':
-            r['Enabled'] = False
-        yield r
 
 
 class LogstashFormatter(LogstashFormatterBase):
@@ -154,7 +120,7 @@ def main():
                             for stuff in teraflux_get_error_codes(ip):
                                 my_logger.error(stuff)
                         # edevs is cgminer same or both
-                        for stuff in edevs(ip):
+                        for stuff in miner_lib.edevs(ip):
                             my_logger.error(stuff)
                     except OSError as e:
                         stuff = {
@@ -172,9 +138,10 @@ def main():
                     except miner_lib.MinerAPIError as e:
                         stuff = e.resp
                         stuff['ip_address'] = ip
-                        stuff['code'] = stuff['Code']
-                        stuff['message'] = stuff['Msg']
-                        stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
+                        stuff['code'] = stuff.get('Code')
+                        stuff['message'] = stuff.get('Msg')
+                        if 'Hhen' in stuff:
+                            stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
                         my_logger.error(stuff)
 
 
