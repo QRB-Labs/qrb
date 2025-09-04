@@ -102,9 +102,7 @@ def edevs(address, port=4028):
 class LogstashFormatter(LogstashFormatterBase):
     def format(self, record):
         message = record.msg
-        if 'datetime' in message:
-            message['@timestamp'] = message['datetime'].strftime('%Y-%m-%dT%H:%M:%S.%f')
-            del message['datetime']
+        message['@timestamp'] =  datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
 
         message.update({
             'host': {'ip': record.msg['ip_address']},
