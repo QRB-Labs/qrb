@@ -1,42 +1,68 @@
-from flask import Flask, render_template, Response
+# -*- coding: utf-8 -*-
+from flask import Flask, render_template, Response, jsonify
 import RPi.GPIO as GPIO
 import time
 import threading
 from logstash import TCPLogstashHandler
 import logging
+import adafruit_dht
+import board
 
-mylogger =  logging.getLogger(__name__)
+# Setup logging
+mylogger = logging.getLogger(__name__)
 handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
 mylogger.addHandler(handler)
 
 app = Flask(__name__)
 
-# Set GPIO numbering mode to BCM
-GPIO.setmode(GPIO.BCM)
+# GPIO Setup for relay
 RELAY_PIN = 16
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(RELAY_PIN, GPIO.OUT)
-GPIO.output(RELAY_PIN, GPIO.LOW)  # Ensure relay is off initially
+GPIO.output(RELAY_PIN, GPIO.LOW)  # Relay off initially
 
-# Global variable to prevent concurrent relay triggers
+# Sensor setup (AM2302 = DHT22, on GPIO 4)
+DHT_SENSOR = adafruit_dht.DHT22(board.D4, use_pulseio=False)
+DHT_PIN = 4
+
+# Global variable
 relay_busy = False
 
+def read_sensor():
+    """Read temperature and humidity from AM2302 with retries."""
+    for i in range(3):  # Retry up to 3 times
+        try:
+            temperature = DHT_SENSOR.temperature
+            humidity = DHT_SENSOR.humidity
+            if humidity is not None and temperature is not None:
+                mylogger.info(f"Sensor reading: Temp={temperature:.1f}°C, Humidity={humidity:.1f}%")
+                return round(temperature, 1), round(humidity, 1)
+            time.sleep(2)
+        except RuntimeError as e:
+            mylogger.error(f"Sensor read error (attempt {i+1}): {e}")
+            time.sleep(2)
+    mylogger.error("Failed to read AM2302 sensor after retries")
+    return None, None
+
 def toggle_relay():
+    """Run relay for 120 seconds."""
     global relay_busy
     relay_busy = True
     try:
-        print("Turning ON normally-off outlets")
         mylogger.warning("Turning ON")
+        print("Turning ON normally-off outlets")
         GPIO.output(RELAY_PIN, GPIO.HIGH)  # Turn on relay
         time.sleep(120)  # Keep on for 120 seconds
-        print("Turning OFF normally-off outlets")
         mylogger.warning("Turning OFF")
+        print("Turning OFF normally-off outlets")
         GPIO.output(RELAY_PIN, GPIO.LOW)  # Turn off relay
     finally:
         relay_busy = False
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    temp, hum = read_sensor()
+    return render_template('index.html', current_temp=temp, current_hum=hum)
 
 @app.route('/trigger')
 def trigger():
@@ -45,6 +71,15 @@ def trigger():
         threading.Thread(target=toggle_relay, daemon=True).start()
         return Response("Water is running for 120 seconds!", status=200)
     return Response("Relay is busy, please wait!", status=429)
+
+@app.route('/get_status')
+def get_status():
+    temp, hum = read_sensor()
+    return jsonify({
+        'temp': temp,
+        'humidity': hum,
+        'relay_busy': relay_busy
+    })
 
 if __name__ == '__main__':
     try:
