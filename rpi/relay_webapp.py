@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, Response, jsonify
 import RPi.GPIO as GPIO
+import socket
 import time
 import threading
 import logging
@@ -31,7 +32,7 @@ mylogger = logging.getLogger(__name__)
 handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
 handler.setFormatter(LogstashFormatter())
 mylogger.addHandler(handler)
-my_logger.setLevel(logging.INFO)
+mylogger.setLevel(logging.INFO)
 
 app = Flask(__name__)
 
@@ -55,7 +56,7 @@ def read_sensor():
             temperature = DHT_SENSOR.temperature
             humidity = DHT_SENSOR.humidity
             if humidity is not None and temperature is not None:
-                mylogger.info({"message: ""Sensor reading",
+                mylogger.info({"message": "Sensor reading",
                                "Temperature": temperature,
                                "Humidity": humidity})
                 return round(temperature, 1), round(humidity, 1)
