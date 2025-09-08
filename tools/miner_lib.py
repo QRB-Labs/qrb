@@ -6,8 +6,7 @@ RECV_BUF_SIZE=4096
 
 
 class MinerAPIError(Exception):
-    def __init__(self, message, resp):
-        super().__init__(message)
+    def __init__(self, resp):
         self.resp = resp
 
 
@@ -17,7 +16,7 @@ def check_response(resp):
     else:  # whatsminer
         status = resp
     if status.get('STATUS') != 'S':
-        raise MinerAPIError("", resp)
+        raise MinerAPIError(status)
 
 
 def send_json(json_cmd, address, port):

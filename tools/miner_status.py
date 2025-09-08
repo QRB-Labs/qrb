@@ -19,10 +19,7 @@ Tested with
 import argparse
 from datetime import datetime
 import json
-from logstash import TCPLogstashHandler
-from logstash.formatter import LogstashFormatterBase
-import logging
-import logging.handlers
+import qrb_logging
 
 import miner_api_codes
 import miner_lib
@@ -64,23 +61,6 @@ def get_summary_hardware_errors(address, port=4028):
             yield r
 
 
-class LogstashFormatter(LogstashFormatterBase):
-    def format(self, record):
-        message = record.msg
-        message['@timestamp'] =  datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
-
-        message.update({
-            'host': {'ip': record.msg['ip_address']},
-            'path': record.pathname,
-            'tags': self.tags,
-            'type': self.message_type,
-            'level': record.levelname,
-            'logger_name': record.name,
-        })
-        del message['ip_address']
-        return self.serialize(message)
-
-
 def main():
     parser = argparse.ArgumentParser(description='Tool to get error codes from miner APIs')
     parser.add_argument("--start_ip", required=True)
@@ -95,15 +75,7 @@ def main():
     assert len(start_ip_octets) == 4
     assert len(end_ip_octets) == 4
 
-    my_logger = logging.getLogger("miner_status")
-    my_logger.setLevel(logging.DEBUG)
-
-    if args.output == 'syslog':
-        my_logger.addHandler(logging.handlers.SysLogHandler('/dev/log'))
-    if args.output == 'logstash':
-        handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
-        handler.setFormatter(LogstashFormatter())
-        my_logger.addHandler(handler)
+    my_logger = qrb_logging.get_logger("miner_status", args.output)
 
     for octet0 in range(int(start_ip_octets[0]), int(end_ip_octets[0])+1):
         for octet1 in range(int(start_ip_octets[1]), int(end_ip_octets[1])+1):
@@ -137,10 +109,6 @@ def main():
                     except miner_lib.MinerAPIError as e:
                         stuff = e.resp
                         stuff['ip_address'] = ip
-                        stuff['code'] = stuff.get('Code', -2)
-                        stuff['message'] = stuff.get('Msg')
-                        if 'When' in stuff:
-                            stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
                         my_logger.error(stuff)
 
 
