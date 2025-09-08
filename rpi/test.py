@@ -1,10 +1,30 @@
-from logstash import TCPLogstashHandler
 import logging
+from logstash import TCPLogstashHandler
+from logstash.formatter import LogstashFormatterBase
 
-mylogger =  logging.getLogger(__name__)
-handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
-mylogger.addHandler(handler)
 
-mylogger.warning("soupe")
-mylogger.info("a l'oignon")
-mylogger.error("y croutons")
+class LogstashFormatter(LogstashFormatterBase):
+    def format(self, record):
+        message = record.msg
+        if isinstance(message, dict):
+            message.update({
+                'path': record.pathname,
+                'level': record.levelname,
+                'logger_name': record.name,
+            })
+        return self.serialize(message)
+
+    
+def get_logger(logger_name):
+    my_logger = logging.getLogger(logger_name)
+    my_logger.setLevel(logging.DEBUG)
+    handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
+    handler.setFormatter(LogstashFormatter()) 
+    my_logger.addHandler(handler)
+    return my_logger
+
+
+mylogger =  get_logger("rpi_testing")
+mylogger.warning({"message": "Fake ON"})
+mylogger.info({"Temperature": 12.5})
+mylogger.error("plain error")
