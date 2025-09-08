@@ -27,7 +27,7 @@ class LogstashFormatter(LogstashFormatterBase):
         return self.serialize(message)
 
 
-mylogger = logging.getLogger(__name__)
+mylogger = logging.getLogger("rpi.relay_webapp")
 handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
 handler.setFormatter(LogstashFormatter())
 mylogger.addHandler(handler)
@@ -61,7 +61,7 @@ def read_sensor():
                 return round(temperature, 1), round(humidity, 1)
             time.sleep(2)
         except RuntimeError as e:
-            mylogger.error(f"Sensor read error (attempt {i+1}): {e}")
+            mylogger.debug(f"Sensor read error (attempt {i+1}): {e}")
             time.sleep(2)
     mylogger.error("Failed to read AM2302 sensor after retries")
     return None, None

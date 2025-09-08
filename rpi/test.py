@@ -1,17 +1,21 @@
 import logging
 from logstash import TCPLogstashHandler
 from logstash.formatter import LogstashFormatterBase
+import socket
 
 
 class LogstashFormatter(LogstashFormatterBase):
     def format(self, record):
-        message = record.msg
-        if isinstance(message, dict):
+        if isinstance(record.msg, dict):
+            message = record.msg
             message.update({
                 'path': record.pathname,
                 'level': record.levelname,
                 'logger_name': record.name,
             })
+        else:
+            message = {"@message" : record.msg}
+        message['@source_host'] = socket.gethostname()
         return self.serialize(message)
 
     
