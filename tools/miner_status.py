@@ -23,21 +23,17 @@ from logstash import TCPLogstashHandler
 from logstash.formatter import LogstashFormatterBase
 import logging
 import logging.handlers
-import socket
 
 import miner_api_codes
 import miner_lib
 
 
-def whatsminer_get_error_code(address, port=4028):
+def whatsminer_get_error_codes(address, port=4028):
     """
     Get any current errors being reported by the miner.
     Yields a dictionary
     """
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"cmd":"get_error_code"}'.encode())
-    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
+    resp = miner_lib.send_json('{"cmd":"get_error_code"}', address, port)
     miner_lib.check_response(resp)
     for error in resp['Msg']['error_code']:
         # error is a dict with key=code, value=date and time
@@ -52,51 +48,26 @@ def whatsminer_get_error_code(address, port=4028):
             yield r
 
 
-def teraflux_summary(address, port=4028):
+def get_summary_hardware_errors(address, port=4028):
     """
     Get summary of miner status for any miner where there is 'Harware Errors'
     Yields a dictionary
     """
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"command":"summary"}'.encode())
-    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
+    resp = miner_lib.get_summary(address, port)
     miner_lib.check_response(resp)
-
     for r in resp['SUMMARY']:
         if r['Hardware Errors'] > 0:
             r['ip_address'] = address
             r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
             r['code'] = resp['STATUS'][0]['Code']
-            r['message'] = resp['STATUS'][0]['Msg']
+            r['message'] = "Hardware errors" # teraflux msg resp['STATUS'][0]['Msg'] is just "Summary"
             yield r
-
-
-def edevs(address, port=4028):
-    """
-    Get temperature of miner
-    Yields a dictionary
-    """
-    sock = socket.socket()
-    sock.connect((address, port))
-    sock.send('{"command":"edevs"}'.encode())
-    resp = json.loads(sock.recv(miner_lib.RECV_BUF_SIZE))
-    miner_lib.check_response(resp)
-
-    for r in resp['DEVS']:
-        r['ip_address'] = address
-        r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0].get('When', datetime.now().timestamp()))
-        r['code'] = resp['STATUS'][0].get('Code', 9)
-        r['message'] = resp['STATUS'][0]['Msg']
-        yield r
 
 
 class LogstashFormatter(LogstashFormatterBase):
     def format(self, record):
         message = record.msg
-        if 'datetime' in message:
-            message['@timestamp'] = message['datetime'].strftime('%Y-%m-%dT%H:%M:%S')
-            del message['datetime']
+        message['@timestamp'] =  datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
 
         message.update({
             'host': {'ip': record.msg['ip_address']},
@@ -114,8 +85,8 @@ def main():
     parser = argparse.ArgumentParser(description='Tool to get error codes from miner APIs')
     parser.add_argument("--start_ip", required=True)
     parser.add_argument("--end_ip", required=True)
-    parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux'],
-                        default='whatsminer')
+    parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux', 'luxminer', "antminer"],
+                        default='generic')
     parser.add_argument("--output", choices=['logstash', 'syslog'], default='logstash')
     args = parser.parse_args()
 
@@ -141,14 +112,14 @@ def main():
                     ip = '.'.join(map(str, [octet0, octet1, octet2, octet3]))
                     try:
                         if args.miner_type == "whatsminer":
-                            for stuff in whatsminer_get_error_code(ip):
+                            for stuff in whatsminer_get_error_codes(ip):
                                 my_logger.error(stuff)
-                            for stuff in edevs(ip):
+                        elif args.miner_type == "teraflux" or args.miner_type == "luxminer" or args.miner_type == "antminer":
+                            for stuff in get_summary_hardware_errors(ip):
                                 my_logger.error(stuff)
-                        elif args.miner_type == "teraflux":
-                            for stuff in teraflux_summary(ip):
-                                my_logger.error(stuff)
-                            for stuff in edevs(ip):
+                        # edevs is same or all except antminer
+                        if args.miner_type != "antminer":
+                            for stuff in miner_lib.edevs(ip):
                                 my_logger.error(stuff)
                     except OSError as e:
                         stuff = {
@@ -166,11 +137,11 @@ def main():
                     except miner_lib.MinerAPIError as e:
                         stuff = e.resp
                         stuff['ip_address'] = ip
-                        stuff['code'] = stuff['Code']
-                        stuff['message'] = stuff['Msg']
-                        stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
+                        stuff['code'] = stuff.get('Code', -2)
+                        stuff['message'] = stuff.get('Msg')
+                        if 'When' in stuff:
+                            stuff['datetime'] = datetime.fromtimestamp(stuff['When'])
                         my_logger.error(stuff)
-
 
 
 if __name__ == "__main__":
