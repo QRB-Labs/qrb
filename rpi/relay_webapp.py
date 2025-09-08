@@ -3,15 +3,35 @@ from flask import Flask, render_template, Response, jsonify
 import RPi.GPIO as GPIO
 import time
 import threading
-from logstash import TCPLogstashHandler
 import logging
+from logstash import TCPLogstashHandler
+from logstash.formatter import LogstashFormatterBase
 import adafruit_dht
 import board
 
+
 # Setup logging
+
+class LogstashFormatter(LogstashFormatterBase):
+    def format(self, record):
+        if isinstance(record.msg, dict):
+            message = record.msg
+            message.update({
+                'path': record.pathname,
+                'level': record.levelname,
+                'logger_name': record.name,
+            })
+        else:
+            message = {"@message" : record.msg}
+        message['@source_host'] = socket.gethostname()
+        return self.serialize(message)
+
+
 mylogger = logging.getLogger(__name__)
 handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
+handler.setFormatter(LogstashFormatter())
 mylogger.addHandler(handler)
+my_logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
 
@@ -35,7 +55,9 @@ def read_sensor():
             temperature = DHT_SENSOR.temperature
             humidity = DHT_SENSOR.humidity
             if humidity is not None and temperature is not None:
-                mylogger.info(f"Sensor reading: Temp={temperature:.1f}°C, Humidity={humidity:.1f}%")
+                mylogger.info({"message: ""Sensor reading",
+                               "Temperature": temperature,
+                               "Humidity": humidity})
                 return round(temperature, 1), round(humidity, 1)
             time.sleep(2)
         except RuntimeError as e:
