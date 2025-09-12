@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from datetime import datetime
 import heapq
 import numpy as np
@@ -54,14 +56,11 @@ def main():
             np.append(time_history, t),
             np.append(temperature_history, temperature),
             t-WINDOW)
-
+        if len(time_history) < 3:
+            continue
         a, unused = slope(time_history, temperature_history)
         predicted_temperature = DERIVATIVE_COEFF * a + PROPORTIONAL_COEFF * temperature
-        my_logger.info({
-            "Humidity": humidity,
-            "Temperature":  temperature,
-            "Temperature Forecast": predicted_temperature
-        })
+        my_logger.info({"Temperature Forecast": predicted_temperature})
 
         if predicted_temperature > THRESHOLD_TEMP:
             if (not activation_history ) or \
