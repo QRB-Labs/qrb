@@ -57,11 +57,15 @@ def main(my_logger):
     while True:
         t = datetime.now().timestamp() - t0
         temperature, humidity = relay_webapp.read_sensor()
+        if temperature is None:
+            time.sleep(SENSOR_PERIOD)
+            continue  # can happen if read_sensor failed
         time_history, temperature_history = slice_to_window(
             np.append(time_history, t),
             np.append(temperature_history, temperature),
             t-WINDOW)
         if len(time_history) < 3:
+            time.sleep(SENSOR_PERIOD)
             continue
         a, unused = slope(time_history, temperature_history)
         pred_temperature = DERIVATIVE_COEFF*a + PROPORTIONAL_COEFF*temperature
