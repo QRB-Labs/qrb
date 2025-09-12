@@ -49,7 +49,7 @@ def main():
 
     while True:
         t = datetime.now().timestamp() - t0
-        temperature, humidity = rarelay_webapp.read_sensor()
+        temperature, humidity = relay_webapp.read_sensor()
         time_history, temperature_history = slice_to_window(
             np.append(time_history, t),
             np.append(temperature_history, temperature),
