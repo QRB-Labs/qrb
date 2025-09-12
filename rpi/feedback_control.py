@@ -12,8 +12,8 @@ DRY_RUN=True  # if True, no activation, reading and simulation only
 SENSOR_PERIOD = 60
 
 # Feedback control parameraters
-WINDOW = 900             # look back to compute current rate of change
-DERIVATIVE_COEFF = 3600  # look forward for forecast
+WINDOW = 3600            # look back to compute current rate of change
+DERIVATIVE_COEFF = 900   # look forward for forecast
 PROPORTIONAL_COEFF = 1   # weight of current temp
 THRESHOLD_TEMP = 22      # forecast threshold to activate
 
