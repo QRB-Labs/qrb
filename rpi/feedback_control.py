@@ -57,9 +57,9 @@ def main(my_logger):
     while True:
         t = datetime.now().timestamp() - t0
         temperature, humidity = relay_webapp.read_sensor()
-        if temperature is None:
+        if temperature is None:  # read_sensor failed
             time.sleep(SENSOR_PERIOD)
-            continue  # can happen if read_sensor failed
+            continue
         time_history, temperature_history = slice_to_window(
             np.append(time_history, t),
             np.append(temperature_history, temperature),
@@ -81,7 +81,7 @@ def main(my_logger):
                     relay_web_app.toggle_relay(ACTIVATION_DURATION)
                 heapq.heappush(activation_history, t)
             else:
-                my_logger.info("Too many activations, skipping")
+                my_logger.debug("Too many activations, skipping")
 
         while len(activation_history) > 0 and \
               min(activation_history) < t - DAY_LENGTH:
