@@ -3,6 +3,10 @@
 feedback signal (equivalent to a temperature forecast) and activates
 the pump control (toggle_relay) to stay below threshold temperature.
 
+Usage:
+
+./feedback_control.py > feedback_control.log 2>&1 &
+
 '''
 
 from datetime import datetime
@@ -14,8 +18,8 @@ import random
 import qrb_logging
 import relay_webapp
 
-DRY_RUN=True  # if True, no activation, reading and simulation only
 
+DRY_RUN=True  # if True, no activation, reading and simulation only
 SENSOR_PERIOD = 60
 
 # Feedback control parameraters
@@ -31,9 +35,7 @@ MTB_ACTIVATIONS = 1800    # minimum time between activations
 
 
 def slope(x, y):
-    '''Least squares regression on time series: y = a*x + b where y is the
-    time_series and x is it's integer index. Returns slope and
-    intercept (a, b).
+    '''Least squares regression: y = a*x + b. Returns (a, b).
 
     '''
     X = np.vstack([x, np.ones(len(x))]).T
@@ -66,7 +68,7 @@ def main(my_logger):
             np.append(time_history, t),
             np.append(temperature_history, temperature),
             t-WINDOW)
-        if len(time_history) < 3:
+        if len(time_history) < 3:  # not enough data in window to forecast
             continue
 
         a, unused = slope(time_history, temperature_history)
