@@ -67,7 +67,7 @@ def read_sensor():
     mylogger.error("Failed to read AM2302 sensor after retries")
     return None, None
 
-def toggle_relay():
+def toggle_relay(duration=120):
     """Run relay for 120 seconds."""
     global relay_busy
     relay_busy = True
@@ -75,7 +75,7 @@ def toggle_relay():
         mylogger.warning("Turning ON")
         print("Turning ON normally-off outlets")
         GPIO.output(RELAY_PIN, GPIO.HIGH)  # Turn on relay
-        time.sleep(120)  # Keep on for 120 seconds
+        time.sleep(duration)  # Keep on for 120 seconds
         mylogger.warning("Turning OFF")
         print("Turning OFF normally-off outlets")
         GPIO.output(RELAY_PIN, GPIO.LOW)  # Turn off relay
