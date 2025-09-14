@@ -53,41 +53,41 @@ def main(my_logger):
     time_history = np.array([])
     activation_history = []
     t0 = datetime.now().timestamp()
+    t = None
 
     while True:
+        if t: # don't sleep on the first iteration
+            time.sleep(SENSOR_PERIOD)
         t = datetime.now().timestamp() - t0
         temperature, humidity = relay_webapp.read_sensor()
         if temperature is None:  # read_sensor failed
-            time.sleep(SENSOR_PERIOD)
             continue
         time_history, temperature_history = slice_to_window(
             np.append(time_history, t),
             np.append(temperature_history, temperature),
             t-WINDOW)
         if len(time_history) < 3:
-            time.sleep(SENSOR_PERIOD)
             continue
+
         a, unused = slope(time_history, temperature_history)
         pred_temperature = DERIVATIVE_COEFF*a + PROPORTIONAL_COEFF*temperature
         my_logger.info({"message": "Control signal",
                         "Temperature Forecast": pred_temperature})
+        if pred_temperature < THRESHOLD_TEMP:
+            continue
 
-        if pred_temperature > THRESHOLD_TEMP:
-            if (not activation_history ) or \
-               (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
-                t - max(activation_history) > MTB_ACTIVATIONS):
-                my_logger.info("Activate")
-                if not DRY_RUN:
-                    relay_web_app.toggle_relay(ACTIVATION_DURATION)
-                heapq.heappush(activation_history, t)
-            else:
-                my_logger.debug("Too many activations, skipping")
-
-        while len(activation_history) > 0 and \
-              min(activation_history) < t - DAY_LENGTH:
+        while activation_history and min(activation_history) < t-DAY_LENGTH:
             heapq.heappop(activation_history)
 
-        time.sleep(SENSOR_PERIOD)
+        if (not activation_history ) or \
+           (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
+            t - max(activation_history) > MTB_ACTIVATIONS):
+            my_logger.info("Activate")
+            if not DRY_RUN:
+                relay_webapp.toggle_relay(ACTIVATION_DURATION)
+            heapq.heappush(activation_history, t)
+        else:
+            my_logger.debug("Too many activations, skipping")
 
 
 if __name__ == '__main__':
