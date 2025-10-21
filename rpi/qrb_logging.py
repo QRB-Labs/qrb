@@ -25,5 +25,5 @@ def get_logger(logger_name):
     handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
     handler.setFormatter(LogstashFormatter())
     mylogger.addHandler(handler)
-    mylogger.setLevel(logging.INFO)
+    mylogger.setLevel(logging.DEBUG)
     return mylogger

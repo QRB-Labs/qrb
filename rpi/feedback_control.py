@@ -18,8 +18,7 @@ import random
 import qrb_logging
 import relay_webapp
 
-
-DRY_RUN=True  # if True, no activation, reading and simulation only
+DRY_RUN=False  # if True, no activation, reading and simulation only
 SENSOR_PERIOD = 60
 
 # Feedback control parameraters
@@ -30,7 +29,7 @@ THRESHOLD_TEMP = 22      # forecast threshold to activate
 
 MAX_ACTIVATIONS_PER_DAY = 6
 DAY_LENGTH = 24*60*60
-ACTIVATION_DURATION = 120
+ACTIVATION_DURATION = 60
 MTB_ACTIVATIONS = 1800    # minimum time between activations
 
 
@@ -62,13 +61,14 @@ def main(my_logger):
             time.sleep(SENSOR_PERIOD)
         t = datetime.now().timestamp() - t0
         temperature, humidity = relay_webapp.read_sensor()
-        if temperature is None:  # read_sensor failed
+        if temperature is None:
+            my_logger.debug("read_sensor failed")
             continue
         time_history, temperature_history = slice_to_window(
             np.append(time_history, t),
             np.append(temperature_history, temperature),
             t-WINDOW)
-        if len(time_history) < 3:  # not enough data in window to forecast
+        if len(time_history) < 5:
             continue
 
         a, unused = slope(time_history, temperature_history)
