@@ -8,17 +8,18 @@ Colocation service consists of data center space, internet
 connectivity, power and all necessary infrastructure in secure
 facilities.  Customers have remote access to their servers via VPN, as well as physical site access for installation and maintenance of their servers, at no extra cost. 
 
-### Colocation prices
+### Colocation prices (Ethiopia)
 
 Colocation is priced at a flat rate per server per month. Any infrastructure downtime will be fully credited on a pro-rated basis on the monthly fee, i.e. 1% downtime results in 1% credit on the monthly fee. All prices are in USD.
 
 |    Number <br> of servers  |  Price <br> per server per month |
 |  -----------------: | ----------: |
-|   144               | $128        |
-|   288               | $116        | 
-|   1152               | $109	      | 
+|   144               | $147        |
+|   288               | $142     | 
+|   1152               | $138	      | 
 {:.custom-table}
 
+Please note prices are updated for December 2025, in response to energy price increases from the power company. There will be further updates in July 2026 and July 2027.
 <br />
 
 ### One-time fees
