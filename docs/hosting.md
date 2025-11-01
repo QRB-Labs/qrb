@@ -19,7 +19,7 @@ Colocation is priced at a flat rate per server per month. Any infrastructure dow
 |   1152               | $138	      | 
 {:.custom-table}
 
-Please note prices are updated for December 2025, in response to energy price increases from the power company. There will be further updates in July 2026 and July 2027.
+Prices are updated for December 2025, in response to energy price increases from the power company. Further updates are expected from the power company in July 2026 and July 2027. Additional adjustments may occur in response to other cost changes outside of our control.
 <br />
 
 ### One-time fees
