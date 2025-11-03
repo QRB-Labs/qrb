@@ -22,6 +22,8 @@ QRB Labs is a founding member of the [Green Africa Mining Alliance](http://gama.
 ### Recent News
 <div style="padding: 16px">
  <ul>
+  <li><a href="https://www.youtube.com/watch?v=BHHHONC1Ta0">Inside Ethiopia’s Growing Bitcoin Mining Industry w/ Freadam Eshete</a>, HashrateUp Podcast, Sep 2025</li>
+  <li><a href="https://www.thereporterethiopia.com/46657/">Ethiopia Needs 12-fold Jump in Electric Power Generation to Achieve Middle Income Ambitions: Paper</a> (coverage of <a href="https://www.qrb-labs.com/Electricity%20Pricing%20Strategy%20for%20Ethiopia.pdf">this paper</a>), The Reporter, August 2025</li>
 <li><a href="https://www.youtube.com/watch?v=fg2HFe098oU">Ethiopia: From 0 to 1 GW Bitcoin Mining in 15 Months (w/ Nemo, QRB Labs)</a>, HashrateUp Podcast, Apr 2025</li>
 <li><a href="https://thereportermagazines.com/3736/">Ethiopia’s Bitcoin Bet: navigating through regulations, power costs, and currency rule hurdles</a>, The Reporter Magazine, Mar 2025</li>
 <li><a href="https://shega.co/news/ethiopia-lightly-treads-crypto-prospects-as-foreign-investors-eye-bitcoins-next-darling">Ethiopia Lightly Treads Crypto Prospects as Foreign Investors Eye Bitcoin’s Next Darling</a>, Shega.co, Mar 2025</li>
