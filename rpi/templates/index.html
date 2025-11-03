@@ -86,6 +86,15 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        .sensor {
+            font-size: 1.25rem;
+            color: #333;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
         footer {
             margin-top: 2rem;
             font-size: 0.875rem;
@@ -123,6 +132,9 @@
                 font-size: 1rem;
                 max-width: 150px;
             }
+            .sensor {
+                font-size: 1rem;
+            }
             footer {
                 font-size: 0.75rem;
             }
@@ -133,6 +145,10 @@
     <div class="container">
         <h1>Water Cooling system - በውሀ የማቀዝቀዝ ስርዓት</h1>
         <div class="status off" id="status">Powered Off - ዉሀው መፍሰስ አቁሟል</div>
+        <div class="sensor">
+            Temperature - ሙቀት: <span id="current-temp">{{ '%.1f' % current_temp if current_temp is not none else 'N/A' }}°C</span><br>
+            Humidity - እርጥበት: <span id="current-hum">{{ '%.1f' % current_hum if current_hum is not none else 'N/A' }}%</span>
+        </div>
         <div class="countdown" id="countdown" style="display: none;">120</div>
         <div class="countdown-circle" id="circle" style="display: none;">
             <svg width="100" height="100">
@@ -140,7 +156,7 @@
             </svg>
         </div>
         <button id="triggerButton" onclick="triggerRelay()">Power On - ማቀዝቀዝ ጀምር (120s)</button>
-	<p><em><snall></small>2025 © QRB Labs</small></em></p>
+        <p><em><small>2025 © QRB Labs</small></em></p>
     </div>
     <footer></footer>
 
@@ -197,6 +213,22 @@
                 button.disabled = false;
             }
         }
+
+        // Update sensor readings every 5 seconds
+        function updateSensor() {
+            fetch('/get_status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('current-temp').textContent = data.temp !== null ? data.temp.toFixed(1) + '°C' : 'N/A';
+                    document.getElementById('current-hum').textContent = data.humidity !== null ? data.humidity.toFixed(1) + '%' : 'N/A';
+                })
+                .catch(error => console.error('Sensor update error:', error));
+        }
+
+        // Start auto-updates
+        setInterval(updateSensor, 5000);
+        // Initial update
+        updateSensor();
     </script>
 </body>
 </html>

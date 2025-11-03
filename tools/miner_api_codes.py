@@ -151,16 +151,16 @@ WHATSMINER_ERROR_CODES = {
           "action": "Try to power off and restart, no effect to replace the power supply"
     },
     263: {"message": "Power communication warning",
-          "action": "Check whether the screws of the controlboard are locked"
+          "action": "Check whether the screws of the control board are locked"
     },
     264: {"message": "Power communication error",
-          "action": "Check whether the screws of the controlboard are locked"
+          "action": "Check whether the screws of the control board are locked"
     },
     267: {"message": "Power watchdog protection",
           "action": "Contact the technician in time"
     },
     268: {"message": "Power output over-current protection",
-          "action": "Check the ambient temperature, checkthecopper bar screw"
+          "action": "Check the ambient temperature, check the copper bar screw"
     },
     269: {"message": "Power input over-current protection",
           "action": "Improve power supply conditions and input voltage"

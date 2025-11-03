@@ -1,0 +1,14 @@
+[Unit]
+Description=Feedback control loop script
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/cooling-automation/qrb/rpi/feedback_control.py 
+User=cooling-automation
+StandardOutput=append:/tmp/feedback-control.log
+StandardError=append:/tmp/feedback-control.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

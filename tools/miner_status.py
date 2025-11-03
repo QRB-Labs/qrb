@@ -18,11 +18,12 @@ Tested with
 
 import argparse
 from datetime import datetime
+import ipaddress
 import json
-import qrb_logging
 
 import miner_api_codes
 import miner_lib
+import qrb_logging
 
 
 def whatsminer_get_error_codes(address, port=4028):
@@ -70,46 +71,39 @@ def main():
     parser.add_argument("--output", choices=['logstash', 'syslog'], default='logstash')
     args = parser.parse_args()
 
-    start_ip_octets = args.start_ip.split('.')
-    end_ip_octets = args.end_ip.split('.')
-    assert len(start_ip_octets) == 4
-    assert len(end_ip_octets) == 4
-
     my_logger = qrb_logging.get_logger("miner_status", args.output)
 
-    for octet0 in range(int(start_ip_octets[0]), int(end_ip_octets[0])+1):
-        for octet1 in range(int(start_ip_octets[1]), int(end_ip_octets[1])+1):
-            for octet2 in range(int(start_ip_octets[2]), int(end_ip_octets[2])+1):
-                for octet3 in range(int(start_ip_octets[3]), int(end_ip_octets[3])+1):
-                    ip = '.'.join(map(str, [octet0, octet1, octet2, octet3]))
-                    try:
-                        if args.miner_type == "whatsminer":
-                            for stuff in whatsminer_get_error_codes(ip):
-                                my_logger.error(stuff)
-                        elif args.miner_type == "teraflux" or args.miner_type == "luxminer" or args.miner_type == "antminer":
-                            for stuff in get_summary_hardware_errors(ip):
-                                my_logger.error(stuff)
-                        # edevs is same or all except antminer
-                        if args.miner_type != "antminer":
-                            for stuff in miner_lib.edevs(ip):
-                                my_logger.error(stuff)
-                    except OSError as e:
-                        stuff = {
-                            'ip_address': ip,
-                            'message': '{}'.format(e),
-                            'code': -e.errno
-                        }
-                        my_logger.error(stuff)
-                    except json.decoder.JSONDecodeError as e:
-                        my_logger.debug({
-                            'ip_address': ip,
-                            'message': '{}'.format(e),
-                            'code': -1
-                        })
-                    except miner_lib.MinerAPIError as e:
-                        stuff = e.resp
-                        stuff['ip_address'] = ip
-                        my_logger.error(stuff)
+    for i in range(int(ipaddress.IPv4Address(args.start_ip)),
+                   int(ipaddress.IPv4Address(args.end_ip))+1):
+        ip = str(ipaddress.ip_address(i))
+        try:
+            if args.miner_type == "whatsminer":
+                for stuff in whatsminer_get_error_codes(ip):
+                    my_logger.error(stuff)
+            elif args.miner_type == "teraflux" or args.miner_type == "luxminer" or args.miner_type == "antminer":
+                for stuff in get_summary_hardware_errors(ip):
+                    my_logger.error(stuff)
+            # edevs is same or all except antminer
+            if args.miner_type != "antminer":
+                for stuff in miner_lib.edevs(ip):
+                    my_logger.error(stuff)
+        except OSError as e:
+            stuff = {
+                'ip_address': ip,
+                'message': '{}'.format(e),
+                'code': -e.errno
+            }
+            my_logger.error(stuff)
+        except json.decoder.JSONDecodeError as e:
+            my_logger.debug({
+                'ip_address': ip,
+                'message': '{}'.format(e),
+                'code': -1
+            })
+        except miner_lib.MinerAPIError as e:
+            stuff = e.resp
+            stuff['ip_address'] = ip
+            my_logger.error(stuff)
 
 
 if __name__ == "__main__":

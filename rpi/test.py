@@ -1,10 +1,6 @@
-from logstash import TCPLogstashHandler
-import logging
+from qrb_logging import get_logger
 
-mylogger =  logging.getLogger(__name__)
-handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
-mylogger.addHandler(handler)
-
-mylogger.warning("soupe")
-mylogger.info("a l'oignon")
-mylogger.error("y croutons")
+mylogger = get_logger("rpi_testing")
+mylogger.warning({"message": "Fake ON"})
+mylogger.info({"Temperature": 12.5})
+mylogger.error("plain error")

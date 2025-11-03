@@ -38,4 +38,3 @@ def get_logger(logger_name, output_type):
         my_logger.addHandler(handler)
 
     return my_logger
-
