@@ -2,10 +2,11 @@
 title: QRB Labs Research and development
 ---
 
-Technical documents from QRB and [GAMA](http://gama.africa)
+Technical documents from QRB Labs and [GAMA](http://gama.africa)
 
 <div style="padding: 16px"> 
  <ul>
+ <li><a href="QRB_Labs_statement_EEP_pricing_202510.pdf">QRB Labs statement on EEP pricing</a>, October 2025</li>
    <li><a href="Electricity Pricing Strategy for Ethiopia.pdf">Electricity Pricing Strategy for Ethiopia</a>, strategy whitepaper for power providers</li>
   <li><a href="QRB @ ABC Mining in Ethiopia.pdf">Bitcoin &amp; Ethiopia’s journey to electrification</a>, presentation at <a href="https://afrobitcoin.org/">Africa Bitcoin Conference 2024</a></li>
   <li><a href="Dynamics of Bitcoin Mining.pdf">Dynamics of Bitcoin Mining</a> presentation at <a href="https://africanbitcoinmining.com">Africa Bitcoin Mining Summit 2023</a></li>
