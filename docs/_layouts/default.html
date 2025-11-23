@@ -8,19 +8,19 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-	  
+
     <link rel="shortcut icon" type="image/png" href="QRB_logo.png">
     <title>{{ page.title }}</title>
 
    <style>
       .custom-table th, .custom-table td {
-        padding: 5px;
+	padding: 5px;
 	border: 1px solid black;
 	border-collapse: collapse;
       }
 
      body {
-        background-image: url('images/GERD.jpeg');
+	background-image: url('images/GERD.jpeg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: cover;
@@ -52,7 +52,7 @@
        text-decoration: none;
        color: black;
    }
-   
+
    .topnav #title {
        padding: 16px;
        font-size: 1.5em;
@@ -73,33 +73,41 @@
    .active {
    }
    </style>
-   
+
   </head>
-   
+
   <body>
 
     <header>
       <!-- Top Navigation Menu -->
       <div class="topnav">
-        <a href="/"><div id="title">
-           {{ page.title }}
-         </div></a>
-        <div id="myLinks">
-          <a href="/">Home</a>
-          <a href="/about">About us</a>
-          <a href="/hosting">Hosting & Colocation</a>
+	<a href="/"><div id="title">
+	   {{ page.title }}
+	 </div></a>
+	<div id="myLinks">
+	  <a href="/">Home</a>
+	  <a href="/about">About us</a>
+	  <a href="/hosting">Hosting & Colocation</a>
 	  <a href="/techdocs">Research & Development</a>
 	   <a href="/gov.et/">Ethiopian government docs</a>
-        </div>
-        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-          <i class="fa fa-bars"></i>
-        </a>
+	</div>
+	<a href="javascript:void(0);" class="icon" onclick="myFunction()">
+	  <i class="fa fa-bars"></i>
+	</a>
       </div>
     </header>
-  
-    <div style="padding: 16px"> 
+
+    <div style="padding: 16px">
       {{ content }}
     </div>
+
+    <footer>
+      <div style="text-align: right; padding: 16px">
+	<a href="https://www.linkedin.com/company/qrb-labs" target="_blank"><img src="https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/646f1f4b833c1b599c2832a0_in.png" loading="lazy" width="18" alt=""></a>
+	<a href="https://twitter.com/qrb_labs/" target="_blank"><img src="https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/6601b2a6bbb16f2944f90ad8_logo-white.png" loading="lazy" width="18" sizes="(max-width: 767px) 18px, (max-width: 991px) 2vw, 18px" alt="" srcset="https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/6601b2a6bbb16f2944f90ad8_logo-white-p-500.png 500w, https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/6601b2a6bbb16f2944f90ad8_logo-white-p-800.png 800w, https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/6601b2a6bbb16f2944f90ad8_logo-white-p-1080.png 1080w, https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/6601b2a6bbb16f2944f90ad8_logo-white-p-1600.png 1600w, https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/6601b2a6bbb16f2944f90ad8_logo-white-p-2000.png 2000w, https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/6601b2a6bbb16f2944f90ad8_logo-white.png 2400w"></a>
+	<a href="https://github.com/orgs/QRB-Labs/" target="_blank"><img src="https://cdn.prod.website-files.com/646f19486d973afa3b057f6e/646f1f4bf8001bbc4c822e8f_github.png" loading="lazy" width="18" alt=""h></a>
+      </div>
+    </footer>
 
     <script>
     function myFunction() {
@@ -111,6 +119,6 @@
 	}
     }
     </script>
-  
+
   </body>
 </html>
