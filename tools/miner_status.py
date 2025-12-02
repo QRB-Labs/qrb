@@ -86,7 +86,7 @@ def main():
             # pool URL and username
             for stuff in miner_lib.get_pools(ip):
                 stuff.update(base_msg)
-                my_logger.error(str(stuff))
+                my_logger.error(stuff)
 
             # errors
             if args.miner_type == "whatsminer":
