@@ -40,8 +40,25 @@ def whatsminer_get_version(address, port=4028):
     return send_json('{"cmd":"get_version"}', address, port)
 
 
+def whatsminer_get_miner_info(address, port=4028):
+    """Returns a dict with keys: 'ip',  'mac',  'minersn', 'powersn', etc.
+    """
+    resp = send_json('{"cmd":"get_miner_info"}', address, port)
+    check_response(resp)
+    return resp['Msg']
+
+
 def teraflux_get_version(address, port=4028):
     return send_json('{"command":"version"}', address, port)
+
+
+def teraflux_get_miner_info(address, port=4028):
+    """
+    Returns a dict with keys: SerialNo, ip, mac, model, CBSerialNo, ChassisSerialNo, etc.
+    """
+    resp = send_json('{"command":"ipreport"}', address, port)
+    check_response(resp)
+    return resp['IPReport'][0]
 
 
 def get_token(address, port=4028):
