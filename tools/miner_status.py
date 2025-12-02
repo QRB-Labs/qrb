@@ -77,13 +77,26 @@ def main():
                    int(ipaddress.IPv4Address(args.end_ip))+1):
         ip = str(ipaddress.ip_address(i))
         try:
+            base_msg = {}
+            # basic hardware info like mac address and serial numbers
+            if args.miner_type == "whatsminer":
+                base_msg.update(miner_lib.whatsminer_get_miner_info(ip))
+            if args.miner_type == "teraflux":
+                base_msg.update(miner_lib.teraflux_get_miner_info(ip))
+            # pool URL and username
+            for stuff in miner_lib.get_pools(ip):
+                stuff.update(base_msg)
+                my_logger.error(str(stuff))
+
+            # errors
             if args.miner_type == "whatsminer":
                 for stuff in whatsminer_get_error_codes(ip):
                     my_logger.error(stuff)
             elif args.miner_type == "teraflux" or args.miner_type == "luxminer" or args.miner_type == "antminer":
                 for stuff in get_summary_hardware_errors(ip):
                     my_logger.error(stuff)
-            # edevs is same or all except antminer
+
+            # device monitoring
             if args.miner_type != "antminer":
                 for stuff in miner_lib.edevs(ip):
                     my_logger.error(stuff)

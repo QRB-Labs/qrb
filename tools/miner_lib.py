@@ -98,7 +98,7 @@ def edevs(address, port=4028):
             r['Enabled'] = False
         yield r
 
-        
+
 def get_pools(address, port=4028):
     """
     Get the currently active pool config
@@ -114,4 +114,4 @@ def get_pools(address, port=4028):
             r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
-        return r   
+        yield r
