@@ -63,8 +63,8 @@ def get_summary(address, port=4028):
 
 def edevs(address, port=4028):
     """
-    Get temperature of miner
-    Yields a dictionary
+    Get detailed report on hash boards.
+    Yields a dictionary for each board
     """
     resp = send_json('{"command": "edevs"}', address, port)
     check_response(resp)
