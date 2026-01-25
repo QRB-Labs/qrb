@@ -40,8 +40,25 @@ def whatsminer_get_version(address, port=4028):
     return send_json('{"cmd":"get_version"}', address, port)
 
 
+def whatsminer_get_miner_info(address, port=4028):
+    """Returns a dict with keys: 'ip',  'mac',  'minersn', 'powersn', etc.
+    """
+    resp = send_json('{"cmd":"get_miner_info"}', address, port)
+    check_response(resp)
+    return resp['Msg']
+
+
 def teraflux_get_version(address, port=4028):
     return send_json('{"command":"version"}', address, port)
+
+
+def teraflux_get_miner_info(address, port=4028):
+    """
+    Returns a dict with keys: SerialNo, ip, mac, model, CBSerialNo, ChassisSerialNo, etc.
+    """
+    resp = send_json('{"command":"ipreport"}', address, port)
+    check_response(resp)
+    return resp['IPReport'][0]
 
 
 def get_token(address, port=4028):
@@ -63,8 +80,8 @@ def get_summary(address, port=4028):
 
 def edevs(address, port=4028):
     """
-    Get temperature of miner
-    Yields a dictionary
+    Get detailed report on hash boards.
+    Yields a dictionary for each board
     """
     resp = send_json('{"command": "edevs"}', address, port)
     check_response(resp)
@@ -79,4 +96,22 @@ def edevs(address, port=4028):
             r['Enabled'] = True  # whatsminer returns 'Y'/'N' instead of boolean
         if r.get('Enabled') == 'N':
             r['Enabled'] = False
+        yield r
+
+
+def get_pools(address, port=4028):
+    """
+    Get the currently active pool config
+    Yields for each pool, a dictionary with keys: URL, User, etc
+    Testeed on whatsminer, luxminer, teraflux, antminer
+    """
+    resp = send_json('{"command": "pools"}', address, port)
+    check_response(resp)
+
+    for r in resp['POOLS']:
+        r['ip_address'] = address
+        if 'When' in resp['STATUS'][0]:
+            r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
+        r['code'] = resp['STATUS'][0].get('Code', 9)
+        r['message'] = resp['STATUS'][0]['Msg']
         yield r
