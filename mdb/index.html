@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Center Machine Query</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        #output { background: #f4f4f4; padding: 10px; border-radius: 5px; white-space: pre-wrap; }
+        .loading { color: orange; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>🖥️ Data Center Inventory</h2>
+    <div id="status" class="loading">Status: Initializing WebAssembly...</div>
+    
+    <button id="queryBtn" disabled>Run Query: Get All Machines</button>
+    
+    <h3>Query Results:</h3>
+    <pre id="output">Results will appear here...</pre>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const outputEl = document.getElementById('output');
+        const queryBtn = document.getElementById('queryBtn');
+        let db = null;
+
+        // Path to your SQLite file (ensure CORS is enabled on the host)
+        const DB_URL = 'mdb.sqlite'; 
+
+        async function initApp() {
+            try {
+                // 1. Initialize the SQL.js library
+                const SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+
+                statusEl.textContent = "Status: Fetching database file...";
+
+                // 2. Fetch the .sqlite file as an ArrayBuffer
+                const response = await fetch(DB_URL);
+                if (!response.ok) throw new Error("Failed to fetch database file.");
+                const buf = await response.arrayBuffer();
+
+                // 3. Load the database into memory
+                db = new SQL.Database(new Uint8Array(buf));
+                
+                statusEl.textContent = "Status: Database Loaded!";
+                statusEl.className = "";
+                queryBtn.disabled = false;
+
+            } catch (err) {
+                statusEl.textContent = "Error: " + err.message;
+                statusEl.style.color = "red";
+            }
+        }
+
+        queryBtn.addEventListener('click', () => {
+            if (!db) return;
+
+            // 4. Execute a query
+            // Example: Select all columns from your 'machines' table
+            const results = db.exec("SELECT * FROM machines LIMIT 100");
+
+            if (results.length > 0) {
+                // Formatting the results for the UI
+                const columns = results[0].columns;
+                const values = results[0].values;
+                
+                let textOutput = `Columns: ${columns.join(", ")}\n\n`;
+                values.forEach(row => {
+                    textOutput += row.join(" | ") + "\n";
+                });
+                
+                outputEl.textContent = textOutput;
+            } else {
+                outputEl.textContent = "No data found.";
+            }
+        });
+
+        initApp();
+    </script>
+</body>
+</html>
