@@ -68,7 +68,41 @@
         th { background: #f8fafc; font-size: 12px; text-transform: uppercase; color: #64748b; }
         tr:hover { background: #f1f5f9; }
 
-        #status { font-size: 12px; color: #64748b; margin-top: 5px; }
+        #status { font-size: 12px; color: #64748b; margin-top: 5px; margin-bottom: 5px;}
+
+	.sync-button {
+	    background-color: #10b981; /* Green */
+	    color: white;
+	    border: none;
+	    padding: 10px 20px;
+	    border-radius: 8px;
+	    font-weight: 600;
+	    cursor: pointer;
+	    transition: all 0.2s ease;
+	    display: flex;
+	    align-items: center;
+	    gap: 8px;
+	}
+
+	.sync-button:hover {
+	    background-color: #059669;
+	    transform: translateY(-1px);
+	}
+
+	.sync-button:disabled {
+	    background-color: #94a3b8;
+	    cursor: not-allowed;
+	}
+
+	/* Animation for syncing */
+	.spinning {
+	    animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+	    from { transform: rotate(0deg); }
+	    to { transform: rotate(360deg); }
+	}
     </style>
 </head>
 <body>
@@ -79,6 +113,12 @@
     <div class="tabs">
         <div id="tab-visual" class="tab active" onclick="showPage('visual-page')">Visualize</div>
         <div id="tab-search" class="tab" onclick="showPage('search-page')">Search</div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <button id="syncBtn" onclick="syncDatabase()" class="sync-button">
+          🔄 Sync with Google Sheets
+        </button>
+      </div>
+
     </div>
 
     <div id="visual-page" class="page active">
@@ -150,7 +190,7 @@
                 const buf = await resp.arrayBuffer();
                 db = new SQL.Database(new Uint8Array(buf));
                 
-                statusEl("✓ Database Loaded");
+                statusEl("✓ Database loaded");
                 populateDropdown("container", "containerSelect", "Select Container");
             } catch (e) {
                 statusEl("❌ Error: " + e.message);
@@ -263,6 +303,37 @@
                 resultsBody.innerHTML = "<tr><td colspan='6' style='text-align:center'>No matches found.</td></tr>";
             }
         }
+
+        async function syncDatabase() {
+	  const btn = document.getElementById('syncBtn');
+	  const status = document.getElementById('status');
+	  
+	  // Disable button and show loading state
+	  btn.disabled = true;
+	  btn.innerHTML = `<span class="spinning">🔄</span> Syncing...`;
+	  status.textContent = "Connecting to server...";
+
+	  try {
+            const response = await fetch('/update');
+            
+            if (response.ok) {
+              const result = await response.text();
+              status.textContent = "✅ " + result + " Refreshing view...";
+              
+              // Wait 1.5 seconds so the user can see the success message
+              setTimeout(() => {
+		location.reload(); 
+              }, 1500);
+            } else {
+              throw new Error('Server responded with an error');
+            }
+	  } catch (error) {
+            status.textContent = "❌ Sync Failed. Is the Python server running?";
+            console.error(error);
+            btn.disabled = false;
+            btn.innerHTML = "🔄 Sync with Google Sheets";
+	  }
+	}
 
         initApp();
     </script>

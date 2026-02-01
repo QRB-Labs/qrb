@@ -16,17 +16,17 @@ class MDBServer(http.server.SimpleHTTPRequestHandler):
             try:
                 print("🔄 Syncing from Google Sheets...")
                 filenames = get_data.sync_sheets(server_args.key_file, server_args.sheet_url, server_args.worksheets)
-                print("🔨 Rebuilding SQLite Database...")
+                print("🔨 Rebuilding database...")
                 mdb.build_db(filenames, 'mdb.sqlite', 'machines')
                 
                 self.send_response(200)
                 self.send_header("Content-type", "text/plain")
                 self.end_headers()
-                self.wfile.write(b"Update Successful! SQLite rebuilt.")
+                self.wfile.write(b"Update successful, database rebuilt.")
             except Exception as e:
                 self.send_response(500)
                 self.end_headers()
-                self.wfile.write(f"Update Failed: {str(e)}".encode())
+                self.wfile.write(f"Update failed: {str(e)}".encode())
                 raise e
         
         # 2. Otherwise, serve files normally (index.html, sqlite file, etc.)
