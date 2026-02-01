@@ -1,0 +1,14 @@
+[Unit]
+Description=MDB server service script
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/ubuntu/qrb/mdb/mdb_server.py --key_file FOO --sheet_url BAR --worksheets "X" "Y" "Z"
+User=ubuntu
+StandardOutput=append:/tmp/mdb.log
+StandardError=append:/tmp/mdb.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
