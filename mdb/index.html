@@ -114,8 +114,9 @@
         <div class="table-container">
             <table id="searchTable">
                 <thead>
-                    <tr>
-                        <th>Location</th>
+                  <tr>
+		        <th>Container</th>
+                        <th>Side</th>
                         <th>Shelf</th>
                         <th>Pos</th>
                         <th>IP Address</th>
@@ -252,11 +253,9 @@
             if (res.length) {
                 res[0].values.forEach(row => {
                     const tr = document.createElement('tr');
-                    // Format location as C#-Side
-                    const loc = `C${row[0]}-${row[1]}`;
-                    tr.innerHTML = `<td><b>${loc}</b></td><td>${row[2]}</td><td>${row[3]}</td>
-                                    <td class="display-val">${row[4] || '-'}</td>
-                                    <td style="font-size:11px">${row[5] || '-'}</td>
+                    tr.innerHTML = `<td><b>${row[0]}</b></td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td>
+                                    <td>${row[4] || '-'}</td>
+                                    <td>${row[5] || '-'}</td>
                                     <td>${row[6] || '-'}</td>`;
                     resultsBody.appendChild(tr);
                 });
