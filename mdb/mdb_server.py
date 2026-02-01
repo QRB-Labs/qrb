@@ -10,7 +10,7 @@ PORT = 8000
 server_args = None
 
 class MDBServer(http.server.SimpleHTTPRequestHandler):
-        
+
     def do_GET(self):
         # 1. Custom endpoint to trigger the update pipeline
         if self.path == '/update':
@@ -19,7 +19,7 @@ class MDBServer(http.server.SimpleHTTPRequestHandler):
                 filenames = get_data.sync_sheets(server_args.key_file, server_args.sheet_url, server_args.worksheets)
                 print("🔨 Rebuilding database...")
                 mdb.build_db(filenames, 'mdb.sqlite', 'machines')
-                
+
                 self.send_response(200)
                 self.send_header("Content-type", "text/plain")
                 self.end_headers()
@@ -29,7 +29,7 @@ class MDBServer(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(f"Update failed: {str(e)}".encode())
                 raise e
-        
+
         # 2. Otherwise, serve files normally (index.html, sqlite file, etc.)
         else:
             super().do_GET()
@@ -43,8 +43,7 @@ if __name__ == "__main__":
     parser.add_argument('--worksheets', nargs='+',
                         help='list of worksheet names eg --worksheets "Miners" "Other miners"',  default=["Miners"])
     server_args = parser.parse_args()
-    handler = lambda *args, **kwargs: MDBServer(server_args.key_file, server_args.sheet_url, server_args.worksheets, *args, **kwargs)
-    
+
     with socketserver.TCPServer(("", PORT), MDBServer) as httpd:
         print(f"🚀 Server running at http://localhost:{PORT}")
         print(f"🔗 Visit http://localhost:{PORT}/update to refresh data")
