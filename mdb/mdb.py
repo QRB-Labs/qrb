@@ -52,14 +52,9 @@ def parse_location(loc_str):
     return None, None, None, None
 
 
-def build_standardized_db(pattern, db_name, table_name):
-    files = glob.glob(pattern)
-    if not files:
-        print(f"No files found for: {pattern}")
-        return
-
+def build_db(files, db_name, table_name):
     df_list = []
-    for f in sorted(files):
+    for f in files:
         print(f"Reading and mapping {f}...")
         df = pd.read_csv(f)
         
@@ -74,40 +69,33 @@ def build_standardized_db(pattern, db_name, table_name):
 
         # Apply the parsing logic if 'location' exists
         if 'location' in df.columns:
-            print("Parsing location strings into components...")
-            # Apply the function and expand into 4 new columns
+            # Expand into 4 new columns
             loc_data = df['location'].apply(lambda x: pd.Series(parse_location(x)))
             loc_data.columns = ['container', 'side', 'shelf', 'position']
             # Join the new columns back to the main dataframe
             df = pd.concat([df, loc_data], axis=1)
-
         
         df_list.append(df)
 
-    # Combine everything
-    print("Merging dataframes...")
     final_df = pd.concat(df_list, ignore_index=True)
-    
-    # Final cleanup: drop full duplicates
     final_df = final_df.drop_duplicates()
 
     # Write to SQLite
     conn = sqlite3.connect(db_name)
     final_df.to_sql(table_name, conn, if_exists='replace', index=False)
     
-    # Index the hostname for fast JS searches
-    if 'hostname' in final_df.columns:
+    if 'mac_address' in final_df.columns:
         conn.execute(f"CREATE INDEX IF NOT EXISTS idx_host ON {table_name} (mac_address)")
     
     conn.close()
-    print(f"✅ Created {db_name} with standardized columns: {list(final_df.columns)}")
+    print(f"✅ Created {db_name} with columns: {list(final_df.columns)}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--src', type=str, default="*.csv")
+    parser.add_argument('--src', type=str, default="data/*.csv")
     parser.add_argument('--out', type=str, default="mdb.sqlite")
     parser.add_argument('--table', type=str, default="machines")
     args = parser.parse_args()
     
-    build_standardized_db(args.src, args.out, args.table)
+    build_db(glob.glob(args.src), args.out, args.table)
