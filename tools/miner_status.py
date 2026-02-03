@@ -88,6 +88,11 @@ def main():
                 stuff.update(base_msg)
                 my_logger.error(stuff)
 
+            # device monitoring
+            if args.miner_type != "antminer":
+                for stuff in miner_lib.edevs(ip):
+                    my_logger.error(stuff)
+
             # errors
             if args.miner_type == "whatsminer":
                 for stuff in whatsminer_get_error_codes(ip):
@@ -96,10 +101,6 @@ def main():
                 for stuff in get_summary_hardware_errors(ip):
                     my_logger.error(stuff)
 
-            # device monitoring
-            if args.miner_type != "antminer":
-                for stuff in miner_lib.edevs(ip):
-                    my_logger.error(stuff)
         except OSError as e:
             stuff = {
                 'ip_address': ip,
