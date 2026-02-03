@@ -53,11 +53,58 @@
         }
         .shelf-row { display: flex; border-bottom: 1px solid #334155; min-height: 60px; align-items: center; }
         .shelf-label { width: 40px; color: #94a3b8; font-weight: 800; text-align: center; border-right: 2px solid #334155; }
-        .machine-unit { 
-            background: var(--accent); color: white; margin: 8px; padding: 12px;
-            border-radius: 6px; min-width: 120px; text-align: center; font-size: 13px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
+
+	/* Individual Machine Blade */
+	.machine-box {
+	    position: relative;
+	    background: #475569;
+	    border: 1px solid #94a3b8;
+	    border-radius: 6px;
+	    padding: 12px;
+	    color: #e5e7eb;
+	    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 6px -1px rgba(0,0,0,0.3);
+	    min-height: 60px;
+	    min-width: 120px;
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: center;
+	    overflow: hidden;
+	}
+
+	/* Hover Effect */
+	.machine-box:hover {
+	    transform: translateY(-2px);
+	    border-color: #666;
+	    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+	    z-index: 10;
+	}
+
+	/* Hardware "LED" Status Indicator */
+	.machine-box::before {
+	    content: '';
+	    position: absolute;
+	    top: 8px;
+	    right: 8px;
+	    width: 8px;
+	    height: 8px;
+	    border-radius: 50%;
+	    background-color: #94a3b8; /* Default Gray (Offline/Unknown) */
+	    box-shadow: 0 0 2px rgba(255,255,255,0.2);
+	    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+	}
+
+	/* Status Colors Based on "code" applied via JS */
+	.status-ok { background-color: #059669 !important; border-left: 4px solid #10b981; }
+	.status-ok::before { background-color: #10b981; box-shadow: 0 0 8px #10b981; }
+
+	.status-warn { background-color: #78350f !important; border-left: 4px solid #f59e0b; }
+	.status-warn::before { background-color: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+
+	.status-error { background-color: #7f1d1d !important; border-left: 4px solid #ef4444; }
+	.status-error::before { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
+
         .display-val { font-family: monospace; font-weight: bold; display: block; font-size: 10px; }
         .pos-sub { font-size: 8px; opacity: 0.7; margin-top: 4px; display: block; }
 
@@ -103,6 +150,11 @@
 	    from { transform: rotate(0deg); }
 	    to { transform: rotate(360deg); }
 	}
+
+	.monitor-btn {
+	    background-color: #3b82f6; /* Blue */
+	}
+
     </style>
 </head>
 <body>
@@ -115,8 +167,11 @@
         <div id="tab-search" class="tab" onclick="showPage('search-page')">Search</div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
         <button id="syncBtn" onclick="syncDatabase()" class="sync-button">
-          🔄 Sync with Google Sheets
+          🔄 Sync with Sheets
         </button>
+	<button id="monSyncBtn" onclick="syncRealTimeData()" class="sync-button monitor-btn">
+	  📡 Monitoring
+	</button>
       </div>
 
     </div>
@@ -136,7 +191,7 @@
                 <select id="viewMode" onchange="renderRack()">
                     <option value="ip_address">IP Address</option>
                     <option value="mac_address">MAC Address</option>
-                    <option value="worker">Worker ID</option>
+                    <option value="worker">Worker</option>
                 </select>
             </div>
         </div>
@@ -148,7 +203,7 @@
         <div class="controls">
             <div class="control-group" style="flex: 1">
                 <label>Search Anything</label>
-                <input type="text" id="searchInput" placeholder="Type IP, MAC, or Worker ID..." oninput="executeSearch()">
+                <input type="text" id="searchInput" placeholder="Type IP, MAC, or Worker..." oninput="executeSearch()">
             </div>
         </div>
         <div class="table-container">
@@ -161,7 +216,7 @@
                         <th>Pos</th>
                         <th>IP Address</th>
                         <th>MAC Address</th>
-                        <th>Worker ID</th>
+                        <th>Worker</th>
                     </tr>
                 </thead>
                 <tbody id="searchResults"></tbody>
@@ -255,7 +310,7 @@
                 const [ip, mac, wrk, shelf, pos] = row;
                 if (!data[shelf]) data[shelf] = [];
                 const label = mode === 'ip_address' ? ip : (mode === 'mac_address' ? mac : wrk);
-                data[shelf].push({ label, pos });
+                data[shelf].push({ ip, label, pos });
             });
 
             Object.keys(data).sort((a,b) => a-b).forEach(shelfNum => {
@@ -265,7 +320,7 @@
                 
                 data[shelfNum].forEach(m => {
                     rowDiv.innerHTML += `
-                        <div class="machine-unit">
+                        <div class="machine-box" data-ip="${m.ip}" title="Not synced">
                             <span class="display-val">${m.label || '---'}</span>
                             <span class="pos-sub">P${m.pos}</span>
                         </div>`;
@@ -330,8 +385,58 @@
             status.textContent = "❌ Sync failed: " + error;
             console.error(error);
             btn.disabled = false;
-            btn.innerHTML = "🔄 Sync with Google Sheets";
+            btn.innerHTML = "🔄 Sync with Sheets";
 	  }
+	}
+
+        async function syncRealTimeData() {
+          const machines = document.querySelectorAll('.machine-box');
+	  const btn = document.getElementById('monSyncBtn');
+
+	  btn.disabled = true;
+	  btn.innerText = "Syncing...";
+
+	  // Create an array of promises to fetch all IPs in parallel
+	  const promises = Array.from(machines).map(async (el) => {
+            const ip = el.getAttribute('data-ip');
+            if (!ip) return;
+
+            const url = `/mon?ip=` + ip
+
+            try {
+              const response = await fetch(url);
+              const data = await response.json();
+              if (data.hits.hits.length > 0) {
+		const source = data.hits.hits[0]._source;
+		updateMachineUI(el, source);
+              }
+            } catch (err) {
+              console.error(`Failed to fetch status for ${ip}`, err);
+            }
+	  });
+
+	  await Promise.all(promises);
+	  btn.disabled = false;
+	  btn.innerText = "📡 Monitoring";
+	}
+
+        function updateMachineUI(element, data) {
+	  // 1. Change Color based on "code"
+	  // Example logic: 9 = Success (Green), <9 = Warning (Orange), 0 = Alert (Red)
+	  let bgColor = "#4b5563"; // Default Gray
+	  if (data.code === 9) bgColor = "#059669"; // Green
+	  else if (data.code < 0) bgColor = "#dc2626"; // Red
+	  else bgColor = "#d97706"; // Orange
+	  element.style.backgroundColor = bgColor;
+
+	  // 2. Add Hover Content (Tooltip)
+	  const tooltipContent = `
+            IP: ${data.host.ip}
+            Code: ${data.code}
+            Msg: ${data.message}
+            Time: ${new Date(data['@timestamp']).toLocaleTimeString()}
+        `;
+	  element.setAttribute('title', tooltipContent);
 	}
 
         initApp();

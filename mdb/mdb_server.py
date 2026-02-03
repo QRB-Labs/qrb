@@ -4,6 +4,7 @@ import http.server
 import os
 import socketserver
 import urllib.parse
+import urllib.request
 
 import get_data
 import mdb
@@ -44,6 +45,20 @@ class MDBServer(http.server.SimpleHTTPRequestHandler):
             with open(full_path, 'rb') as f:
                 self.wfile.write(f.read())
 
+        # Pass on queries to monitoring system
+        elif self.path.startswith('/mon'):
+            query = urllib.parse.urlparse(self.path).query
+            params = urllib.parse.parse_qs(query)
+            ip = params.get('ip')[0]
+
+            target_url = f"{server_args.mon_url}?q=host.ip={ip}&_source=host.ip,message,code,mac,@timestamp&size=1"
+            print(target_url)
+            with urllib.request.urlopen(target_url) as response:
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(response.read())
+
         # Otherwise, serve files normally (index.html, etc.)
         else:
             super().do_GET()
@@ -57,6 +72,7 @@ if __name__ == "__main__":
     parser.add_argument('--worksheets', nargs='+',
                         help='list of worksheet names eg --worksheets "Miners" "Other miners"',  default=["Miners"])
     parser.add_argument('--db_file', type=str, default="mdb.sqlite")
+    parser.add_argument('--mon_url', type=str, default="http://localhost:9200/_search", help="Monitoring search URL")
     server_args = parser.parse_args()
 
     with socketserver.TCPServer(("", PORT), MDBServer) as httpd:

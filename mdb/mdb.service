@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/home/ubuntu/qrb/mdb/mdb_server.py --key_file FOO --sheet_url BAR --worksheets "X" "Y" "Z"
+ExecStart=/home/ubuntu/qrb/mdb/mdb_server.py --key_file FOO --sheet_url BAR --worksheets "X" "Y" "Z" --mon_url = http://example.com/_search
 User=ubuntu
 WorkingDirectory=/home/ubuntu/qrb/mdb
 StandardOutput=append:/tmp/mdb.log
