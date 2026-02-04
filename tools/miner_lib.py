@@ -112,6 +112,13 @@ def get_pools(address, port=4028):
         r['ip_address'] = address
         if 'When' in resp['STATUS'][0]:
             r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
+        if 'Last Share Time' in r:
+            # antminer returns this field as a time of day e.g. "18:03:44",
+            try:
+                r['Last Share Time'] = int(r['Last Share Time'])
+            except ValueError:
+                last_share_time = datetime.combine(date.today(), datetime.strptime(r['Last Share Time'], "%H:%M:%S").time())
+                r['Last Share Time'] = last_share_time.timestamp()
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
         yield r

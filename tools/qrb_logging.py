@@ -14,6 +14,13 @@ class LogstashFormatter(LogstashFormatterBase):
         if 'When' in message:
             message['datetime'] = datetime.fromtimestamp(message['When'])
 
+        # some miners return difficulty as a 256-bit number, while others
+        # return that divided by 2^32 as network difficulty. if >= 2^64,
+        # it can't be ingested by elasticsearch where it is a long.
+        # we delete it for now. TODO: normalize across miners as a long
+        message.pop('Difficulty Accepted', None)
+        message.pop('Difficulty Rejected', None)
+
         message.update({
             'host': {'ip': message.get('ip_address')},
             'path': record.pathname,
