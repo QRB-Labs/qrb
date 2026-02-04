@@ -201,8 +201,9 @@ function updateMachineUI(element, data) {
   // Example logic: 9 = Success (Green), <9 = Warning (Orange), 0 = Alert (Red)
   let bgColor = "#4b5563"; // Default Gray
   if (data.code === 7 || data.code == 9) bgColor = "#059669"; // Green
+  else if (data.code === 11) bgColor = "#ca8a04"; // Gold
   else if (data.code < 0) bgColor = "#dc2626"; // Red
-  else bgColor = "#d97706"; // Orange
+  else bgColor = "#ea580c"; // Orange
   element.style.backgroundColor = bgColor;
 
   // 2. Add Hover Content (Tooltip)
