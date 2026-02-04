@@ -209,7 +209,7 @@ function updateMachineUI(element, data) {
   const tooltipContent = `IP: ${data.host.ip}\n`+
 	`Code: ${data.code}\n` +
 	`Msg: ${data.message}\n` +
-	`${new Date(data['@timestamp']).toLocaleTimeString()}`;
+	`${new Date(data['@timestamp']).toLocaleString()}`;
   element.setAttribute('title', tooltipContent);
 }
 
