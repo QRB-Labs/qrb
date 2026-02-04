@@ -58,7 +58,10 @@ def get_summary_hardware_errors(address, port=4028):
             r['ip_address'] = address
             r['datetime'] = datetime.fromtimestamp(resp['STATUS'][0]['When'])
             r['code'] = resp['STATUS'][0]['Code']
-            r['message'] = "Hardware errors" # teraflux msg resp['STATUS'][0]['Msg'] is just "Summary"
+            if resp['STATUS'][0]['Msg'] == "Summary":
+                r['message'] = "{} hardware errors".format(r['Hardware Errors'])
+            else:
+                r['message'] = resp['STATUS'][0]['Msg']
             yield r
 
 
