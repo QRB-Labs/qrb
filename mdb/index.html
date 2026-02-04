@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRB Labs machine database</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <link rel="stylesheet" href="mdb.css">
+    <script src="mdb-ui.js" defer></script>
+</head>
+<body>
+    <img src="QRB_logo_small.png" align="right" width="5%">
+    <h2 style="margin-top:0">QRB Labs machine database</h2>
+    <div id="status">Wasm engine starting...</div>
+
+    <div class="tabs">
+        <div id="tab-visual" class="tab active" onclick="showPage('visual-page')">Visualize</div>
+        <div id="tab-search" class="tab" onclick="showPage('search-page')">Search</div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <button id="syncBtn" onclick="syncDatabase()" class="sync-button">
+          🔄 Sync with Sheets
+        </button>
+	<button id="monSyncBtn" onclick="syncRealTimeData()" class="sync-button monitor-btn">
+	  📡 Monitoring
+	</button>
+      </div>
+
+    </div>
+
+    <div id="visual-page" class="page active">
+        <div class="controls">
+            <div class="control-group">
+                <label>Container</label>
+                <select id="containerSelect" onchange="onContainerChange()"><option value="">Loading...</option></select>
+            </div>
+            <div class="control-group">
+                <label>Side</label>
+                <select id="sideSelect" onchange="renderRack()"><option value="">Select Container</option></select>
+            </div>
+            <div class="control-group">
+                <label>View Mode</label>
+                <select id="viewMode" onchange="renderRack()">
+                    <option value="ip_address">IP Address</option>
+                    <option value="mac_address">MAC Address</option>
+                    <option value="worker">Worker</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="rack-visual"></div>
+    </div>
+
+    <div id="search-page" class="page">
+        <div class="controls">
+            <div class="control-group" style="flex: 1">
+                <label>Search Anything</label>
+                <input type="text" id="searchInput" placeholder="Type IP, MAC, or Worker..." oninput="executeSearch()">
+            </div>
+        </div>
+        <div class="table-container">
+            <table id="searchTable">
+                <thead>
+                  <tr>
+		        <th>Container</th>
+                        <th>Side</th>
+                        <th>Shelf</th>
+                        <th>Pos</th>
+                        <th>IP Address</th>
+                        <th>MAC Address</th>
+                        <th>Worker</th>
+                    </tr>
+                </thead>
+                <tbody id="searchResults"></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

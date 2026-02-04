@@ -7,12 +7,14 @@ WHATSMINER_API_MESSAGE_CODES = {
     132: "command error",
     134: "get token message OK",
     135: "check token error",
-    136: "token over max time"
+    136: "token over max time",
+    137: "Base64 decode error"
 }
 
 
 # https://auradine.com/wp-content/uploads/2025/02/TeraFlux-Miner-API-Reference.pdf
 TERAFLUX_API_MESSAGE_CODES = {
+    7: "pools",
     9: "devs",
     11: "summary",
     69: "devdetails",
