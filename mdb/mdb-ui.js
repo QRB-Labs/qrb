@@ -143,7 +143,8 @@
 	  status.textContent = "Connecting to server...";
 
 	  try {
-            const response = await fetch('/update');
+            const url = `${BASE_URL}/update`
+            const response = await fetch(url)
             const result = await response.text();
             
             if (response.ok) {
