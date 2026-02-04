@@ -20,7 +20,7 @@ async function initApp() {
     db = new SQL.Database(new Uint8Array(buf));
 
     statusEl("✓ Database loaded");
-    populateDropdown("container", "containerSelect", "Select Container");
+    populateDropdown("container", "containerSelect", "?");
   } catch (e) {
     statusEl("❌ Error: " + e.message);
   }
@@ -37,10 +37,10 @@ function populateDropdown(col, elementId, label, filterCol = null, filterVal = n
   const el = document.getElementById(elementId);
   try {
     const res = db.exec(sql);
-    el.innerHTML = `<option value="">-- ${label} --</option>`;
+    el.innerHTML = `<option value="">${label}</option>`;
     if (res.length) {
       res[0].values.forEach(v => {
-	el.innerHTML += `<option value="${v[0]}">${col.toUpperCase()} ${v[0]}</option>`;
+	el.innerHTML += `<option value="${v[0]}">${v[0]}</option>`;
       });
     }
   } catch (e) { console.error(e); }
@@ -50,10 +50,11 @@ function onContainerChange() {
   const val = document.getElementById('containerSelect').value;
   const sideEl = document.getElementById('sideSelect');
   if (val) {
-    populateDropdown("side", "sideSelect", "Select Side", "container", val);
+    populateDropdown("side", "sideSelect", "?", "container", val);
     sideEl.disabled = false;
   } else {
-    sideEl.innerHTML = "<option>Select Container First</option>";
+    // disable side until container is selected
+    sideEl.innerHTML = "<option>?</option>";
     sideEl.disabled = true;
   }
   document.getElementById('rack-visual').innerHTML = "";
@@ -205,12 +206,10 @@ function updateMachineUI(element, data) {
   element.style.backgroundColor = bgColor;
 
   // 2. Add Hover Content (Tooltip)
-  const tooltipContent = `
-	    IP: ${data.host.ip}
-	    Code: ${data.code}
-	    Msg: ${data.message}
-	    Time: ${new Date(data['@timestamp']).toLocaleTimeString()}
-	`;
+  const tooltipContent = `IP: ${data.host.ip}\n`+
+	`Code: ${data.code}\n` +
+	`Msg: ${data.message}\n` +
+	`${new Date(data['@timestamp']).toLocaleTimeString()}`;
   element.setAttribute('title', tooltipContent);
 }
 
