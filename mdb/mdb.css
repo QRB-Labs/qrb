@@ -1,149 +1,148 @@
-        :root {
-            --bg: #f8fafc;
-            --panel: #ffffff;
-            --accent: #2563eb;
-            --dark: #1e293b;
-            --border: #e2e8f0;
-            --text: #334155;
-        }
+:root {
+    --bg: #f8fafc;
+    --panel: #ffffff;
+    --accent: #2563eb;
+    --dark: #1e293b;
+    --border: #e2e8f0;
+    --text: #334155;
+}
 
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        
-        /* Navigation Tabs */
-        .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
-        .tab { 
-            padding: 12px 24px; cursor: pointer; border-radius: 8px 8px 0 0; 
-            font-weight: 600; color: var(--text); transition: 0.2s;
-        }
-        .tab:hover { background: #e2e8f0; }
-        .tab.active { background: var(--accent); color: white; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
 
-        .page { display: none; animation: fadeIn 0.3s ease; }
-        .page.active { display: block; }
+/* Navigation Tabs */
+.tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+.tab {
+    padding: 12px 24px; cursor: pointer; border-radius: 8px 8px 0 0;
+    font-weight: 600; color: var(--text); transition: 0.2s;
+}
+.tab:hover { background: #e2e8f0; }
+.tab.active { background: var(--accent); color: white; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.page { display: none; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
 
-        /* Controls & Inputs */
-        .controls { 
-            background: var(--panel); padding: 20px; border-radius: 12px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; gap: 20px; 
-            align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap;
-        }
-        .control-group { display: flex; flex-direction: column; gap: 6px; }
-        label { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; }
-        select, input { 
-            padding: 10px; border-radius: 6px; border: 1px solid var(--border); 
-            font-size: 14px; outline: none; min-width: 180px;
-        }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Rack Visual */
-        #rack-visual { 
-            display: flex; flex-direction: column; background: var(--dark); 
-            padding: 20px; border-radius: 12px; border: 8px solid #334155; 
-            width: fit-content; min-width: 500px;
-        }
-        .shelf-row { display: flex; border-bottom: 1px solid #334155; min-height: 60px; align-items: center; }
-        .shelf-label { width: 40px; color: #94a3b8; font-weight: 800; text-align: center; border-right: 2px solid #334155; }
+/* Controls & Inputs */
+.controls {
+    background: var(--panel); padding: 20px; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; gap: 20px;
+    align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap;
+}
+.control-group { display: flex; flex-direction: column; gap: 6px; }
+label { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+select, input {
+    padding: 10px; border-radius: 6px; border: 1px solid var(--border);
+    font-size: 14px; outline: none; min-width: 180px;
+}
+input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
 
-	/* Individual Machine Blade */
-	.machine-box {
-	    position: relative;
-	    background: #475569;
-	    border: 1px solid #94a3b8;
-	    border-radius: 6px;
-	    padding: 12px;
-	    color: #e5e7eb;
-	    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-	    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 6px -1px rgba(0,0,0,0.3);
-	    min-height: 60px;
-	    min-width: 120px;
-	    display: flex;
-	    flex-direction: column;
-	    justify-content: center;
-	    overflow: hidden;
-	}
+/* Rack Visual */
+#rack-visual {
+    display: flex; flex-direction: column; background: var(--dark);
+    padding: 20px; border-radius: 12px; border: 8px solid #334155;
+    width: fit-content; min-width: 500px;
+}
+.shelf-row { display: flex; border-bottom: 1px solid #334155; min-height: 60px; align-items: center; }
+.shelf-label { width: 40px; color: #94a3b8; font-weight: 800; text-align: center; border-right: 2px solid #334155; }
 
-	/* Hover Effect */
-	.machine-box:hover {
-	    transform: translateY(-2px);
-	    border-color: #666;
-	    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-	    z-index: 10;
-	}
+/* Individual Machine Blade */
+.machine-box {
+    position: relative;
+    background: #475569;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    padding: 12px;
+    color: #e5e7eb;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 6px -1px rgba(0,0,0,0.3);
+    min-height: 60px;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
 
-	/* Hardware "LED" Status Indicator */
-	.machine-box::before {
-	    content: '';
-	    position: absolute;
-	    top: 8px;
-	    right: 8px;
-	    width: 8px;
-	    height: 8px;
-	    border-radius: 50%;
-	    background-color: #94a3b8; /* Default Gray (Offline/Unknown) */
-	    box-shadow: 0 0 2px rgba(255,255,255,0.2);
-	    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-	}
+/* Hover Effect */
+.machine-box:hover {
+    transform: translateY(-2px);
+    border-color: #666;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
 
-	/* Status Colors Based on "code" applied via JS */
-	.status-ok { background-color: #059669 !important; border-left: 4px solid #10b981; }
-	.status-ok::before { background-color: #10b981; box-shadow: 0 0 8px #10b981; }
+/* Hardware "LED" Status Indicator */
+.machine-box::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #94a3b8; /* Default Gray (Offline/Unknown) */
+    box-shadow: 0 0 2px rgba(255,255,255,0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
 
-	.status-warn { background-color: #78350f !important; border-left: 4px solid #f59e0b; }
-	.status-warn::before { background-color: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+/* Status Colors Based on "code" applied via JS */
+.status-ok { background-color: #059669 !important; border-left: 4px solid #10b981; }
+.status-ok::before { background-color: #10b981; box-shadow: 0 0 8px #10b981; }
 
-	.status-error { background-color: #7f1d1d !important; border-left: 4px solid #ef4444; }
-	.status-error::before { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
+.status-warn { background-color: #78350f !important; border-left: 4px solid #f59e0b; }
+.status-warn::before { background-color: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
 
-        .display-val { font-family: monospace; font-weight: bold; display: block; font-size: 10px; }
-        .pos-sub { font-size: 8px; opacity: 0.7; margin-top: 4px; display: block; }
+.status-error { background-color: #7f1d1d !important; border-left: 4px solid #ef4444; }
+.status-error::before { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
-        /* Search Table */
-        .table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: #f8fafc; font-size: 12px; text-transform: uppercase; color: #64748b; }
-        tr:hover { background: #f1f5f9; }
+.display-val { font-family: monospace; font-weight: bold; display: block; font-size: 10px; }
+.pos-sub { font-size: 8px; opacity: 0.7; margin-top: 4px; display: block; }
 
-        #status { font-size: 12px; color: #64748b; margin-top: 5px; margin-bottom: 5px;}
+/* Search Table */
+.table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: #f8fafc; font-size: 12px; text-transform: uppercase; color: #64748b; }
+tr:hover { background: #f1f5f9; }
 
-	.sync-button {
-	    background-color: #10b981; /* Green */
-	    color: white;
-	    border: none;
-	    padding: 10px 20px;
-	    border-radius: 8px;
-	    font-weight: 600;
-	    cursor: pointer;
-	    transition: all 0.2s ease;
-	    display: flex;
-	    align-items: center;
-	    gap: 8px;
-	}
+#status { font-size: 12px; color: #64748b; margin-top: 5px; margin-bottom: 5px;}
 
-	.sync-button:hover {
-	    background-color: #059669;
-	    transform: translateY(-1px);
-	}
+.sync-button {
+    background-color: #10b981; /* Green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-	.sync-button:disabled {
-	    background-color: #94a3b8;
-	    cursor: not-allowed;
-	}
+.sync-button:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+}
 
-	/* Animation for syncing */
-	.spinning {
-	    animation: spin 1s linear infinite;
-	}
+.sync-button:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+}
 
-	@keyframes spin {
-	    from { transform: rotate(0deg); }
-	    to { transform: rotate(360deg); }
-	}
+/* Animation for syncing */
+.spinning {
+    animation: spin 1s linear infinite;
+}
 
-	.monitor-btn {
-	    background-color: #3b82f6; /* Blue */
-	}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 
+.monitor-btn {
+    background-color: #3b82f6; /* Blue */
+}
