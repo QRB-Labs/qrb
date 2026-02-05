@@ -197,11 +197,15 @@ async function syncRealTimeData() {
 }
 
 function updateMachineUI(element, data) {
-  // 1. Change Color based on "code"
-  // Example logic: 9 = Success (Green), <9 = Warning (Orange), 0 = Alert (Red)
+  // Change Color based on "code"
+  const temperature_alerts = [352, 350, 600, 351];
+  const power_input_alerts = [250, 251, 271, 246, 247, 248, 249, 206, 207, 217, 213, 203, 204, 205];
   let bgColor = "#4b5563"; // Default Gray
   if (data.code === 7 || data.code == 9) bgColor = "#059669"; // Green
   else if (data.code === 11) bgColor = "#ca8a04"; // Gold
+  else if (temperature_alerts.includes(data.code)) bgColor = "#be123c"; // Crimson
+  else if (power_input_alerts.includes(data.code)) bgColor = '#2563eb'; // electric blue
+  else if (data.code == 272) bgColor = '#0891b2'; // Cyan
   else if (data.code < 0) bgColor = "#dc2626"; // Red
   else bgColor = "#ea580c"; // Orange
   element.style.backgroundColor = bgColor;
