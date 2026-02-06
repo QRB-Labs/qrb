@@ -48,7 +48,7 @@ def whatsminer_get_miner_info(address, port=4028):
     return resp['Msg']
 
 
-def teraflux_get_version(address, port=4028):
+def get_version(address, port=4028):
     return send_json('{"command":"version"}', address, port)
 
 
@@ -121,8 +121,8 @@ def get_pools(address, port=4028):
                     last_share_time = datetime.combine(datetime.today(), datetime.strptime(r['Last Share Time'], "%H:%M:%S").time())
                     r['Last Share Time'] = last_share_time.timestamp()
                 except ValueError:
-                    pass
-                
+                    r.pop('Last Share Time', None)
+
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
         yield r
