@@ -91,6 +91,7 @@ def main():
                 miner_type = args.miner_type
             else:
                 miner_type = miner_lib.guess_miner_type(ip)
+                my_logger.debug(f"Guessed miner_type = {miner_type}")
 
             base_msg = {}
             # basic hardware info like mac address and serial numbers

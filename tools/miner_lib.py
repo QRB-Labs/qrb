@@ -160,6 +160,4 @@ def guess_miner_type(address, port=4028):
     except Exception:
         pass
 
-    print(resp)
-
     return "generic"
