@@ -65,6 +65,12 @@ def get_summary_hardware_errors(address, port=4028):
             yield r
 
 
+def ip_range(start_ip, end_ip):
+    for ip in range(int(ipaddress.IPv4Address(start_ip)),
+                    int(ipaddress.IPv4Address(end_ip))+1):
+        yield str(ipaddress.ip_address(ip))
+
+
 def main():
     parser = argparse.ArgumentParser(description='Tool to get error codes from miner APIs')
     parser.add_argument("--start_ip", required=True)
@@ -76,9 +82,10 @@ def main():
 
     my_logger = qrb_logging.get_logger("miner_status", args.output)
 
-    for i in range(int(ipaddress.IPv4Address(args.start_ip)),
-                   int(ipaddress.IPv4Address(args.end_ip))+1):
-        ip = str(ipaddress.ip_address(i))
+    if args.start_ip and args.end_ip:
+        ip_generator = ip_range(args.start_ip, args.end_ip)
+
+    for ip in ip_generator:
         try:
             base_msg = {}
             # basic hardware info like mac address and serial numbers
