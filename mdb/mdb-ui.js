@@ -20,7 +20,7 @@ async function initApp() {
     db = new SQL.Database(new Uint8Array(buf));
 
     statusEl("✓ Database loaded");
-    populateDropdown("container", "containerSelect", "Select Container");
+    populateDropdown("container", "containerSelect", "?");
   } catch (e) {
     statusEl("❌ Error: " + e.message);
   }
@@ -37,10 +37,10 @@ function populateDropdown(col, elementId, label, filterCol = null, filterVal = n
   const el = document.getElementById(elementId);
   try {
     const res = db.exec(sql);
-    el.innerHTML = `<option value="">-- ${label} --</option>`;
+    el.innerHTML = `<option value="">${label}</option>`;
     if (res.length) {
       res[0].values.forEach(v => {
-	el.innerHTML += `<option value="${v[0]}">${col.toUpperCase()} ${v[0]}</option>`;
+	el.innerHTML += `<option value="${v[0]}">${v[0]}</option>`;
       });
     }
   } catch (e) { console.error(e); }
@@ -50,10 +50,11 @@ function onContainerChange() {
   const val = document.getElementById('containerSelect').value;
   const sideEl = document.getElementById('sideSelect');
   if (val) {
-    populateDropdown("side", "sideSelect", "Select Side", "container", val);
+    populateDropdown("side", "sideSelect", "?", "container", val);
     sideEl.disabled = false;
   } else {
-    sideEl.innerHTML = "<option>Select Container First</option>";
+    // disable side until container is selected
+    sideEl.innerHTML = "<option>?</option>";
     sideEl.disabled = true;
   }
   document.getElementById('rack-visual').innerHTML = "";
@@ -167,6 +168,7 @@ async function syncDatabase() {
 async function syncRealTimeData() {
   const machines = document.querySelectorAll('.machine-box');
   const btn = document.getElementById('monSyncBtn');
+  const buttonText =  btn.innerText;
 
   btn.disabled = true;
   btn.innerText = "Syncing...";
@@ -192,25 +194,28 @@ async function syncRealTimeData() {
 
   await Promise.all(promises);
   btn.disabled = false;
-  btn.innerText = "📡 Monitoring";
+  btn.innerText = buttonText;
 }
 
 function updateMachineUI(element, data) {
-  // 1. Change Color based on "code"
-  // Example logic: 9 = Success (Green), <9 = Warning (Orange), 0 = Alert (Red)
+  // Change Color based on "code"
+  const temperature_alerts = [352, 350, 600, 351];
+  const power_input_alerts = [250, 251, 271, 246, 247, 248, 249, 206, 207, 217, 213, 203, 204, 205];
   let bgColor = "#4b5563"; // Default Gray
   if (data.code === 7 || data.code == 9) bgColor = "#059669"; // Green
-  else if (data.code < 0) bgColor = "#dc2626"; // Red
-  else bgColor = "#d97706"; // Orange
+  else if (data.code === 11) bgColor = "#a5a424"; // Lime-Olive
+  else if (temperature_alerts.includes(data.code)) bgColor = "#9d174d"; // Crimson
+  else if (power_input_alerts.includes(data.code)) bgColor = '#2563eb'; // electric blue
+  else if (data.code == 272) bgColor = '#0891b2'; // Cyan
+  else if (data.code < 0) bgColor = "#ff0000"; // Red
+  else bgColor = "#ea580c"; // Orange
   element.style.backgroundColor = bgColor;
 
   // 2. Add Hover Content (Tooltip)
-  const tooltipContent = `
-	    IP: ${data.host.ip}
-	    Code: ${data.code}
-	    Msg: ${data.message}
-	    Time: ${new Date(data['@timestamp']).toLocaleTimeString()}
-	`;
+  const tooltipContent = `IP: ${data.host.ip}\n`+
+	`Code: ${data.code}\n` +
+	`Msg: ${data.message}\n` +
+	`${new Date(data['@timestamp']).toLocaleString()}`;
   element.setAttribute('title', tooltipContent);
 }
 

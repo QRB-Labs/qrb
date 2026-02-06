@@ -181,7 +181,7 @@ WHATSMINER_ERROR_CODES = {
           "action": "Please check the environment temperature"
     },
     274: {"message": "Power fan warning",
-          "action": "Check if the power fan is blocked andmayneed to be replaced"
+          "action": "Check if the power fan is blocked and may need to be replaced"
     },
     275: {"message": "Power over temperature warning",
           "action": "Please check the environment temperature"

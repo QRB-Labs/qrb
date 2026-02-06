@@ -51,7 +51,7 @@ class MDBServer(http.server.SimpleHTTPRequestHandler):
             params = urllib.parse.parse_qs(query)
             ip = params.get('ip')[0]
 
-            target_url = f"{server_args.mon_url}?q=(host.ip:{ip})&_source=host.ip,message,code,mac,@timestamp&size=1"
+            target_url = f"{server_args.mon_url}?q=(host.ip:{ip})&_source=host.ip,message,code,mac,@timestamp&sort=@timestamp:desc&size=1"
             with urllib.request.urlopen(target_url) as response:
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
