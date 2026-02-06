@@ -22,7 +22,7 @@ class LogstashFormatter(LogstashFormatterBase):
         message.pop('Difficulty Rejected', None)
 
         message.update({
-            'host': {'ip': message.get('ip_address')},
+            'host': {'ip': message.get('ip_address'), "mac": message.get('mac')},
             'path': record.pathname,
             'tags': self.tags,
             'type': self.message_type,
