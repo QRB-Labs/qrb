@@ -75,8 +75,8 @@ def main():
     parser = argparse.ArgumentParser(description='Tool to get error codes from miner APIs')
     parser.add_argument("--start_ip", required=True)
     parser.add_argument("--end_ip", required=True)
-    parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux', 'luxminer', "antminer"],
-                        default='generic')
+    parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux', 'luxminer', 'antminer', 'generic'],
+                        default=None)
     parser.add_argument("--output", choices=['logstash', 'syslog'], default='logstash')
     args = parser.parse_args()
 
@@ -87,11 +87,16 @@ def main():
 
     for ip in ip_generator:
         try:
+            if args.miner_type:
+                miner_type = args.miner_type
+            else:
+                miner_type = miner_lib.guess_miner_type(ip)
+
             base_msg = {}
             # basic hardware info like mac address and serial numbers
-            if args.miner_type == "whatsminer":
+            if miner_type == "whatsminer":
                 base_msg.update(miner_lib.whatsminer_get_miner_info(ip))
-            if args.miner_type == "teraflux":
+            if miner_type == "teraflux":
                 base_msg.update(miner_lib.teraflux_get_miner_info(ip))
             # pool URL and username
             for stuff in miner_lib.get_pools(ip):
@@ -99,15 +104,15 @@ def main():
                 my_logger.error(stuff)
 
             # device monitoring
-            if args.miner_type != "antminer":
+            if miner_type != "antminer":
                 for stuff in miner_lib.edevs(ip):
                     my_logger.error(stuff)
 
             # errors
-            if args.miner_type == "whatsminer":
+            if miner_type == "whatsminer":
                 for stuff in whatsminer_get_error_codes(ip):
                     my_logger.error(stuff)
-            elif args.miner_type == "teraflux" or args.miner_type == "luxminer" or args.miner_type == "antminer":
+            elif miner_type == "teraflux" or miner_type == "luxminer" or miner_type == "antminer":
                 for stuff in get_summary_hardware_errors(ip):
                     my_logger.error(stuff)
 

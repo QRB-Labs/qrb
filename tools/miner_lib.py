@@ -126,3 +126,40 @@ def get_pools(address, port=4028):
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
         yield r
+
+
+def guess_miner_type(address, port=4028):
+    """
+    Use various heuristics to guess the miner type.
+    """
+    try:
+        resp = get_version(address, port)
+        if 'luxminer' in resp['STATUS'][0]['Description'].lower():
+            return "luxminer"
+    except Exception:
+        pass
+
+    try:
+        resp = whatsminer_get_miner_info(address, port)
+        if 'whatsminer' in resp['hostname'].lower():
+            return "whatsminer"
+    except Exception:
+        pass
+
+    resp = send_json('{"command":"stats"}', address, port)
+    try:
+        if 'BMMiner' in resp['STATS'][0]:
+            return "antminer"
+    except Exception:
+        pass
+
+    try:
+        resp = teraflux_get_miner_info(address, port)
+        if 'SerialNo' in resp:
+            return "teraflux"
+    except Exception:
+        pass
+
+    print(resp)
+
+    return "generic"
