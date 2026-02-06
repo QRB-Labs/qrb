@@ -117,8 +117,12 @@ def get_pools(address, port=4028):
             try:
                 r['Last Share Time'] = int(r['Last Share Time'])
             except ValueError:
-                last_share_time = datetime.combine(date.today(), datetime.strptime(r['Last Share Time'], "%H:%M:%S").time())
-                r['Last Share Time'] = last_share_time.timestamp()
+                try:
+                    last_share_time = datetime.combine(datetime.today(), datetime.strptime(r['Last Share Time'], "%H:%M:%S").time())
+                    r['Last Share Time'] = last_share_time.timestamp()
+                except ValueError:
+                    pass
+                
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
         yield r
