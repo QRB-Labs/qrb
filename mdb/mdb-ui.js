@@ -168,6 +168,7 @@ async function syncDatabase() {
 async function syncRealTimeData() {
   const machines = document.querySelectorAll('.machine-box');
   const btn = document.getElementById('monSyncBtn');
+  const buttonText =  btn.innerText;
 
   btn.disabled = true;
   btn.innerText = "Syncing...";
@@ -193,7 +194,7 @@ async function syncRealTimeData() {
 
   await Promise.all(promises);
   btn.disabled = false;
-  btn.innerText = "📡 Monitoring";
+  btn.innerText = buttonText;
 }
 
 function updateMachineUI(element, data) {
@@ -202,11 +203,11 @@ function updateMachineUI(element, data) {
   const power_input_alerts = [250, 251, 271, 246, 247, 248, 249, 206, 207, 217, 213, 203, 204, 205];
   let bgColor = "#4b5563"; // Default Gray
   if (data.code === 7 || data.code == 9) bgColor = "#059669"; // Green
-  else if (data.code === 11) bgColor = "#ca8a04"; // Gold
-  else if (temperature_alerts.includes(data.code)) bgColor = "#be123c"; // Crimson
+  else if (data.code === 11) bgColor = "#a5a424"; // Lime-Olive
+  else if (temperature_alerts.includes(data.code)) bgColor = "#9d174d"; // Crimson
   else if (power_input_alerts.includes(data.code)) bgColor = '#2563eb'; // electric blue
   else if (data.code == 272) bgColor = '#0891b2'; // Cyan
-  else if (data.code < 0) bgColor = "#dc2626"; // Red
+  else if (data.code < 0) bgColor = "#ff0000"; // Red
   else bgColor = "#ea580c"; // Orange
   element.style.backgroundColor = bgColor;
 
