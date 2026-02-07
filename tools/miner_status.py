@@ -21,8 +21,10 @@ from datetime import datetime
 import ipaddress
 import json
 
+from mdb import get_data
 import miner_api_codes
 import miner_lib
+import pandas as pd
 import qrb_logging
 
 
@@ -73,17 +75,36 @@ def ip_range(start_ip, end_ip):
 
 def main():
     parser = argparse.ArgumentParser(description='Tool to get error codes from miner APIs')
-    parser.add_argument("--start_ip", required=True)
-    parser.add_argument("--end_ip", required=True)
+    parser.add_argument("--start_ip")
+    parser.add_argument("--end_ip")
     parser.add_argument("--miner_type", choices=['whatsminer', 'teraflux', 'luxminer', 'antminer', 'generic'],
                         default=None)
+    parser.add_argument('--sheet_url', type=str, help="Google spreadsheet url", default=None)
+    parser.add_argument('--worksheets', nargs='+',
+                        help='list of worksheet names eg --worksheets "Miners" "Other miners"',  default=None)
+
     parser.add_argument("--output", choices=['logstash', 'syslog'], default='logstash')
+    parser.add_argument('--key_file', type=str, default="/home/nemo/gcloud/qrb-labs-mdb.json")
     args = parser.parse_args()
 
-    my_logger = qrb_logging.get_logger("miner_status", args.output)
 
-    if args.start_ip and args.end_ip:
+    ip_range_mode = bool(args.start_ip and args.end_ip)
+    sheets_mode = bool(args.sheet_url and args.worksheets)
+
+    assert (ip_range_mode and not sheets_mode) or (not ip_range_mode and sheets_mode), \
+        "Input option must be either start_ip and end_ip, or sheet_url and worksheets"
+
+    my_logger = qrb_logging.get_logger("miner_status", args.output)
+    my_logger.debug({'message': "miner_status starting..."})
+
+    if ip_range_mode:
         ip_generator = ip_range(args.start_ip, args.end_ip)
+
+    if sheets_mode:
+        for fname in get_data.sync_sheets(args.key_file, args.sheet_url, args.worksheets):
+            my_logger.debug(fname)
+            df = pd.read_csv(fname)
+            ip_generator = df['ip_address'].dropna()
 
     for ip in ip_generator:
         try:
@@ -91,7 +112,7 @@ def main():
                 miner_type = args.miner_type
             else:
                 miner_type = miner_lib.guess_miner_type(ip)
-                my_logger.debug(f"Guessed miner_type = {miner_type}")
+                my_logger.debug({'host': {'ip': ip}, 'message': f"Guessed miner_type = {miner_type}"})
 
             base_msg = {}
             # basic hardware info like mac address and serial numbers
@@ -134,6 +155,12 @@ def main():
             stuff = e.resp
             stuff['ip_address'] = ip
             my_logger.error(stuff)
+        except TypeError as e:
+            my_logger.debug({
+                'ip_address': ip,
+                'message': '{}'.format(e),
+                'code': -2
+            })
 
 
 if __name__ == "__main__":
