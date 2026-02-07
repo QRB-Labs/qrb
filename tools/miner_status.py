@@ -73,6 +73,13 @@ def ip_range(start_ip, end_ip):
         yield str(ipaddress.ip_address(ip))
 
 
+def ips_from_sheets(key_file, sheet_url, worksheets):
+    for fname in get_data.sync_sheets(key_file, sheet_url, worksheets):
+        df = pd.read_csv(fname)
+        for ip in df['ip_address'].dropna():
+            yield(ip)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Tool to get error codes from miner APIs')
     parser.add_argument("--start_ip")
@@ -101,10 +108,7 @@ def main():
         ip_generator = ip_range(args.start_ip, args.end_ip)
 
     if sheets_mode:
-        for fname in get_data.sync_sheets(args.key_file, args.sheet_url, args.worksheets):
-            my_logger.debug(fname)
-            df = pd.read_csv(fname)
-            ip_generator = df['ip_address'].dropna()
+        ip_generator = ips_from_sheets(args.key_file, args.sheet_url, args.worksheets)
 
     for ip in ip_generator:
         try:
