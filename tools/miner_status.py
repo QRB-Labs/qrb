@@ -20,11 +20,14 @@ import argparse
 from datetime import datetime
 import ipaddress
 import json
+import pandas as pd
+from pathlib import Path
+import sys
 
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from mdb import get_data
 import miner_api_codes
 import miner_lib
-import pandas as pd
 import qrb_logging
 
 
@@ -116,7 +119,7 @@ def main():
                 miner_type = args.miner_type
             else:
                 miner_type = miner_lib.guess_miner_type(ip)
-                my_logger.debug({'host': {'ip': ip}, 'message': f"Guessed miner_type = {miner_type}"})
+                my_logger.debug({'ip_address': ip,'message': f"Guessed miner_type = {miner_type}"})
 
             base_msg = {}
             # basic hardware info like mac address and serial numbers
