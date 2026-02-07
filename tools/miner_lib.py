@@ -145,6 +145,8 @@ def guess_miner_type(address, port=4028):
             return "whatsminer"
     except TypeError:
         pass
+    except MinerAPIError:
+        pass
 
     try:
         resp = send_json('{"command":"stats"}', address, port)
