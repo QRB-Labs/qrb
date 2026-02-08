@@ -48,7 +48,7 @@ def whatsminer_get_miner_info(address, port=4028):
     return resp['Msg']
 
 
-def teraflux_get_version(address, port=4028):
+def get_version(address, port=4028):
     return send_json('{"command":"version"}', address, port)
 
 
@@ -117,8 +117,51 @@ def get_pools(address, port=4028):
             try:
                 r['Last Share Time'] = int(r['Last Share Time'])
             except ValueError:
-                last_share_time = datetime.combine(date.today(), datetime.strptime(r['Last Share Time'], "%H:%M:%S").time())
-                r['Last Share Time'] = last_share_time.timestamp()
+                try:
+                    last_share_time = datetime.combine(datetime.today(), datetime.strptime(r['Last Share Time'], "%H:%M:%S").time())
+                    r['Last Share Time'] = last_share_time.timestamp()
+                except ValueError:
+                    r.pop('Last Share Time', None)
+
         r['code'] = resp['STATUS'][0].get('Code', 9)
         r['message'] = resp['STATUS'][0]['Msg']
         yield r
+
+
+def guess_miner_type(address, port=4028):
+    """
+    Use various heuristics to guess the miner type.
+    """
+    try:
+        resp = get_version(address, port)
+        if 'luxminer' in resp['STATUS'][0]['Description'].lower():
+            return "luxminer"
+    except TypeError:
+        pass
+
+    try:
+        resp = whatsminer_get_miner_info(address, port)
+        if 'whatsminer' in resp['hostname'].lower():
+            return "whatsminer"
+    except TypeError:
+        pass
+    except MinerAPIError:
+        pass
+
+    try:
+        resp = send_json('{"command":"stats"}', address, port)
+        if 'BMMiner' in resp['STATS'][0]:
+            return "antminer"
+    except TypeError:
+        pass
+    except KeyError:
+        pass
+
+    try:
+        resp = teraflux_get_miner_info(address, port)
+        if 'SerialNo' in resp:
+            return "teraflux"
+    except TypeError:
+        pass
+
+    return "generic"
