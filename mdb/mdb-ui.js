@@ -201,12 +201,13 @@ function updateMachineUI(element, data) {
   // Change Color based on "code"
   const temperature_alerts = [352, 350, 600, 351];
   const power_input_alerts = [250, 251, 271, 246, 247, 248, 249, 206, 207, 217, 213, 203, 204, 205];
+  const power_output_alerts = [272, 276, 277,278, 279, 280];
   let bgColor = "#4b5563"; // Default Gray
   if (data.code === 7 || data.code == 9) bgColor = "#059669"; // Green
   else if (data.code === 11) bgColor = "#a5a424"; // Lime-Olive
   else if (temperature_alerts.includes(data.code)) bgColor = "#9d174d"; // Crimson
   else if (power_input_alerts.includes(data.code)) bgColor = '#2563eb'; // electric blue
-  else if (data.code == 272) bgColor = '#0891b2'; // Cyan
+  else if (power_output_alerts.includes(data.code)) bgColor = '#0891b2'; // Cyan
   else if (data.code < 0) bgColor = "#ff0000"; // Red
   else bgColor = "#ea580c"; // Orange
   element.style.backgroundColor = bgColor;
