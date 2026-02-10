@@ -123,6 +123,7 @@ function executeSearch() {
   if (res.length) {
     res[0].values.forEach(row => {
       const tr = document.createElement('tr');
+      tr.setAttribute('onclick', 'navigateToMachine("' + row[0] + '", "' + row[1] + '")')
       tr.innerHTML = `<td><b>${row[0]}</b></td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td>
 				    <td>${row[4] || '-'}</td>
 				    <td>${row[5] || '-'}</td>
@@ -132,6 +133,14 @@ function executeSearch() {
   } else {
     resultsBody.innerHTML = "<tr><td colspan='6' style='text-align:center'>No matches found.</td></tr>";
   }
+}
+
+function navigateToMachine(container, side) {
+  document.getElementById('containerSelect').value = container;
+  onContainerChange();
+  document.getElementById('sideSelect').value = side;
+  renderRack();
+  showPage('visual-page');
 }
 
 async function syncDatabase() {
