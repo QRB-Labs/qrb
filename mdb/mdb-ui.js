@@ -96,7 +96,9 @@ function renderRack() {
     data[shelfNum].forEach(m => {
       rowDiv.innerHTML += `
 			<div class="machine-box" data-ip="${m.ip}" title="Not synced">
+                            <a href="http://${m.ip}"
 			    <span class="display-val">${m.label || '---'}</span>
+                            </a>
 			    <span class="pos-sub">P${m.pos}</span>
 			</div>`;
     });

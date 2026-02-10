@@ -63,6 +63,16 @@ input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 23
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
+    a {
+	color: inherit;         /* Uses the surrounding text color */
+	text-decoration: none;  /* Removes the underline */
+	cursor: pointer;        /* Keeps the 'hand' cursor on desktop */
+    }
+    /* slight change when touched so the user knows the click registered */
+    a:active {
+	opacity: 0.7;
+	color: #0000ff;
+    }
 }
 
 /* Hover Effect */
