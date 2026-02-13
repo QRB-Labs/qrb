@@ -1,0 +1,15 @@
+[Unit]
+Description=Network video recording script
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/ubuntu/qrb/video/record_cams.sh
+User=ubuntu
+WorkingDirectory=/home/ubuntu/qrb/video
+StandardOutput=append:/tmp/nvr.log
+StandardError=append:/tmp/nvr.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
