@@ -96,7 +96,9 @@ function renderRack() {
     data[shelfNum].forEach(m => {
       rowDiv.innerHTML += `
 			<div class="machine-box" data-ip="${m.ip}" title="Not synced">
+                            <a href="http://${m.ip}"
 			    <span class="display-val">${m.label || '---'}</span>
+                            </a>
 			    <span class="pos-sub">P${m.pos}</span>
 			</div>`;
     });
@@ -123,15 +125,37 @@ function executeSearch() {
   if (res.length) {
     res[0].values.forEach(row => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td><b>${row[0]}</b></td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td>
-				    <td>${row[4] || '-'}</td>
-				    <td>${row[5] || '-'}</td>
-				    <td>${row[6] || '-'}</td>`;
+      for (let i = 0; i < 7; i++) {
+	td = document.createElement('td');
+	if (i < 2) {
+	  td.setAttribute('onclick', 'navigateToRackView("' + row[0] + '", "' + row[1] + '")')
+	  td.setAttribute('style', 'cursor:pointer; text-decoration:underline;');
+	  td.setAttribute('title', "Click to view rack");
+	}
+	if (row[i] != null) {
+	  if (i == 4) {
+	    td.setAttribute('style', 'cursor:pointer');
+	    td.innerHTML = `<a href=http://${row[i]}>${row[i]}</a>`;
+	    td.setAttribute('title', "Click to open web UI");
+	  } else {
+	    td.innerHTML = `${row[i]}`;
+	  }
+	}
+	tr.appendChild(td);
+      }
       resultsBody.appendChild(tr);
     });
   } else {
     resultsBody.innerHTML = "<tr><td colspan='6' style='text-align:center'>No matches found.</td></tr>";
   }
+}
+
+function navigateToRackView(container, side) {
+  document.getElementById('containerSelect').value = container;
+  onContainerChange();
+  document.getElementById('sideSelect').value = side;
+  renderRack();
+  showPage('visual-page');
 }
 
 async function syncDatabase() {
