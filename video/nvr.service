@@ -4,6 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
+Environment="CAMERA_USER=something"
+Environment="CAMERA_PASSWORD=somethingsecret"
 ExecStart=/home/ubuntu/qrb/video/record_cams.sh
 User=ubuntu
 WorkingDirectory=/home/ubuntu/qrb/video
