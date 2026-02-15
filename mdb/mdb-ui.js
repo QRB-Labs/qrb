@@ -287,7 +287,16 @@ function searchVideos() {
 	return;
     }
 
-    const filtered = videoFiles.filter(file => file.name.toLowerCase().includes(query));
+    let filtered = [];
+    try {
+        // 'i' flag makes it case-insensitive
+        const regex = new RegExp(query, 'i');
+        filtered = videoFiles.filter(file => regex.test(file.name));
+    } catch (e) {
+        // If the regex is invalid while they are typing, we just stop
+        // and wait for them to finish the expression.
+        return;
+    }
 
     // Build the table using your existing CSS classes
     resultsContainer.innerHTML = `

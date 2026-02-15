@@ -51,7 +51,7 @@
     <div id="search-page" class="page">
         <div class="controls">
             <div class="control-group" style="flex: 1">
-                <label>Search Anything</label>
+                <label>Search Machines</label>
                 <input type="text" id="searchInput" placeholder="Type IP, MAC, or Worker..." oninput="executeSearch()">
             </div>
         </div>
@@ -72,9 +72,14 @@
             </table>
         </div>
     </div>
-    <div id="video-search-page" class=page>
-        <input type="text" id="video-search-input" placeholder="Search filenames..." oninput="searchVideos()">
-        <div id="video-results" class="search-list"></div>
+  <div id="video-search-page" class=page>
+      <div class="controls">
+         <div class="control-group" style="flex: 1">
+            <label>Search Files</label>
+            <input type="text" id="video-search-input" placeholder="Regex supported, eg 20260215.*cam1, .*, ..." oninput="searchVideos()">
+            <div id="video-results" class="search-list"></div>
+         </div>
+      </div>
     </div>
 </body>
 </html>
