@@ -161,7 +161,7 @@ function navigateToRackView(container, side) {
 async function syncDatabase() {
   const btn = document.getElementById('syncBtn');
   const status = document.getElementById('status');
-
+  const btnlabel = btn.innerHTML;
   // Disable button and show loading state
   btn.disabled = true;
   btn.innerHTML = `<span class="spinning">🔄</span> Syncing...`;
@@ -185,7 +185,7 @@ async function syncDatabase() {
     status.textContent = "❌ Sync failed: " + error;
     console.error(error);
     btn.disabled = false;
-    btn.innerHTML = "🔄 Sync with Sheets";
+    btn.innerHTML = btnlabel;
   }
 }
 
