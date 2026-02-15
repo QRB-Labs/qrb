@@ -96,7 +96,7 @@ function renderRack() {
     data[shelfNum].forEach(m => {
       rowDiv.innerHTML += `
 			<div class="machine-box" data-ip="${m.ip}" title="Not synced">
-                            <a href="http://${m.ip}">
+			    <a href="http://${m.ip}">
 			      <span class="display-val">${m.label || '---'}</span>
 			    </a>
 			    <span class="pos-sub">P${m.pos}</span>
@@ -242,5 +242,78 @@ function updateMachineUI(element, data) {
 	`${new Date(data['@timestamp']).toLocaleString()}`;
   element.setAttribute('title', tooltipContent);
 }
+
+
+let videoFiles = [];
+
+// Call this when the page loads
+async function initVideoList() {
+    try {
+	// Fetch the directory listing from your server
+	const response = await fetch('/video');
+	const html = await response.text();
+
+	// Use a DOM parser to extract filenames and sizes from the server's HTML listing
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(html, 'text/html');
+	const links = Array.from(doc.querySelectorAll('a'));
+	videoFiles = links
+	    .map(link => ({
+		name: decodeURIComponent(link.innerText),
+		url: '/video' + new URL(link.href).pathname,
+		// We'll estimate size if the server provides it in a neighboring <td>
+		size: link.parentElement.parentElement.innerText.match(/\d+(\.\d+)?\s?[KMGT]B/i)?.[0] || "Unknown"
+	    }));
+	console.log("Video library indexed and ready for search.");
+    } catch (e) {
+	console.error("Could not load video directory", e);
+    }
+}
+
+function searchVideos() {
+    const query = document.getElementById('video-search-input').value.toLowerCase();
+    const resultsContainer = document.getElementById('video-results');
+
+    if (query.length < 2) {
+	resultsContainer.innerHTML = '';
+	return;
+    }
+
+    const filtered = videoFiles.filter(file => file.name.toLowerCase().includes(query));
+
+    // Build the table using your existing CSS classes
+    resultsContainer.innerHTML = `
+	<div class="table-container">
+	    <table>
+		<thead>
+		    <tr>
+			<th>Filename</th>
+			<th style="text-align: right;">Size</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    ${filtered.map(file => `
+			<tr onclick="window.location.href='${file.url}'" style="cursor: pointer;">
+			    <td>
+				<span style="color: #a5b424; margin-right: 8px;">▶</span>
+				${file.name}
+			    </td>
+			    <td style="text-align: right; font-family: monospace; color: #64748b;">
+				${file.size}
+			    </td>
+			</tr>
+		    `).join('')}
+		</tbody>
+	    </table>
+	</div>
+    `;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Initialize the Video Search List
+  // This fetches the directory listing once so searching is instant
+  initVideoList();
+});
+
 
 initApp();

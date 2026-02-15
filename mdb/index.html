@@ -21,7 +21,8 @@
         </button>
 	<button id="monSyncBtn" onclick="syncRealTimeData()" class="sync-button monitor-btn">
 	  📡 Monitor
-	</button>
+</button>
+  <div id="tab-video" class="tab" onclick="showPage('video-search-page')"> 📹 Video</div>
     </div>
 
     <div id="visual-page" class="page active">
@@ -70,6 +71,10 @@
                 <tbody id="searchResults"></tbody>
             </table>
         </div>
+    </div>
+    <div id="video-search-page" class=page>
+        <input type="text" id="video-search-input" placeholder="Search filenames..." oninput="searchVideos()">
+        <div id="video-results" class="search-list"></div>
     </div>
 </body>
 </html>
