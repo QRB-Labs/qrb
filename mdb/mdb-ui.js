@@ -269,7 +269,6 @@ async function initVideoList() {
 	  return {
 	    name: link.innerText,
 	    url: '/video' + new URL(link.href).pathname,
-	    url: link.href,
 	    size: sizeMatch ? sizeMatch[1] : "Unknown"
 	  };
 	}).filter(item => item !== null);
