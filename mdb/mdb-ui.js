@@ -256,14 +256,23 @@ async function initVideoList() {
 	// Use a DOM parser to extract filenames and sizes from the server's HTML listing
 	const parser = new DOMParser();
 	const doc = parser.parseFromString(html, 'text/html');
-	const links = Array.from(doc.querySelectorAll('a'));
-	videoFiles = links
-	    .map(link => ({
-		name: decodeURIComponent(link.innerText),
-		url: '/video' + new URL(link.href).pathname,
-		// We'll estimate size if the server provides it in a neighboring <td>
-		size: link.parentElement.parentElement.innerText.match(/\d+(\.\d+)?\s?[KMGT]B/i)?.[0] || "Unknown"
-	    }));
+
+	const listItems = Array.from(doc.querySelectorAll('li'));
+
+	videoFiles = listItems.map(li => {
+	  const link = li.querySelector('a');
+	  if (!link) return null;
+	  const text = li.textContent;
+	  // Regex to extract the size inside the parentheses
+	  const sizeMatch = text.match(/\(([^)]+)\)/);
+
+	  return {
+	    name: link.innerText,
+	    url: '/video' + new URL(link.href).pathname,
+	    url: link.href,
+	    size: sizeMatch ? sizeMatch[1] : "Unknown"
+	  };
+	}).filter(item => item !== null);
 	console.log("Video library indexed and ready for search.");
     } catch (e) {
 	console.error("Could not load video directory", e);
