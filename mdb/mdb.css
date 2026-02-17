@@ -120,7 +120,7 @@ tr:hover { background: #f1f5f9; }
 #status { font-size: 12px; color: #64748b; margin-top: 5px; margin-bottom: 5px;}
 
 .sync-button {
-    background-color: #10b981; /* Green */
+    background-color: #74849b;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -134,12 +134,12 @@ tr:hover { background: #f1f5f9; }
 }
 
 .sync-button:hover {
-    background-color: #059669;
+    background-color: #475569;
     transform: translateY(-1px);
 }
 
 .sync-button:disabled {
-    background-color: #94a3b8;
+    background-color: #007700;
     cursor: not-allowed;
 }
 
@@ -153,6 +153,73 @@ tr:hover { background: #f1f5f9; }
     to { transform: rotate(360deg); }
 }
 
-.monitor-btn {
-    background-color: #3b82f6; /* Blue */
+/* Video file search */
+
+.video-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+    text-decoration: none; /* No blue, no underline */
+    color: inherit;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+.video-item:active {
+    background: #334155; /* Touch feedback */
+}
+
+.video-name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Truncates long filenames gracefully */
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    color: #f8fafc;
+}
+
+.video-size {
+    color: #94a3b8; /* Slate 400 */
+    font-size: 0.85rem;
+    font-family: monospace;
+}
+
+/* Creating a small CSS "Play" Triangle */
+.video-name::before {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid #acc123; /* Your Lime-Gold color */
+}
+
+/* Style for the size and download hint */
+.video-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.video-size {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-family: monospace;
+}
+
+.download-hint {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #2563eb; /* Your Electric Blue */
+    font-weight: bold;
 }

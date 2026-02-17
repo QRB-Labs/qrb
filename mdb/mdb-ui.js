@@ -96,9 +96,9 @@ function renderRack() {
     data[shelfNum].forEach(m => {
       rowDiv.innerHTML += `
 			<div class="machine-box" data-ip="${m.ip}" title="Not synced">
-                            <a href="http://${m.ip}"
-			    <span class="display-val">${m.label || '---'}</span>
-                            </a>
+			    <a href="http://${m.ip}">
+			      <span class="display-val">${m.label || '---'}</span>
+			    </a>
 			    <span class="pos-sub">P${m.pos}</span>
 			</div>`;
     });
@@ -161,7 +161,7 @@ function navigateToRackView(container, side) {
 async function syncDatabase() {
   const btn = document.getElementById('syncBtn');
   const status = document.getElementById('status');
-
+  const btnlabel = btn.innerHTML;
   // Disable button and show loading state
   btn.disabled = true;
   btn.innerHTML = `<span class="spinning">🔄</span> Syncing...`;
@@ -185,7 +185,7 @@ async function syncDatabase() {
     status.textContent = "❌ Sync failed: " + error;
     console.error(error);
     btn.disabled = false;
-    btn.innerHTML = "🔄 Sync with Sheets";
+    btn.innerHTML = btnlabel;
   }
 }
 
@@ -243,5 +243,95 @@ function updateMachineUI(element, data) {
 	`${new Date(data['@timestamp']).toLocaleString()}`;
   element.setAttribute('title', tooltipContent);
 }
+
+
+let videoFiles = [];
+
+// Call this when the page loads
+async function initVideoList() {
+    try {
+	// Fetch the directory listing from your server
+	const response = await fetch('/video');
+	const html = await response.text();
+
+	// Use a DOM parser to extract filenames and sizes from the server's HTML listing
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(html, 'text/html');
+
+	const listItems = Array.from(doc.querySelectorAll('li'));
+
+	videoFiles = listItems.map(li => {
+	  const link = li.querySelector('a');
+	  if (!link) return null;
+	  const text = li.textContent;
+	  // Regex to extract the size inside the parentheses
+	  const sizeMatch = text.match(/\(([^)]+)\)/);
+
+	  return {
+	    name: link.innerText,
+	    url: '/video' + new URL(link.href).pathname,
+	    size: sizeMatch ? sizeMatch[1] : "Unknown"
+	  };
+	}).filter(item => item !== null);
+	console.log("Video library indexed and ready for search.");
+    } catch (e) {
+	console.error("Could not load video directory", e);
+    }
+}
+
+function searchVideos() {
+    const query = document.getElementById('video-search-input').value.toLowerCase();
+    const resultsContainer = document.getElementById('video-results');
+
+    if (query.length < 2) {
+	resultsContainer.innerHTML = '';
+	return;
+    }
+
+    let filtered = [];
+    try {
+        // 'i' flag makes it case-insensitive
+        const regex = new RegExp(query, 'i');
+        filtered = videoFiles.filter(file => regex.test(file.name));
+    } catch (e) {
+        // If the regex is invalid while they are typing, we just stop
+        // and wait for them to finish the expression.
+        return;
+    }
+
+    // Build the table using your existing CSS classes
+    resultsContainer.innerHTML = `
+	<div class="table-container">
+	    <table>
+		<thead>
+		    <tr>
+			<th>Filename</th>
+			<th style="text-align: right;">Size</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    ${filtered.map(file => `
+			<tr onclick="window.location.href='${file.url}'" style="cursor: pointer;">
+			    <td>
+				<span style="color: #a5b424; margin-right: 8px;">▶</span>
+				${file.name}
+			    </td>
+			    <td style="text-align: right; font-family: monospace; color: #64748b;">
+				${file.size}
+			    </td>
+			</tr>
+		    `).join('')}
+		</tbody>
+	    </table>
+	</div>
+    `;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Initialize the Video Search List
+  // This fetches the directory listing once so searching is instant
+  initVideoList();
+});
+
 
 initApp();

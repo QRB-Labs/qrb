@@ -16,12 +16,13 @@
     <div class="tabs">
         <div id="tab-visual" class="tab active" onclick="showPage('visual-page')">⌗ View</div>
         <div id="tab-search" class="tab" onclick="showPage('search-page')">🔎 Search</div>
+        <div id="tab-video" class="tab" onclick="showPage('video-search-page')"> 📹 Video</div>
+	<button id="monSyncBtn" onclick="syncRealTimeData()" class="sync-button">
+	  📡 Monitor
+        </button>
         <button id="syncBtn" onclick="syncDatabase()" class="sync-button">
           🔄 Sync DB
         </button>
-	<button id="monSyncBtn" onclick="syncRealTimeData()" class="sync-button monitor-btn">
-	  📡 Monitor
-	</button>
     </div>
 
     <div id="visual-page" class="page active">
@@ -50,7 +51,7 @@
     <div id="search-page" class="page">
         <div class="controls">
             <div class="control-group" style="flex: 1">
-                <label>Search Anything</label>
+                <label>Search Machines</label>
                 <input type="text" id="searchInput" placeholder="Type IP, MAC, or Worker..." oninput="executeSearch()">
             </div>
         </div>
@@ -70,6 +71,15 @@
                 <tbody id="searchResults"></tbody>
             </table>
         </div>
+    </div>
+    <div id="video-search-page" class=page>
+      <div class="controls">
+         <div class="control-group" style="flex: 1">
+            <label>Search Files</label>
+            <input type="text" id="video-search-input" placeholder="Regex supported, eg 20260215.*cam1, .*, ..." oninput="searchVideos()">
+            <div id="video-results" class="search-list"></div>
+         </div>
+      </div>
     </div>
 </body>
 </html>
