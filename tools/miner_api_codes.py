@@ -416,6 +416,15 @@ WHATSMINER_ERROR_CODES = {
     100003: {"message": "/antiv/dig/pf_partial.dig Illegal",
              "action": "Flash the ASIC with SD card, then with WhatsMinerTool."
     },
+    550061: {"message": "Slot 0 hash board communication or chip error",
+             "action": ""
+    },
+    550062: {"message": "Slot 1 hash board communication or chip error",
+             "action": ""
+    },
+    550063: {"message": "Slot 2 hash board communication or chip error",
+             "action": ""
+    },
     
     # PSU error codes
 
