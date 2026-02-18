@@ -298,13 +298,13 @@ WHATSMINER_ERROR_CODES = {
           "action": "Replacement of bad chips"
     },
     560: {"message": "SM0 loss balance",
-          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+          "action": "Plug in the adapter plate, and then screw in the power connection hashboard again"
     },
     561: {"message": "SM1 loss balance",
-          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+          "action": "Plug in the adapter plate, and then screw in the power connection hashboard again"
     },
     562: {"message": "SM2 loss balance",
-          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+          "action": "Plug in the adapter plate, and then screw in the power connection hashboard again"
     },
     600: {"message":
           "Environment temperature is high",
