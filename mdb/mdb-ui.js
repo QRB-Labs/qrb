@@ -96,7 +96,9 @@ function renderRack() {
     data[shelfNum].forEach(m => {
       rowDiv.innerHTML += `
 			<div class="machine-box" data-ip="${m.ip}" title="Not synced">
-			    <span class="display-val">${m.label || '---'}</span>
+			    <a href="http://${m.ip}">
+			      <span class="display-val">${m.label || '---'}</span>
+			    </a>
 			    <span class="pos-sub">P${m.pos}</span>
 			</div>`;
     });
@@ -123,10 +125,24 @@ function executeSearch() {
   if (res.length) {
     res[0].values.forEach(row => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td><b>${row[0]}</b></td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td>
-				    <td>${row[4] || '-'}</td>
-				    <td>${row[5] || '-'}</td>
-				    <td>${row[6] || '-'}</td>`;
+      for (let i = 0; i < 7; i++) {
+	td = document.createElement('td');
+	if (i < 2) {
+	  td.setAttribute('onclick', 'navigateToRackView("' + row[0] + '", "' + row[1] + '")')
+	  td.setAttribute('style', 'cursor:pointer; text-decoration:underline;');
+	  td.setAttribute('title', "Click to view rack");
+	}
+	if (row[i] != null) {
+	  if (i == 4) {
+	    td.setAttribute('style', 'cursor:pointer');
+	    td.innerHTML = `<a href=http://${row[i]}>${row[i]}</a>`;
+	    td.setAttribute('title', "Click to open web UI");
+	  } else {
+	    td.innerHTML = `${row[i]}`;
+	  }
+	}
+	tr.appendChild(td);
+      }
       resultsBody.appendChild(tr);
     });
   } else {
@@ -134,10 +150,18 @@ function executeSearch() {
   }
 }
 
+function navigateToRackView(container, side) {
+  document.getElementById('containerSelect').value = container;
+  onContainerChange();
+  document.getElementById('sideSelect').value = side;
+  renderRack();
+  showPage('visual-page');
+}
+
 async function syncDatabase() {
   const btn = document.getElementById('syncBtn');
   const status = document.getElementById('status');
-
+  const btnlabel = btn.innerHTML;
   // Disable button and show loading state
   btn.disabled = true;
   btn.innerHTML = `<span class="spinning">🔄</span> Syncing...`;
@@ -161,7 +185,7 @@ async function syncDatabase() {
     status.textContent = "❌ Sync failed: " + error;
     console.error(error);
     btn.disabled = false;
-    btn.innerHTML = "🔄 Sync with Sheets";
+    btn.innerHTML = btnlabel;
   }
 }
 
@@ -201,12 +225,13 @@ function updateMachineUI(element, data) {
   // Change Color based on "code"
   const temperature_alerts = [352, 350, 600, 351];
   const power_input_alerts = [250, 251, 271, 246, 247, 248, 249, 206, 207, 217, 213, 203, 204, 205];
+  const power_output_alerts = [272, 276, 277,278, 279, 280];
   let bgColor = "#4b5563"; // Default Gray
   if (data.code === 7 || data.code == 9) bgColor = "#059669"; // Green
   else if (data.code === 11) bgColor = "#a5a424"; // Lime-Olive
   else if (temperature_alerts.includes(data.code)) bgColor = "#9d174d"; // Crimson
   else if (power_input_alerts.includes(data.code)) bgColor = '#2563eb'; // electric blue
-  else if (data.code == 272) bgColor = '#0891b2'; // Cyan
+  else if (power_output_alerts.includes(data.code)) bgColor = '#0891b2'; // Cyan
   else if (data.code < 0) bgColor = "#ff0000"; // Red
   else bgColor = "#ea580c"; // Orange
   element.style.backgroundColor = bgColor;
@@ -218,5 +243,95 @@ function updateMachineUI(element, data) {
 	`${new Date(data['@timestamp']).toLocaleString()}`;
   element.setAttribute('title', tooltipContent);
 }
+
+
+let videoFiles = [];
+
+// Call this when the page loads
+async function initVideoList() {
+    try {
+	// Fetch the directory listing from your server
+	const response = await fetch('/video');
+	const html = await response.text();
+
+	// Use a DOM parser to extract filenames and sizes from the server's HTML listing
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(html, 'text/html');
+
+	const listItems = Array.from(doc.querySelectorAll('li'));
+
+	videoFiles = listItems.map(li => {
+	  const link = li.querySelector('a');
+	  if (!link) return null;
+	  const text = li.textContent;
+	  // Regex to extract the size inside the parentheses
+	  const sizeMatch = text.match(/\(([^)]+)\)/);
+
+	  return {
+	    name: link.innerText,
+	    url: '/video' + new URL(link.href).pathname,
+	    size: sizeMatch ? sizeMatch[1] : "Unknown"
+	  };
+	}).filter(item => item !== null);
+	console.log("Video library indexed and ready for search.");
+    } catch (e) {
+	console.error("Could not load video directory", e);
+    }
+}
+
+function searchVideos() {
+    const query = document.getElementById('video-search-input').value.toLowerCase();
+    const resultsContainer = document.getElementById('video-results');
+
+    if (query.length < 2) {
+	resultsContainer.innerHTML = '';
+	return;
+    }
+
+    let filtered = [];
+    try {
+        // 'i' flag makes it case-insensitive
+        const regex = new RegExp(query, 'i');
+        filtered = videoFiles.filter(file => regex.test(file.name));
+    } catch (e) {
+        // If the regex is invalid while they are typing, we just stop
+        // and wait for them to finish the expression.
+        return;
+    }
+
+    // Build the table using your existing CSS classes
+    resultsContainer.innerHTML = `
+	<div class="table-container">
+	    <table>
+		<thead>
+		    <tr>
+			<th>Filename</th>
+			<th style="text-align: right;">Size</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    ${filtered.map(file => `
+			<tr onclick="window.location.href='${file.url}'" style="cursor: pointer;">
+			    <td>
+				<span style="color: #a5b424; margin-right: 8px;">▶</span>
+				${file.name}
+			    </td>
+			    <td style="text-align: right; font-family: monospace; color: #64748b;">
+				${file.size}
+			    </td>
+			</tr>
+		    `).join('')}
+		</tbody>
+	    </table>
+	</div>
+    `;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Initialize the Video Search List
+  // This fetches the directory listing once so searching is instant
+  initVideoList();
+});
+
 
 initApp();

@@ -5,6 +5,23 @@ import pandas as pd
 import tempfile
 
 
+# Mapping of CSV header to DB column names
+COLUMN_MAP = {
+    'Worker 1': 'worker',
+    'IP': 'ip_address',
+    'MAC Address': 'mac_address',
+    'MAC Addr': 'mac_address',
+    'MAC': 'mac_address',
+    'Miner Type': 'type',
+    'Type': 'type',
+    'Location': 'location',
+    'SN': 'serial_number',
+    'Miner SN': 'serial_number',
+    'Serial Number': 'serial_number',
+    'Power SN': 'psu_serial_number'
+}
+
+
 def sync_sheets(json_key, spreadsheet_url, tab_names):
     gc = gspread.service_account(filename=json_key)
     sh = gc.open_by_url(spreadsheet_url)
@@ -16,6 +33,13 @@ def sync_sheets(json_key, spreadsheet_url, tab_names):
         records = worksheet.get_all_records()
         df = pd.DataFrame(records)
         df = df.dropna(how='all')
+        # Standardize columns
+        # We use errors='ignore' so it only renames what it finds
+        df = df.rename(columns=COLUMN_MAP, errors='ignore')
+        # Keep only the columns we actually want in our web app
+        standard_columns = list(set(COLUMN_MAP.values()))
+        valid_cols = [c for c in standard_columns if c in df.columns]
+        df = df[valid_cols]
 
         output_file = os.path.join(temp_dir, f'{name}.csv')
         df.to_csv(output_file)

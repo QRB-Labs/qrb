@@ -6,24 +6,6 @@ import os
 import re
 
 
-# Define your "Source of Truth" mapping here
-# Format: 'Current CSV Header': 'Standardized Name'
-COLUMN_MAP = {
-    'Worker 1': 'worker',
-    'IP': 'ip_address',
-    'MAC Address': 'mac_address',
-    'MAC Addr': 'mac_address',
-    'MAC': 'mac_address',
-    'Miner Type': 'type',
-    'Type': 'type',
-    'Location': 'location',
-    'SN': 'serial_number',
-    'Miner SN': 'serial_number',
-    'Serial Number': 'serial_number',
-    'Power SN': 'psu_serial_number'
-}
-
-
 def parse_location(loc_str):
     """
     Supports:
@@ -62,15 +44,6 @@ def build_db(files, db_name, table_name):
     for f in files:
         print(f"Reading and mapping {f}...")
         df = pd.read_csv(f)
-
-        # Standardize columns
-        # We use errors='ignore' so it only renames what it finds
-        df = df.rename(columns=COLUMN_MAP, errors='ignore')
-
-        # Keep only the columns we actually want in our web app
-        standard_columns = list(set(COLUMN_MAP.values()))
-        valid_cols = [c for c in standard_columns if c in df.columns]
-        df = df[valid_cols]
 
         # Apply the parsing logic if 'location' exists
         if 'location' in df.columns:

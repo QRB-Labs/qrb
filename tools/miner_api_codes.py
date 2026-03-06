@@ -186,6 +186,21 @@ WHATSMINER_ERROR_CODES = {
     275: {"message": "Power over temperature warning",
           "action": "Please check the environment temperature"
     },
+    276: {"message": "Power Unknow error. code: 0xffffffffc0000000",
+          "action": "Check PSU",
+    },
+    277: {"message": "Power error",
+          "action": "Check PSU",
+    },
+    278: {"message": "Power Unknow error. code: 0xffffffffc0000000",
+          "action": "Check PSU"
+    },
+    279: {"message": "Power Unknow error. code: 0xffffffffc0000000",
+          "action": "Check PSU"
+    },
+    280: {"message": "Power Unknow error. code: 0xffffffffc0000000",
+          "action": "Check PSU"
+    },
     300: {"message": "SM0 temperature sensor detection error",
           "action": "Check the connection of the hashboard"
     },

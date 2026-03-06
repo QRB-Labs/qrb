@@ -21,15 +21,22 @@ class LogstashFormatter(LogstashFormatterBase):
         message.pop('Difficulty Accepted', None)
         message.pop('Difficulty Rejected', None)
 
+        host = {}
+        if 'ip_address' in message:
+            host['ip'] =  message['ip_address']
+            del message['ip_address']
+        if 'mac' in message:
+            host["mac"] = message['mac']
+
         message.update({
-            'host': {'ip': message.get('ip_address')},
+            'host': host,
             'path': record.pathname,
             'tags': self.tags,
             'type': self.message_type,
             'level': record.levelname,
             'logger_name': record.name,
         })
-        del message['ip_address']
+
         return self.serialize(message)
 
 

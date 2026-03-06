@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import argparse
 import http.server
+import io
 import os
 import socketserver
 import urllib.parse
@@ -9,8 +10,10 @@ import urllib.request
 import get_data
 import mdb
 
+
 PORT = 8000
 server_args = None
+
 
 class MDBServer(http.server.SimpleHTTPRequestHandler):
 
@@ -62,6 +65,51 @@ class MDBServer(http.server.SimpleHTTPRequestHandler):
         else:
             super().do_GET()
 
+
+    def list_directory(self, path):
+        """Parent class list_directory doesn't include file sizes"""
+        try:
+            list = os.listdir(path)
+        except OSError as e:
+            self.send_error(404, f"{e}")
+            return None
+
+        list.sort(key=lambda a: a.lower())
+        r = []
+        displaypath = urllib.parse.unquote(self.path)
+
+        # Start building the HTML response
+        r.append('<!DOCTYPE html><html><head><meta charset="utf-8">')
+        r.append(f'<title>Directory listing for {displaypath}</title></head>')
+        r.append('<body><ul>')
+
+        for name in list:
+            fullname = os.path.join(path, name)
+            displayname = linkname = name
+            size = ""
+
+            # Append / for directories, get size for files
+            if os.path.isdir(fullname):
+                displayname = name + "/"
+                linkname = name + "/"
+            else:
+                # Calculate size in MB
+                file_size = os.path.getsize(fullname) / (1024 * 1024)
+                size = f"({file_size:.1f} MB)"
+
+            r.append('<li><a href="%s">%s</a> %s</li>'
+                    % (urllib.parse.quote(linkname), displayname, size))
+
+        r.append('</ul></body></html>')
+
+        # Convert list to bytes
+        encoded = '\n'.join(r).encode('utf-8', 'surrogateescape')
+        self.send_response(200)
+        self.send_header("Content-type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(encoded)))
+        self.end_headers()
+
+        return io.BytesIO(encoded)
 
 
 if __name__ == "__main__":
