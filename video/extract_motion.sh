@@ -16,7 +16,6 @@ find "$SOURCE_DIR" -maxdepth 1 -name "*.mp4" -mmin +5 -mmin -65 -print0 | while 
 	continue
     fi
 
-    echo $LATEST_FILE
     # Extract the filename without the path
     FILENAME=$(basename "$LATEST_FILE")
 

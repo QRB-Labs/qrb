@@ -366,7 +366,7 @@ function searchVideos() {
 			    framesHtml = frames.map(frameName => {
 				// Extract just the number (e.g., 001) for cleaner link text
 				const frameNum = frameName.match(/_(\d+)\.jpg$/)[1];
-				return `<a href="/video_frames/${frameName}" target="_blank" class="frame-link">${frameNum}</a>`;
+				return `<a href="/video_frames/${frameName}" class="frame-link">${frameNum}</a>`;
 			    }).join(' ');
 			}
 
