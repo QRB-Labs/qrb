@@ -246,6 +246,7 @@ function updateMachineUI(element, data) {
 
 
 let videoFiles = [];
+let frameFilesMap = new Map();
 
 // Call this when the page loads
 async function initVideoList() {
@@ -279,6 +280,51 @@ async function initVideoList() {
     }
 }
 
+async function initFrameList() {
+    try {
+	const response = await fetch('/video_frames');
+	const html = await response.text();
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(html, 'text/html');
+
+	// Robustly find all links ending in .jpg
+	const links = Array.from(doc.querySelectorAll('a[href$=".jpg"]'));
+
+	if (links.length === 0) {
+	    console.warn("No .jpg frame files found in /video_frames response.");
+	    return;
+	}
+
+	links.forEach(link => {
+	    const frameFilename = link.innerText;
+
+	    // Regex for a name like: 20260306_212849_cam4_003.jpg
+	    // This captures everything up to the last underscore and number.
+	    // The captured group (baseName) will be "20260306_212849_cam4".
+	    const baseNameMatch = frameFilename.match(/^(.*?)_\d+\.jpg$/i); // 'i' for case-insensitive
+
+	    if (baseNameMatch && baseNameMatch[1]) {
+		const baseName = baseNameMatch[1];
+
+		if (!frameFilesMap.has(baseName)) {
+		    frameFilesMap.set(baseName, []);
+		}
+
+		frameFilesMap.get(baseName).push(frameFilename);
+	    }
+	});
+
+	// Optional but good practice: sort the frames for each video
+	for (const key of frameFilesMap.keys()) {
+	    frameFilesMap.get(key).sort();
+	}
+
+	console.log("Frame library indexed. Map size:", frameFilesMap.size);
+    } catch (e) {
+	console.error("Could not load or parse frame directory", e);
+    }
+}
+
 function searchVideos() {
     const query = document.getElementById('video-search-input').value.toLowerCase();
     const resultsContainer = document.getElementById('video-results');
@@ -290,13 +336,10 @@ function searchVideos() {
 
     let filtered = [];
     try {
-        // 'i' flag makes it case-insensitive
-        const regex = new RegExp(query, 'i');
-        filtered = videoFiles.filter(file => regex.test(file.name));
+	const regex = new RegExp(query, 'i');
+	filtered = videoFiles.filter(file => regex.test(file.name));
     } catch (e) {
-        // If the regex is invalid while they are typing, we just stop
-        // and wait for them to finish the expression.
-        return;
+	return; // Invalid regex, just wait
     }
 
     // Build the table using your existing CSS classes
@@ -307,31 +350,52 @@ function searchVideos() {
 		    <tr>
 			<th>Filename</th>
 			<th style="text-align: right;">Size</th>
+			<th>Frames</th>
 		    </tr>
 		</thead>
 		<tbody>
-		    ${filtered.map(file => `
-			<tr onclick="window.location.href='${file.url}'" style="cursor: pointer;">
-			    <td>
-				<span style="color: #a5b424; margin-right: 8px;">▶</span>
-				${file.name}
-			    </td>
-			    <td style="text-align: right; font-family: monospace; color: #64748b;">
-				${file.size}
-			    </td>
-			</tr>
-		    `).join('')}
+		    ${filtered.map(file => {
+			// Get the base name of the video file by removing the .mp4 extension
+			const baseName = file.name.replace('.mp4', '');
+			// Look up the corresponding frames in our map
+			const frames = frameFilesMap.get(baseName);
+
+			// Generate the HTML for the frame links, if any exist
+			let framesHtml = '';
+			if (frames && frames.length > 0) {
+			    framesHtml = frames.map(frameName => {
+				// Extract just the number (e.g., 001) for cleaner link text
+				const frameNum = frameName.match(/_(\d+)\.jpg$/)[1];
+				return `<a href="/video_frames/${frameName}" target="_blank" class="frame-link">${frameNum}</a>`;
+			    }).join(' ');
+			}
+
+			return `
+			    <tr>
+				<td onclick="window.location.href='${file.url}'" style="cursor: pointer;">
+				    <span style="color: #a5b424; margin-right: 8px;">▶</span>
+				    ${file.name}
+				</td>
+				<td style="text-align: right; font-family: monospace; color: #64748b;">
+				    ${file.size}
+				</td>
+				<td>${framesHtml}</td>
+			    </tr>
+			`;
+		    }).join('')}
 		</tbody>
 	    </table>
 	</div>
     `;
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  // Initialize the Video Search List
-  // This fetches the directory listing once so searching is instant
-  initVideoList();
+window.addEventListener('DOMContentLoaded', async () => {
+  // Initialize the Video and Frame lists in parallel
+  // This fetches both directory listings so searching is instant
+  await Promise.all([
+    initVideoList(),
+    initFrameList()
+  ]);
 });
-
 
 initApp();
