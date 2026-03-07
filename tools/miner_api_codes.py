@@ -7,12 +7,14 @@ WHATSMINER_API_MESSAGE_CODES = {
     132: "command error",
     134: "get token message OK",
     135: "check token error",
-    136: "token over max time"
+    136: "token over max time",
+    137: "Base64 decode error"
 }
 
 
 # https://auradine.com/wp-content/uploads/2025/02/TeraFlux-Miner-API-Reference.pdf
 TERAFLUX_API_MESSAGE_CODES = {
+    7: "pools",
     9: "devs",
     11: "summary",
     69: "devdetails",
@@ -179,10 +181,25 @@ WHATSMINER_ERROR_CODES = {
           "action": "Please check the environment temperature"
     },
     274: {"message": "Power fan warning",
-          "action": "Check if the power fan is blocked andmayneed to be replaced"
+          "action": "Check if the power fan is blocked and may need to be replaced"
     },
     275: {"message": "Power over temperature warning",
           "action": "Please check the environment temperature"
+    },
+    276: {"message": "Power Unknow error. code: 0xffffffffc0000000",
+          "action": "Check PSU",
+    },
+    277: {"message": "Power error",
+          "action": "Check PSU",
+    },
+    278: {"message": "Power Unknow error. code: 0xffffffffc0000000",
+          "action": "Check PSU"
+    },
+    279: {"message": "Power Unknow error. code: 0xffffffffc0000000",
+          "action": "Check PSU"
+    },
+    280: {"message": "Power Unknow error. code: 0xffffffffc0000000",
+          "action": "Check PSU"
     },
     300: {"message": "SM0 temperature sensor detection error",
           "action": "Check the connection of the hashboard"
