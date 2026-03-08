@@ -8,14 +8,22 @@ SENSITIVITY="0.05"
 
 mkdir -p "$MODELS_DIR"
 
-# Find all eligible MP4 files directly in SOURCE_DIR
-# Changed -mmin +1 to -mmin +5 to ensure files are truly completed and not being written to.
-find "$SOURCE_DIR" -maxdepth 1 -name "*.mp4" -mmin +5 -mmin -65 -print0 | while IFS= read -r -d $'\0' LATEST_FILE; do
-    if [ -z "$LATEST_FILE" ]; then
-	echo "No new files found in $SOURCE_DIR." | logger -t "extract_motion"
-	continue
-    fi
+# Find eligible files: MP4 files in SOURCE_DIR, modified more than 5
+# and less than 65 minutes ago.
+# Use mapfile (aka readarray) to safely read the NUL-delimited output from find
+# into the 'files' array.
+# < <(...) is process substitution, which avoids creating a subshell for the read.
+files=()
+mapfile -d $'\0' files < <(find "$SOURCE_DIR" -maxdepth 1 -name "*.mp4" -mmin +5 -mmin -65 -print0)
 
+if [ ${#files[@]} -eq 0 ]; then
+    echo "No new files found in $SOURCE_DIR." | logger -t "extract_motion"
+    exit 0
+fi
+
+echo "Found ${#files[@]} file(s) to process." | logger -t "extract_motion"
+
+for LATEST_FILE in "${files[@]}"; do
     # Extract the filename without the path
     FILENAME=$(basename "$LATEST_FILE")
 
