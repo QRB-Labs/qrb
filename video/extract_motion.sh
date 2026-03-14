@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# Configuration
-SOURCE_DIR="/tmp/video"  # All videos are directly here
+# --- Configuration ---
+SOURCE_DIR="/tmp/video"
 MODELS_DIR="/tmp/video_frames"
 # Sensitivity: 0.05 = 5% change. Lower = more sensitive.
 SENSITIVITY="0.05"
+# The number of motion frames to skip before saving another one.
+# At 30fps, a value of 30 means maximum of one frame per second.
+MIN_FRAME_INTERVAL=30
 
 mkdir -p "$MODELS_DIR"
 
@@ -24,25 +27,23 @@ fi
 echo "Found ${#files[@]} file(s) to process." | logger -t "extract_motion"
 
 for LATEST_FILE in "${files[@]}"; do
-    # Extract the filename without the path
     FILENAME=$(basename "$LATEST_FILE")
 
     # Filename format: YYYYMMMDD_HHMMSS_camX.mp4
-    # Extract 'YYYYMMMDD_HHMMSS' and 'camX'.
     if [[ "$FILENAME" =~ ^([0-9]+_[0-9]+)_([^.]+)\.mp4$ ]]; then
 	TIMESTAMP_PART="${BASH_REMATCH[1]}"
 	CAMERA_ID="${BASH_REMATCH[2]}"
     else
 	echo "Warning: Filename '$FILENAME' does not match expected format. Skipping." | logger -t "extract_motion"
-	continue # Skip this file if it doesn't match the expected format
+	continue
     fi
 
-    echo "Processing $LATEST_FILE -> $FILENAME -> Timestamp: $TIMESTAMP_PART, Camera: $CAMERA_ID)" | logger -t "extract_motion"
+    echo "Processing $LATEST_FILE -> Timestamp: $TIMESTAMP_PART, Camera: $CAMERA_ID" | logger -t "extract_motion"
 
     # Extract frames where motion is detected
-    # Modified output path to include TIMESTAMP_PART
+    # The ",thumbnail" filter selects one from N consecutive frames
     (ffmpeg -loglevel error -i "$LATEST_FILE" \
-    -vf "select='gt(scene,$SENSITIVITY)',setpts=N/FRAME_RATE/TB" \
+    -vf "select='gt(scene,$SENSITIVITY)',thumbnail=$MIN_FRAME_INTERVAL,setpts=N/FRAME_RATE/TB" \
     -vsync vfr -q:v 2 "$MODELS_DIR/${TIMESTAMP_PART}_${CAMERA_ID}_%03d.jpg"
      ) < /dev/null 2>&1 | logger -t "extract_motion" -p user.error
 
