@@ -6,146 +6,141 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
     <!--[if lt IE 9]>
-	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-	 <link rel="shortcut icon" type="image/png" href="QRB_logo.png">
-	 <title>{{ page.title }}</title>
+    <link rel="shortcut icon" type="image/png" href="QRB_logo.png">
+    <title>{{ page.title }}</title>
 
-	 <!-- Consolidated CSS Styles -->
-	 <style>
-	   .custom-table th, .custom-table td {
-	       padding: 5px;
-	       border: 1px solid black;
-	       border-collapse: collapse;
-	   }
+    <!-- Consolidated CSS Styles -->
+    <style>
+      .custom-table th, .custom-table td {
+	padding: 5px;
+	border: 1px solid black;
+	border-collapse: collapse;
+      }
 
-	   body {
-	       background-image: url('images/GERD.jpeg');
-	       background-repeat: no-repeat;
-	       background-attachment: fixed;
-	       background-size: cover;
-	       /* --- START OF STICKY FOOTER STYLES --- */
-	       display: flex;             /* Make body a flex container */
-	       flex-direction: column;    /* Stack children vertically */
-	       min-height: 100vh;         /* Ensure body takes at least full viewport height */
-	       margin: 0;                 /* Remove default body margin */
-	       /* --- END OF STICKY FOOTER STYLES --- */
-	   }
+      body {
+	background-image: url('images/GERD.jpeg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	/* --- START OF STICKY FOOTER STYLES --- */
+	display: flex;             /* Make body a flex container */
+	flex-direction: column;    /* Stack children vertically */
+	min-height: 100vh;         /* Ensure body takes at least full viewport height */
+	margin: 0;                 /* Remove default body margin */
+	/* --- END OF STICKY FOOTER STYLES --- */
+      }
 
-	   header, footer {
-	       flex-shrink: 0;
-	   }
+      /* Styles for the main content wrapper (NEW CLASS) */
+      .main-content-wrapper {
+	flex-grow: 1;              /* This makes the content area expand and push footer down */
+	padding: 16px;             /* Moved original inline padding here */
+      }
 
+      /* Top Navigation Menu Styles */
+      .topnav {
+	overflow: hidden;
+	position: relative;
+      }
 
-	   /* Styles for the main content wrapper (NEW CLASS) */
-	   .main-content-wrapper {
-	       flex-grow: 1;              /* This makes the content area expand and push footer down */
-	       padding: 16px;             /* Moved original inline padding here */
-	   }
+      .topnav #myLinks {
+	display: none;
+	text-align: right;
+	padding-right: 16px;
+	padding-top: 0px;
+      }
 
-	   /* Top Navigation Menu Styles */
-	   .topnav {
-	       overflow: hidden;
-	       position: relative;
-	   }
+      .topnav a {
+	display: block;
+      }
 
-	   .topnav #myLinks {
-	       display: none;
-	       text-align: right;
-	       padding-right: 16px;
-	       padding-top: 0px;
-	   }
+      .topnav a:link {
+	text-decoration: none;
+	color: black;
+      }
 
-	   .topnav a {
-	       display: block;
-	   }
+      .topnav #title {
+	padding: 16px;
+	font-size: 1.5em;
+	font-weight: bold;
+      }
 
-	   .topnav a:link {
-	       text-decoration: none;
-	       color: black;
-	   }
+      .topnav a.icon {
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 16px;
+      }
 
-	   .topnav #title {
-	       padding: 16px;
-	       font-size: 1.5em;
-	       font-weight: bold;
-	   }
+      .topnav a:hover {
+      }
 
-	   .topnav a.icon {
-	       display: block;
-	       position: absolute;
-	       right: 0;
-	       top: 0;
-	       padding: 16px;
-	   }
+      .active {
+      }
 
-	   .topnav a:hover {
-	   }
+      /* SVG and Gallery Styles */
+      .svg-with-background {
+	background-color: white; /* Or any other color like #F0F0F0, lightgray, etc. */
+	padding: 10px; /* Optional: Add some padding around the SVG content if desired */
+	border-radius: 5px; /* Optional: Rounded corners */
+	box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: Slight shadow */
+      }
 
-	   .active {
-	   }
+      /* Styles for the gallery container */
+      .gallery-no-lightbox {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 15px; /* Space between items */
+	margin: 20px 0;
+	padding: 0;
+	list-style: none;
+      }
 
-	   /* SVG and Gallery Styles */
-	   .svg-with-background {
-	       background-color: white; /* Or any other color like #F0F0F0, lightgray, etc. */
-	       padding: 10px; /* Optional: Add some padding around the SVG content if desired */
-	       border-radius: 5px; /* Optional: Rounded corners */
-	       box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: Slight shadow */
-	   }
+      /* Styles for each individual gallery item */
+      .gallery-item {
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	overflow: hidden; /* Ensures images don't spill out */
+	text-align: center;
+	background-color: #f9f9f9;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+	transition: transform 0.2s ease-in-out;
+	display: flex; /* Use flexbox to control layout inside the item */
+	flex-direction: column; /* Stack image and text vertically */
+      }
 
-	   /* Styles for the gallery container */
-	   .gallery-no-lightbox {
-	       display: grid;
-	       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-	       gap: 15px; /* Space between items */
-	       margin: 20px 0;
-	       padding: 0;
-	       list-style: none;
-	   }
+      .gallery-item:hover {
+	transform: translateY(-5px); /* Slight lift on hover */
+      }
 
-	   /* Styles for each individual gallery item */
-	   .gallery-item {
-	       border: 1px solid #ddd;
-	       border-radius: 5px;
-	       overflow: hidden; /* Ensures images don't spill out */
-	       text-align: center;
-	       background-color: #f9f9f9;
-	       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-	       transition: transform 0.2s ease-in-out;
-	       display: flex; /* Use flexbox to control layout inside the item */
-	       flex-direction: column; /* Stack image and text vertically */
-}
+      /* Styles for the images within gallery items */
+      .gallery-item img {
+	display: block; /* Removes bottom space */
+	width: 100%;
+	height: 180px; /* Fixed height for uniformity, adjust as needed */
+	object-fit: cover; /* Scales image while maintaining aspect ratio, cropping if necessary */
+	object-position: center; /* Centers the image */
+      }
 
- .gallery-item:hover {
-     transform: translateY(-5px); /* Slight lift on hover */
- }
+      /* Styles for the captions */
+      .gallery-item p {
+	padding: 10px 15px;
+	margin: 0; /* Remove default margin */
+	font-size: 0.95em;
+	color: #333;
+	flex-grow: 1; /* Allows the text to take up available space */
+	display: flex; /* Center the text vertically if needed */
+	align-items: center; /* Centers text vertically */
+	justify-content: center; /* Centers text horizontally */
+      }
 
- /* Styles for the images within gallery items */
- .gallery-item img {
-     display: block; /* Removes bottom space */
-     width: 100%;
-     height: 180px; /* Fixed height for uniformity, adjust as needed */
-     object-fit: cover; /* Scales image while maintaining aspect ratio, cropping if necessary */
-     object-position: center; /* Centers the image */
- }
-
- /* Styles for the captions */
- .gallery-item p {
-     padding: 10px 15px;
-     margin: 0; /* Remove default margin */
-     font-size: 0.95em;
-     color: #333;
-     flex-grow: 1; /* Allows the text to take up available space */
-     display: flex; /* Center the text vertically if needed */
-     align-items: center; /* Centers text vertically */
-     justify-content: center; /* Centers text horizontally */
- }
-
- .gallery-item p strong {
-     color: #000; /* Make the bold part stand out more */
- }
-	 </style>
+      .gallery-item p strong {
+	color: #000; /* Make the bold part stand out more */
+      }
+    </style>
 
   </head>
 
@@ -155,15 +150,15 @@
       <!-- Top Navigation Menu -->
       <div class="topnav">
 	<a href="/"><div id="title">
-	    {{ page.title }}
-	</div></a>
+	   {{ page.title }}
+	 </div></a>
 	<div id="myLinks">
 	  <a href="/">Home</a>
 	  <a href="/about">About us</a>
 	  <a href="/hosting">Hosting & Colocation</a>
 	  <a href="/techdocs">Research & Development</a>
 	  <a href="/software">Software</a>
-	  <a href="/gov.et/">Ethiopian government docs</a>
+	   <a href="/gov.et/">Ethiopian government docs</a>
 	</div>
 	<a href="javascript:void(0);" class="icon" onclick="myFunction()">
 	  <i class="fa fa-bars"></i>
@@ -186,14 +181,14 @@
     </footer>
 
     <script>
-      function myFunction() {
+    function myFunction() {
 	var x = document.getElementById("myLinks");
 	if (x.style.display === "block") {
-	  x.style.display = "none";
+	    x.style.display = "none";
 	} else {
-	  x.style.display = "block";
+	    x.style.display = "block";
 	}
-      }
+    }
     </script>
 
   </body>
