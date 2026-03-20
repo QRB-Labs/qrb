@@ -12,13 +12,13 @@ MDB is QRB Labs' minimalist open source mining monitoring and management softwar
 
 <div style="padding: 16px">
 <ul>
-	<li>ultra lightweight machine database in Google sheets</li>
+	<li>ultra-lightweight machine database in Google sheets</li>
 	<li>tools to monitor and control miners via miner API</li>
-	<li>environment monitoring via temperature and himidity sensors</li>
-	<li>network video recording and analysis for security cameras</li>
-	<li>automated feedback control of water circulation in water curtains</li>
 	<li>dashboard and search engine for history and real-time analysis</li>
 	<li>rack visualization integrated with real-time status monitoring</li>
+	<li>environment monitoring via temperature and humidity sensors</li>
+	<li>automated feedback control of water circulation in water curtains</li>
+	<li>network video recording and analysis for security cameras</li>
 </ul>
 </div>
 
