@@ -12,134 +12,135 @@
     <link rel="shortcut icon" type="image/png" href="QRB_logo.png">
     <title>{{ page.title }}</title>
 
-   <style>
+    <!-- Consolidated CSS Styles -->
+    <style>
       .custom-table th, .custom-table td {
 	padding: 5px;
 	border: 1px solid black;
 	border-collapse: collapse;
       }
 
-     body {
+      body {
 	background-image: url('images/GERD.jpeg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: cover;
-     }
+	/* --- START OF STICKY FOOTER STYLES --- */
+	display: flex;             /* Make body a flex container */
+	flex-direction: column;    /* Stack children vertically */
+	min-height: 100vh;         /* Ensure body takes at least full viewport height */
+	margin: 0;                 /* Remove default body margin */
+	/* --- END OF STICKY FOOTER STYLES --- */
+      }
 
-   </style>
+      /* Styles for the main content wrapper (NEW CLASS) */
+      .main-content-wrapper {
+	flex-grow: 1;              /* This makes the content area expand and push footer down */
+	padding: 16px;             /* Moved original inline padding here */
+      }
 
-   <!-- navigation menu -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-   <style>
+      /* Top Navigation Menu Styles */
+      .topnav {
+	overflow: hidden;
+	position: relative;
+      }
 
-   .topnav {
-       overflow: hidden;
-       position: relative;
-   }
+      .topnav #myLinks {
+	display: none;
+	text-align: right;
+	padding-right: 16px;
+	padding-top: 0px;
+      }
 
-   .topnav #myLinks {
-       display: none;
-       text-align: right;
-       padding-right: 16px;
-       padding-top: 0px;
-   }
+      .topnav a {
+	display: block;
+      }
 
-   .topnav a {
-       display: block;
-   }
+      .topnav a:link {
+	text-decoration: none;
+	color: black;
+      }
 
-   .topnav a:link {
-       text-decoration: none;
-       color: black;
-   }
+      .topnav #title {
+	padding: 16px;
+	font-size: 1.5em;
+	font-weight: bold;
+      }
 
-   .topnav #title {
-       padding: 16px;
-       font-size: 1.5em;
-       font-weight: bold;
-   }
+      .topnav a.icon {
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 16px;
+      }
 
-   .topnav a.icon {
-       display: block;
-       position: absolute;
-       right: 0;
-       top: 0;
-       padding: 16px;
-   }
+      .topnav a:hover {
+      }
 
-   .topnav a:hover {
-   }
+      .active {
+      }
 
-   .active {
-   }
-   </style>
-   <style>
-   .svg-with-background {
-       background-color: white; /* Or any other color like #F0F0F0, lightgray, etc. */
-       padding: 10px; /* Optional: Add some padding around the SVG content if desired */
-       border-radius: 5px; /* Optional: Rounded corners */
-       box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: Slight shadow */
-   }
+      /* SVG and Gallery Styles */
+      .svg-with-background {
+	background-color: white; /* Or any other color like #F0F0F0, lightgray, etc. */
+	padding: 10px; /* Optional: Add some padding around the SVG content if desired */
+	border-radius: 5px; /* Optional: Rounded corners */
+	box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: Slight shadow */
+      }
 
-   /* Styles for the gallery container */
+      /* Styles for the gallery container */
+      .gallery-no-lightbox {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 15px; /* Space between items */
+	margin: 20px 0;
+	padding: 0;
+	list-style: none;
+      }
 
-   .gallery-no-lightbox {
-       display: grid;
-       /*
-    Creates a responsive grid. It will try to make columns at least 250px wide.
-    If there's space, it will create more columns.
-    "1fr" means each column will take up an equal fraction of the remaining space.
-      */
-       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-       gap: 15px; /* Space between items */
-       margin: 20px 0;
-       padding: 0;
-       list-style: none;
-   }
+      /* Styles for each individual gallery item */
+      .gallery-item {
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	overflow: hidden; /* Ensures images don't spill out */
+	text-align: center;
+	background-color: #f9f9f9;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+	transition: transform 0.2s ease-in-out;
+	display: flex; /* Use flexbox to control layout inside the item */
+	flex-direction: column; /* Stack image and text vertically */
+      }
 
-   /* Styles for each individual gallery item */
-   .gallery-item {
-       border: 1px solid #ddd;
-       border-radius: 5px;
-       overflow: hidden; /* Ensures images don't spill out */
-       text-align: center;
-       background-color: #f9f9f9;
-       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-       transition: transform 0.2s ease-in-out;
-       display: flex; /* Use flexbox to control layout inside the item */
-       flex-direction: column; /* Stack image and text vertically */
-   }
+      .gallery-item:hover {
+	transform: translateY(-5px); /* Slight lift on hover */
+      }
 
-   .gallery-item:hover {
-       transform: translateY(-5px); /* Slight lift on hover */
-   }
+      /* Styles for the images within gallery items */
+      .gallery-item img {
+	display: block; /* Removes bottom space */
+	width: 100%;
+	height: 180px; /* Fixed height for uniformity, adjust as needed */
+	object-fit: cover; /* Scales image while maintaining aspect ratio, cropping if necessary */
+	object-position: center; /* Centers the image */
+      }
 
-   /* Styles for the images within gallery items */
-   .gallery-item img {
-       display: block; /* Removes bottom space */
-       width: 100%;
-       height: 180px; /* Fixed height for uniformity, adjust as needed */
-       object-fit: cover; /* Scales image while maintaining aspect ratio, cropping if necessary */
-       object-position: center; /* Centers the image */
-       /* No border-bottom needed here as the <p> tag has padding */
-   }
+      /* Styles for the captions */
+      .gallery-item p {
+	padding: 10px 15px;
+	margin: 0; /* Remove default margin */
+	font-size: 0.95em;
+	color: #333;
+	flex-grow: 1; /* Allows the text to take up available space */
+	display: flex; /* Center the text vertically if needed */
+	align-items: center; /* Centers text vertically */
+	justify-content: center; /* Centers text horizontally */
+      }
 
-   /* Styles for the captions */
-   .gallery-item p {
-       padding: 10px 15px;
-       margin: 0; /* Remove default margin */
-       font-size: 0.95em;
-       color: #333;
-       flex-grow: 1; /* Allows the text to take up available space */
-       display: flex; /* Center the text vertically if needed */
-       align-items: center; /* Centers text vertically */
-       justify-content: center; /* Centers text horizontally */
-   }
-
-   .gallery-item p strong {
-       color: #000; /* Make the bold part stand out more */
-   }
-   </style>
+      .gallery-item p strong {
+	color: #000; /* Make the bold part stand out more */
+      }
+    </style>
 
   </head>
 
@@ -165,7 +166,8 @@
       </div>
     </header>
 
-    <div style="padding: 16px">
+    <!-- MODIFIED: Added class="main-content-wrapper" -->
+    <div class="main-content-wrapper">
       {{ content }}
     </div>
 
