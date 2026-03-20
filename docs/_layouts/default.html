@@ -72,6 +72,21 @@
 
    .active {
    }
+
+   html {
+       height: 100%;
+   }
+   body {
+       display: flex;
+       flex-direction: column;
+       min-height: 100vh; /* Changed from height: 100% to min-height: 100vh for better flexibility */
+       margin: 0; /* Remove default body margin */
+   }
+   .main-content {
+       flex-grow: 1; /* This is the magic part! It makes the main content grow to fill available space. */
+       padding: 16px; /* We move the padding from the old div to this class */
+   }
+
    </style>
    <style>
    .svg-with-background {
@@ -165,9 +180,9 @@
       </div>
     </header>
 
-    <div style="padding: 16px">
+    <main class="main-content">
       {{ content }}
-    </div>
+    </main>
 
     <footer>
       <div style="text-align: right; padding: 16px">
