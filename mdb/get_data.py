@@ -24,11 +24,20 @@ COLUMN_MAP = {
 
 def sync_sheets(json_key, spreadsheet_url, tab_names):
     gc = gspread.service_account(filename=json_key)
-    sh = gc.open_by_url(spreadsheet_url)
+    sh = None
     temp_dir = tempfile.gettempdir()
 
     for name in tab_names:
+        output_file = os.path.join(temp_dir, f'{name}.csv')
+        if os.path.exists(output_file):
+            #  Local file  already exists. Skipping Google Sheets download
+            yield output_file 
+            continue # Move to the next worksheet
+        
         print(f"Downloading {name} ...")
+        if not sh:
+            print(f"Opening {spreadsheet_url} ...")
+            sh = gc.open_by_url(spreadsheet_url)
         worksheet = sh.worksheet(name)
         records = worksheet.get_all_records()
         df = pd.DataFrame(records)
@@ -41,7 +50,6 @@ def sync_sheets(json_key, spreadsheet_url, tab_names):
         valid_cols = [c for c in standard_columns if c in df.columns]
         df = df[valid_cols]
 
-        output_file = os.path.join(temp_dir, f'{name}.csv')
         df.to_csv(output_file)
         yield output_file
 
