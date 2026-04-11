@@ -58,3 +58,65 @@ curl --user elastic:$ELASTIC_PASSWORD -X POST "localhost:9200/_security/role_map
   }
 }
 '
+
+
+curl -u elastic:$ELASTIC_PASSWORD -X PUT "http://localhost:9200/qrb_mon-000001?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "index.number_of_shards": 1,
+    "index.number_of_replicas": 0
+  }
+}'
+
+
+ curl -u elastic:$ELASTIC_PASSWORD -X PUT "http://localhost:9200/_ilm/policy/qrb_policy" -H 'Content-Type: application/json' -d'
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "actions": {
+          "rollover": {
+            "max_primary_shard_size": "10gb",
+            "max_age": "7d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "90d",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
+  }
+}'
+
+
+curl -u elastic:$ELASTIC_PASSWORD -X PUT "http://localhost:9200/qrb_mon-000001/_settings" -H 'Content-Type: application/json' -d'
+{
+  "index.lifecycle.name": "qrb_policy",
+  "index.lifecycle.rollover_alias": "qrb_mon-alias"
+}'
+
+
+curl -u elastic:$ELASTIC_PASSWORD -X PUT "http://localhost:9200/_index_template/qrb_mon_template" -H 'Content-Type: application/json' -d'
+{
+  "index_patterns": ["qrb_mon-*"],
+  "template": {
+    "settings": {
+      "index.lifecycle.name": "qrb_policy",
+      "index.lifecycle.rollover_alias": "qrb_mon-alias",
+      "index.number_of_shards": 1,
+      "index.number_of_replicas": 0
+    }
+  }
+}'
+
+curl -u elastic:$ELASTIC_PASSWORD -X PUT "http://localhost:9200/_cluster/settings" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+    "indices.breaker.fielddata.limit": "40%",
+    "indices.breaker.request.limit": "30%",
+    "indices.breaker.total.limit": "70%"
+  }
+}'
