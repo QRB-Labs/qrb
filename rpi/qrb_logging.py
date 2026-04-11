@@ -10,9 +10,9 @@ class LogstashFormatter(LogstashFormatterBase):
         if isinstance(record.msg, dict):
             message = record.msg
         else:
-            message = {"@message" : record.msg}
+            message = {"message" : record.msg}
         message.update({
-            '@source_host': socket.gethostname(),
+            'host': {'hostname': socket.gethostname()},
             'path': record.pathname,
             'level': record.levelname,
             'logger_name': record.name,
