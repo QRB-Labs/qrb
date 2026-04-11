@@ -72,6 +72,88 @@
 
    .active {
    }
+
+   html {
+       height: 100%;
+   }
+   body {
+       display: flex;
+       flex-direction: column;
+       min-height: 100vh; /* Changed from height: 100% to min-height: 100vh for better flexibility */
+       margin: 0; /* Remove default body margin */
+   }
+   .main-content {
+       flex-grow: 1; /* This is the magic part! It makes the main content grow to fill available space. */
+       padding: 16px; /* We move the padding from the old div to this class */
+   }
+
+   </style>
+   <style>
+   .svg-with-background {
+       background-color: white; /* Or any other color like #F0F0F0, lightgray, etc. */
+       padding: 10px; /* Optional: Add some padding around the SVG content if desired */
+       border-radius: 5px; /* Optional: Rounded corners */
+       box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: Slight shadow */
+   }
+
+   /* Styles for the gallery container */
+
+   .gallery-no-lightbox {
+       display: grid;
+       /*
+    Creates a responsive grid. It will try to make columns at least 250px wide.
+    If there's space, it will create more columns.
+    "1fr" means each column will take up an equal fraction of the remaining space.
+      */
+       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+       gap: 15px; /* Space between items */
+       margin: 20px 0;
+       padding: 0;
+       list-style: none;
+   }
+
+   /* Styles for each individual gallery item */
+   .gallery-item {
+       border: 1px solid #ddd;
+       border-radius: 5px;
+       overflow: hidden; /* Ensures images don't spill out */
+       text-align: center;
+       background-color: #f9f9f9;
+       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+       transition: transform 0.2s ease-in-out;
+       display: flex; /* Use flexbox to control layout inside the item */
+       flex-direction: column; /* Stack image and text vertically */
+   }
+
+   .gallery-item:hover {
+       transform: translateY(-5px); /* Slight lift on hover */
+   }
+
+   /* Styles for the images within gallery items */
+   .gallery-item img {
+       display: block; /* Removes bottom space */
+       width: 100%;
+       height: 180px; /* Fixed height for uniformity, adjust as needed */
+       object-fit: cover; /* Scales image while maintaining aspect ratio, cropping if necessary */
+       object-position: center; /* Centers the image */
+       /* No border-bottom needed here as the <p> tag has padding */
+   }
+
+   /* Styles for the captions */
+   .gallery-item p {
+       padding: 10px 15px;
+       margin: 0; /* Remove default margin */
+       font-size: 0.95em;
+       color: #333;
+       flex-grow: 1; /* Allows the text to take up available space */
+       display: flex; /* Center the text vertically if needed */
+       align-items: center; /* Centers text vertically */
+       justify-content: center; /* Centers text horizontally */
+   }
+
+   .gallery-item p strong {
+       color: #000; /* Make the bold part stand out more */
+   }
    </style>
 
   </head>
@@ -89,6 +171,7 @@
 	  <a href="/about">About us</a>
 	  <a href="/hosting">Hosting & Colocation</a>
 	  <a href="/techdocs">Research & Development</a>
+	  <a href="/software">Software</a>
 	   <a href="/gov.et/">Ethiopian government docs</a>
 	</div>
 	<a href="javascript:void(0);" class="icon" onclick="myFunction()">
@@ -97,9 +180,9 @@
       </div>
     </header>
 
-    <div style="padding: 16px">
+    <main class="main-content">
       {{ content }}
-    </div>
+    </main>
 
     <footer>
       <div style="text-align: right; padding: 16px">
