@@ -73,8 +73,10 @@ def main(my_logger):
 
         a, unused = slope(time_history, temperature_history)
         pred_temperature = DERIVATIVE_COEFF*a + PROPORTIONAL_COEFF*temperature
-        my_logger.info({"message": "Control signal",
-                        "Temperature Forecast": pred_temperature})
+        my_logger.debug({"message": "Control signal",
+                         "Temperature": temperature,
+                         "Humidity": humidity,
+                         "Temperature Forecast": pred_temperature})
         if pred_temperature < THRESHOLD_TEMP:
             continue
 
@@ -84,12 +86,14 @@ def main(my_logger):
         if (not activation_history ) or \
            (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
             t - max(activation_history) > MTB_ACTIVATIONS):
-            my_logger.info("Activate")
+            my_logger.info({"message": "Activate",
+                            "Temperature Forecast": pred_temperature})
             if not DRY_RUN:
                 relay_webapp.toggle_relay(ACTIVATION_DURATION)
             heapq.heappush(activation_history, t)
         else:
-            my_logger.debug("Too many activations, skipping")
+            my_logger.info({"message": "Skip. Too many activations",
+                            "Temperature Forecast": pred_temperature})
 
 
 if __name__ == '__main__':
