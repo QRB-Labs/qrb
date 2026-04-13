@@ -25,9 +25,9 @@ SENSOR_PERIOD = 60
 WINDOW = 3600            # look back to compute current rate of change
 DERIVATIVE_COEFF = 900   # look forward for forecast
 PROPORTIONAL_COEFF = 1   # weight of current temp
-THRESHOLD_TEMP = 22      # forecast threshold to activate
+THRESHOLD_TEMP = 25      # forecast threshold to activate
 
-MAX_ACTIVATIONS_PER_DAY = 6
+MAX_ACTIVATIONS_PER_DAY = 16
 DAY_LENGTH = 24*60*60
 ACTIVATION_DURATION = 60
 MTB_ACTIVATIONS = 1800    # minimum time between activations
@@ -62,7 +62,7 @@ def main(my_logger):
         t = datetime.now().timestamp() - t0
         temperature, humidity = relay_webapp.read_sensor()
         if temperature is None:
-            my_logger.debug("read_sensor failed")
+            my_logger.error("read_sensor failed")
             continue
         time_history, temperature_history = slice_to_window(
             np.append(time_history, t),
@@ -73,8 +73,10 @@ def main(my_logger):
 
         a, unused = slope(time_history, temperature_history)
         pred_temperature = DERIVATIVE_COEFF*a + PROPORTIONAL_COEFF*temperature
-        my_logger.info({"message": "Control signal",
-                        "Temperature Forecast": pred_temperature})
+        my_logger.debug({"message": "Control signal",
+                         "Temperature": temperature,
+                         "Humidity": humidity,
+                         "Temperature Forecast": pred_temperature})
         if pred_temperature < THRESHOLD_TEMP:
             continue
 
@@ -84,12 +86,14 @@ def main(my_logger):
         if (not activation_history ) or \
            (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
             t - max(activation_history) > MTB_ACTIVATIONS):
-            my_logger.info("Activate")
+            my_logger.info({"message": "Activate",
+                            "Temperature Forecast": pred_temperature})
             if not DRY_RUN:
                 relay_webapp.toggle_relay(ACTIVATION_DURATION)
             heapq.heappush(activation_history, t)
         else:
-            my_logger.debug("Too many activations, skipping")
+            my_logger.debug({"message": "Skip. Too many activations",
+                             "Temperature Forecast": pred_temperature})
 
 
 if __name__ == '__main__':
