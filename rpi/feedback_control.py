@@ -87,6 +87,7 @@ def main(my_logger):
            (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
             t - max(activation_history) > MTB_ACTIVATIONS):
             my_logger.info({"message": "Activate",
+                            "duration": ACTIVATION_DURATION,
                             "Temperature Forecast": pred_temperature})
             if not DRY_RUN:
                 relay_webapp.toggle_relay(ACTIVATION_DURATION)
