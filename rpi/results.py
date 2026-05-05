@@ -34,8 +34,8 @@ query = {
                 "activate_count": {
                     "filter": { "term": { "message.keyword": "Activate" } }
                 },
-                "avg_temp": {
-                    "avg": { "field": "Temperature" }
+                "high_temp": {
+                    "percentiles": { "field": "Temperature" , "percents": [95]}
                 }
             }
         }
@@ -58,11 +58,11 @@ def get_data(es_url):
         parsed_data.append({
             "timestamp": b['key_as_string'],
             "count_activate": b['activate_count']['doc_count'],
-            "avg_temp": b['avg_temp']['value']
+            "high_temp": b['high_temp']['values']['95.0']
         })
         df = pd.DataFrame(parsed_data)
         # Drop days where no temperature was recorded to avoid plotting nulls
-        df = df.dropna(subset=['avg_temp'])
+        df = df.dropna(subset=['high_temp'])
         # Format the timestamp into a shorter, readable date string (YYYY-MM-DD)
         df['short_date'] = pd.to_datetime(df['timestamp']).dt.strftime('%Y-%m-%d')
 
@@ -71,7 +71,7 @@ def get_data(es_url):
 
 def plot(df):
     plt.figure(figsize=(10, 6))
-    plt.scatter(df['avg_temp'], df['count_activate'], s=10, c=df.index, cmap='viridis')
+    plt.scatter(df['count_activate'], df['high_temp'], s=64, c=df.index, cmap='viridis')
 
     # color legend (time in days)
     cb=plt.colorbar()
@@ -82,15 +82,15 @@ def plot(df):
     for index, row in df.iterrows():
         plt.annotate(
             row['short_date'],                         # The text to display
-            (row['avg_temp'], row['count_activate']),  # The (x, y) point to label
+            (row['count_activate'],row['high_temp']),   # The (x, y) point to label
             textcoords="offset points",                # How to position the text
             xytext=(5, 5),                             # Shift the text 5 points right and 5 points up
             ha='left',                                 # Horizontal alignment
             fontsize=6                                 # Keep font small to reduce clutter
         )
         
-    plt.ylabel('Activations/day')
-    plt.xlabel('Average temperature (°C)')
+    plt.xlabel('Activations/day')
+    plt.ylabel('Temperature 95th-p (°C)')
     plt.grid(True, alpha=0.3)
     plt.show()
 
