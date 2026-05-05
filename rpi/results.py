@@ -13,11 +13,10 @@ import sys
 
 HEADERS = {"Content-Type": "application/json"}
 
-# DSL Query: groups by day, filters for the host, and calculates both metrics
+# DSL Query: groups by day
 query = {
     "size": 0,  
     "query": {
-#        "term": { "logger_name": "rpi.feedback_control"}
         "bool": {
             "filter": [
                 { "term": { "logger_name": "rpi.feedback_control" } },
@@ -73,11 +72,13 @@ def get_data(es_url):
 def plot(df):
     plt.figure(figsize=(10, 6))
     plt.scatter(df['avg_temp'], df['count_activate'], s=10, c=df.index, cmap='viridis')
+
+    # color legend (time in days)
     cb=plt.colorbar()
     cticks = cb.get_ticks()
     cb.set_ticklabels(["Day {}".format(int(d-cticks[0])) for d in cticks])
 
-    # Add labels to the data points ---
+    # labels data points by date
     for index, row in df.iterrows():
         plt.annotate(
             row['short_date'],                         # The text to display
@@ -87,8 +88,8 @@ def plot(df):
             ha='left',                                 # Horizontal alignment
             fontsize=6                                 # Keep font small to reduce clutter
         )
-
-    plt.ylabel('Activations/day)')
+        
+    plt.ylabel('Activations/day')
     plt.xlabel('Average temperature (°C)')
     plt.grid(True, alpha=0.3)
     plt.show()
