@@ -29,7 +29,7 @@ THRESHOLD_TEMP = 25      # forecast threshold to activate
 
 MAX_ACTIVATIONS_PER_DAY = 32
 DAY_LENGTH = 24*60*60
-ACTIVATION_DURATION = 60
+ACTIVATION_DURATION = 120 
 MTB_ACTIVATIONS = 900    # minimum time between activations
 
 
