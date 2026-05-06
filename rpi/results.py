@@ -60,11 +60,12 @@ def get_data(es_url):
             "count_activate": b['activate_count']['doc_count'],
             "high_temp": b['high_temp']['values']['95.0']
         })
-        df = pd.DataFrame(parsed_data)
-        # Drop days where no temperature was recorded to avoid plotting nulls
-        df = df.dropna(subset=['high_temp'])
-        # Format the timestamp into a shorter, readable date string (YYYY-MM-DD)
-        df['short_date'] = pd.to_datetime(df['timestamp']).dt.strftime('%Y-%m-%d')
+
+    df = pd.DataFrame(parsed_data)
+    # Drop days where no temperature was recorded to avoid plotting nulls
+    df = df.dropna(subset=['high_temp'])
+    # Format the timestamp into a shorter, readable date string (YYYY-MM-DD)
+    df['short_date'] = pd.to_datetime(df['timestamp']).dt.strftime('%Y-%m-%d')
 
     return df
 
