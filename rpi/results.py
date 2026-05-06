@@ -2,7 +2,6 @@
 '''Results of Feedback control: reads temperature and pump
 activations, grouped by day from elastic search, and does a scatter
 plot.
-
 '''
 
 import requests
@@ -31,8 +30,16 @@ query = {
                 "calendar_interval": "1d"
             },
             "aggs": {
-                "activate_count": {
-                    "filter": { "term": { "message.keyword": "Activate" } }
+                "activations": {
+                    "filter": { "term": { "message.keyword": "Activate" } },
+                    "aggs": {
+                        "total_duration_sec": {
+                            "sum": {
+                                "field": "duration",
+                                "missing": 60  # Default to 1 minute if field is missing
+                            }
+                        }
+                    }
                 },
                 "high_temp": {
                     "percentiles": { "field": "Temperature" , "percents": [95]}
@@ -40,7 +47,6 @@ query = {
             }
         }
     }
-
 }
 
 
@@ -55,12 +61,16 @@ def get_data(es_url):
     parsed_data = []
 
     for b in buckets:
+        # Extract total seconds and convert to minutes
+        total_sec = b['activations']['total_duration_sec']['value']
+        duration_mins = total_sec / 60.0
+
         parsed_data.append({
             "timestamp": b['key_as_string'],
-            "count_activate": b['activate_count']['doc_count'],
+            "activation_mins": duration_mins,
             "high_temp": b['high_temp']['values']['95.0']
         })
-
+        
     df = pd.DataFrame(parsed_data)
     # Drop days where no temperature was recorded to avoid plotting nulls
     df = df.dropna(subset=['high_temp'])
@@ -72,30 +82,34 @@ def get_data(es_url):
 
 def plot(df):
     plt.figure(figsize=(10, 6))
-    plt.scatter(df['count_activate'], df['high_temp'], s=64, c=df.index, cmap='viridis')
+    plt.scatter(df['activation_mins'], df['high_temp'], s=64, c=df.index, cmap='viridis')
 
     # color legend (time in days)
-    cb=plt.colorbar()
+    cb = plt.colorbar()
     cticks = cb.get_ticks()
     cb.set_ticklabels(["Day {}".format(int(d-cticks[0])) for d in cticks])
 
     # labels data points by date
     for index, row in df.iterrows():
         plt.annotate(
-            row['short_date'],                         # The text to display
-            (row['count_activate'],row['high_temp']),   # The (x, y) point to label
-            textcoords="offset points",                # How to position the text
-            xytext=(5, 5),                             # Shift the text 5 points right and 5 points up
-            ha='left',                                 # Horizontal alignment
-            fontsize=6                                 # Keep font small to reduce clutter
+            row['short_date'],                         
+            (row['activation_mins'], row['high_temp']),
+            textcoords="offset points",                
+            xytext=(5, 5),                             
+            ha='left',                                 
+            fontsize=6                                 
         )
         
-    plt.xlabel('Activations/day')
+    plt.xlabel('Activation duration (min/day)')
     plt.ylabel('Temperature 95th-p (°C)')
     plt.grid(True, alpha=0.3)
     plt.show()
 
 
 if __name__ == '__main__':
-    es_host=sys.argv[1]
+    if len(sys.argv) < 2:
+        print("Usage: {} <elasticsearch_host>".format(sys.argv[0]))
+        sys.exit(1)
+        
+    es_host = sys.argv[1]
     plot(get_data(f"http://{es_host}:9200/qrb_mon-alias/_search"))
