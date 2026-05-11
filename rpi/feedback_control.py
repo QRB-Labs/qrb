@@ -29,7 +29,9 @@ THRESHOLD_TEMP = 25      # forecast threshold to activate
 
 MAX_ACTIVATIONS_PER_DAY = 32
 DAY_LENGTH = 24*60*60
-ACTIVATION_DURATION = 120 
+MAX_ACTIVATION_DURATION = 180
+MIN_ACTIVATION_DURATION = 30
+COOLING_COEFF = 1.2/60   # degrees of cooling per second of activation
 MTB_ACTIVATIONS = 900    # minimum time between activations
 
 
@@ -77,7 +79,11 @@ def main(my_logger):
                          "Temperature": temperature,
                          "Humidity": humidity,
                          "Temperature Forecast": pred_temperature})
-        if pred_temperature < THRESHOLD_TEMP:
+
+        # activate for a duration proportional to desired temperature change.
+        duration = max(0, min(MAX_ACTIVATION_DURATION,
+                              (pred_temperature - THRESHOLD_TEMP)/COOLING_COEFF))
+        if duration < MIN_ACTIVATION_DURATION:
             continue
 
         while activation_history and min(activation_history) < t-DAY_LENGTH:
@@ -87,10 +93,10 @@ def main(my_logger):
            (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
             t - max(activation_history) > MTB_ACTIVATIONS):
             my_logger.info({"message": "Activate",
-                            "duration": ACTIVATION_DURATION,
+                            "duration": duration,
                             "Temperature Forecast": pred_temperature})
             if not DRY_RUN:
-                relay_webapp.toggle_relay(ACTIVATION_DURATION)
+                relay_webapp.toggle_relay(duration)
             heapq.heappush(activation_history, t)
         else:
             my_logger.debug({"message": "Skip. Too many activations",
