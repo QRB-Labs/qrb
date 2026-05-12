@@ -31,7 +31,8 @@ MAX_ACTIVATIONS_PER_DAY = 32
 DAY_LENGTH = 24*60*60
 MAX_ACTIVATION_DURATION = 180
 MIN_ACTIVATION_DURATION = 30
-COOLING_COEFF = 1.2/60   # degrees of cooling per second of activation
+TEMP_BETA=0.0426         # degrees C (~smallest achievable temp change)
+DURATION_ALPHA=60/2.12   # seconds per log of temp change degrees
 MTB_ACTIVATIONS = 900    # minimum time between activations
 
 
@@ -80,7 +81,7 @@ def main(my_logger):
                          "Humidity": humidity,
                          "Temperature Forecast": pred_temperature})
 
-        if pred_temperature < THRESHOLD_TEMP:
+        if pred_temperature <= THRESHOLD_TEMP:
             continue
 
         while activation_history and min(activation_history) < t-DAY_LENGTH:
@@ -89,11 +90,12 @@ def main(my_logger):
         if (not activation_history ) or \
            (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
             t - max(activation_history) > MTB_ACTIVATIONS):
-            # activate for a duration proportional to desired temperature change.
-            duration = int((pred_temperature - THRESHOLD_TEMP)/COOLING_COEFF)
+            # activation duration proportional to log of desired temperature change.
+            duration = DURATION_ALPHA * np.log((pred_temperature - THRESHOLD_TEMP)/TEMP_BETA)
             duration = max(MIN_ACTIVATION_DURATION,
                                min(MAX_ACTIVATION_DURATION,
                                    duration))
+            duration = int(duration)
             my_logger.info({"message": "Activate",
                             "duration": duration,
                             "Temperature Forecast": pred_temperature})
