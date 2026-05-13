@@ -27,10 +27,13 @@ DERIVATIVE_COEFF = 900   # look forward for forecast
 PROPORTIONAL_COEFF = 1   # weight of current temp
 THRESHOLD_TEMP = 25      # forecast threshold to activate
 
-MAX_ACTIVATIONS_PER_DAY = 16
+MAX_ACTIVATIONS_PER_DAY = 32
 DAY_LENGTH = 24*60*60
-ACTIVATION_DURATION = 60
-MTB_ACTIVATIONS = 1800    # minimum time between activations
+MAX_ACTIVATION_DURATION = 180
+MIN_ACTIVATION_DURATION = 30
+TEMP_BETA=0.0426         # degrees C (~smallest achievable temp change)
+DURATION_ALPHA=60/2.12   # seconds per log of temp change degrees
+MTB_ACTIVATIONS = 900    # minimum time between activations
 
 
 def slope(x, y):
@@ -77,7 +80,8 @@ def main(my_logger):
                          "Temperature": temperature,
                          "Humidity": humidity,
                          "Temperature Forecast": pred_temperature})
-        if pred_temperature < THRESHOLD_TEMP:
+
+        if pred_temperature <= THRESHOLD_TEMP:
             continue
 
         while activation_history and min(activation_history) < t-DAY_LENGTH:
@@ -86,10 +90,17 @@ def main(my_logger):
         if (not activation_history ) or \
            (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
             t - max(activation_history) > MTB_ACTIVATIONS):
+            # activation duration proportional to log of desired temperature change.
+            duration = DURATION_ALPHA * np.log((pred_temperature - THRESHOLD_TEMP)/TEMP_BETA)
+            duration = max(MIN_ACTIVATION_DURATION,
+                               min(MAX_ACTIVATION_DURATION,
+                                   duration))
+            duration = int(duration)
             my_logger.info({"message": "Activate",
+                            "duration": duration,
                             "Temperature Forecast": pred_temperature})
             if not DRY_RUN:
-                relay_webapp.toggle_relay(ACTIVATION_DURATION)
+                relay_webapp.toggle_relay(duration)
             heapq.heappush(activation_history, t)
         else:
             my_logger.debug({"message": "Skip. Too many activations",
