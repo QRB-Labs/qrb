@@ -25,12 +25,15 @@ SENSOR_PERIOD = 60
 WINDOW = 3600            # look back to compute current rate of change
 DERIVATIVE_COEFF = 900   # look forward for forecast
 PROPORTIONAL_COEFF = 1   # weight of current temp
-THRESHOLD_TEMP = 22      # forecast threshold to activate
+THRESHOLD_TEMP = 25      # forecast threshold to activate
 
-MAX_ACTIVATIONS_PER_DAY = 6
+MAX_ACTIVATIONS_PER_DAY = 32
 DAY_LENGTH = 24*60*60
-ACTIVATION_DURATION = 60
-MTB_ACTIVATIONS = 1800    # minimum time between activations
+MAX_ACTIVATION_DURATION = 180
+MIN_ACTIVATION_DURATION = 30
+TEMP_BETA=0.0426         # degrees C (~smallest achievable temp change)
+DURATION_ALPHA=60/2.12   # seconds per log of temp change degrees
+MTB_ACTIVATIONS = 900    # minimum time between activations
 
 
 def slope(x, y):
@@ -62,7 +65,7 @@ def main(my_logger):
         t = datetime.now().timestamp() - t0
         temperature, humidity = relay_webapp.read_sensor()
         if temperature is None:
-            my_logger.debug("read_sensor failed")
+            my_logger.error("read_sensor failed")
             continue
         time_history, temperature_history = slice_to_window(
             np.append(time_history, t),
@@ -73,9 +76,12 @@ def main(my_logger):
 
         a, unused = slope(time_history, temperature_history)
         pred_temperature = DERIVATIVE_COEFF*a + PROPORTIONAL_COEFF*temperature
-        my_logger.info({"message": "Control signal",
-                        "Temperature Forecast": pred_temperature})
-        if pred_temperature < THRESHOLD_TEMP:
+        my_logger.debug({"message": "Control signal",
+                         "Temperature": temperature,
+                         "Humidity": humidity,
+                         "Temperature Forecast": pred_temperature})
+
+        if pred_temperature <= THRESHOLD_TEMP:
             continue
 
         while activation_history and min(activation_history) < t-DAY_LENGTH:
@@ -84,12 +90,21 @@ def main(my_logger):
         if (not activation_history ) or \
            (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
             t - max(activation_history) > MTB_ACTIVATIONS):
-            my_logger.info("Activate")
+            # activation duration proportional to log of desired temperature change.
+            duration = DURATION_ALPHA * np.log((pred_temperature - THRESHOLD_TEMP)/TEMP_BETA)
+            duration = max(MIN_ACTIVATION_DURATION,
+                               min(MAX_ACTIVATION_DURATION,
+                                   duration))
+            duration = int(duration)
+            my_logger.info({"message": "Activate",
+                            "duration": duration,
+                            "Temperature Forecast": pred_temperature})
             if not DRY_RUN:
-                relay_webapp.toggle_relay(ACTIVATION_DURATION)
+                relay_webapp.toggle_relay(duration)
             heapq.heappush(activation_history, t)
         else:
-            my_logger.debug("Too many activations, skipping")
+            my_logger.debug({"message": "Skip. Too many activations",
+                             "Temperature Forecast": pred_temperature})
 
 
 if __name__ == '__main__':

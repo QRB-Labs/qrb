@@ -111,7 +111,10 @@ def main():
         ip_generator = ip_range(args.start_ip, args.end_ip)
 
     if sheets_mode:
-        ip_generator = ips_from_sheets(args.key_file, args.sheet_url, args.worksheets)
+        try:
+            ip_generator = ips_from_sheets(args.key_file, args.sheet_url, args.worksheets)
+        except Exception as e:
+            my_logger.error({'message': '{}'.format(e)})
 
     for ip in ip_generator:
         try:

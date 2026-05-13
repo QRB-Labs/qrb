@@ -10,30 +10,9 @@ from logstash.formatter import LogstashFormatterBase
 import adafruit_dht
 import board
 
+import qrb_logging
 
-# Setup logging
-
-class LogstashFormatter(LogstashFormatterBase):
-    def format(self, record):
-        if isinstance(record.msg, dict):
-            message = record.msg
-            message.update({
-                'path': record.pathname,
-                'level': record.levelname,
-                'logger_name': record.name,
-            })
-        else:
-            message = {"@message" : record.msg}
-        message['@source_host'] = socket.gethostname()
-        return self.serialize(message)
-
-
-mylogger = logging.getLogger("rpi.relay_webapp")
-handler = TCPLogstashHandler(host='192.168.6.100', port=5959)
-handler.setFormatter(LogstashFormatter())
-mylogger.addHandler(handler)
-mylogger.setLevel(logging.INFO)
-
+mylogger = qrb_logging.get_logger("rpi.relay_webapp")
 app = Flask(__name__)
 
 # GPIO Setup for relay

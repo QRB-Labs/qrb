@@ -27,6 +27,8 @@ class LogstashFormatter(LogstashFormatterBase):
             del message['ip_address']
         if 'mac' in message:
             host["mac"] = message['mac']
+        if 'hostname' in message:
+            host["hostname"] = message['hostname']
 
         message.update({
             'host': host,

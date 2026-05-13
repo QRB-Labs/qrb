@@ -286,13 +286,13 @@ WHATSMINER_ERROR_CODES = {
           "action": "The version and type of hashboard areinconsistent, replace the correct hashboard"
     },
     530: {"message": "SM0 not found",
-          "action": "Check the connection and arrangement oftheadapter board, or replace the controlboard, check whether the hash boardconnector is empty welded"
+          "action": "Check the connection and arrangement oftheadapter board, or replace the control board, check whether the hash boardconnector is empty welded"
     },
     531: {"message": "SM1 not found",
-          "action": "Check the connection and arrangement oftheadapter board, or replace the controlboard, check whether the hash boardconnector is empty welded"
+          "action": "Check the connection and arrangement oftheadapter board, or replace the control board, check whether the hash boardconnector is empty welded"
     },
     532: {"message": "SM2 not found",
-          "action": "Check the connection and arrangement oftheadapter board, or replace the controlboard, check whether the hash boardconnector is empty welded"
+          "action": "Check the connection and arrangement oftheadapter board, or replace the control board, check whether the hash boardconnector is empty welded"
     },
     540: {"message": "SM0 reading chip id error",
           "action": "Check adapter board and wiring contact，Clean the dust on the hashboard"
@@ -313,13 +313,13 @@ WHATSMINER_ERROR_CODES = {
           "action": "Replacement of bad chips"
     },
     560: {"message": "SM0 loss balance",
-          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+          "action": "Plug in the adapter plate, and then screw in the power connection hashboard again"
     },
     561: {"message": "SM1 loss balance",
-          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+          "action": "Plug in the adapter plate, and then screw in the power connection hashboard again"
     },
     562: {"message": "SM2 loss balance",
-          "action": "Plug in the adapter plate, and then screwin the power connection hashboard again"
+          "action": "Plug in the adapter plate, and then screw in the power connection hashboard again"
     },
     600: {"message":
           "Environment temperature is high",
@@ -431,7 +431,18 @@ WHATSMINER_ERROR_CODES = {
     100003: {"message": "/antiv/dig/pf_partial.dig Illegal",
              "action": "Flash the ASIC with SD card, then with WhatsMinerTool."
     },
-    
+
+    # 55XNNN indicate errors on slot X, chip number NNN. 999 is for many
+    550999: {"message": "Slot 0 hash board communication or chip errors",
+             "action": ""
+    },
+    551999: {"message": "Slot 1 hash board communication or chip errors",
+             "action": ""
+    },
+    552999: {"message": "Slot 2 hash board communication or chip errors",
+             "action": ""
+    },
+
     # PSU error codes
 
     0x0001: {"message": "Input undervoltage",
