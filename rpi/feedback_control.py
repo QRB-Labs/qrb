@@ -27,7 +27,7 @@ DERIVATIVE_COEFF = 900   # look forward for forecast
 PROPORTIONAL_COEFF = 1   # weight of current temp
 THRESHOLD_TEMP = 25      # forecast threshold to activate
 
-MAX_ACTIVATIONS_PER_DAY = 32
+MAX_ACTIVATIONS_PER_DAY = 48
 DAY_LENGTH = 24*60*60
 MAX_ACTIVATION_DURATION = 180
 MIN_ACTIVATION_DURATION = 30
