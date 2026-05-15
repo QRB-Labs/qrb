@@ -85,9 +85,9 @@ def plot(df):
     plt.scatter(df['activation_mins'], df['high_temp'], s=64, c=df.index, cmap='viridis')
 
     # color legend (time in days)
-    cb = plt.colorbar(label="Time (days)")
+    cb = plt.colorbar(label="Days ago")
     cticks = cb.get_ticks()
-    cb.set_ticklabels(map(int,cticks))
+    cb.set_ticklabels(map(lambda x: int(cticks[-1]-x),cticks))
 
     # labels data points by date
     for index, row in df.iterrows():
