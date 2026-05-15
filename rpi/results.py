@@ -75,7 +75,7 @@ def get_data(es_url):
     # Drop days where no temperature was recorded to avoid plotting nulls
     df = df.dropna(subset=['high_temp'])
     # Format the timestamp into a shorter, readable date string (YYYY-MM-DD)
-    df['short_date'] = pd.to_datetime(df['timestamp']).dt.strftime('%Y-%m-%d')
+    df['short_date'] = pd.to_datetime(df['timestamp']).dt.strftime('%m-%d')
 
     return df
 
