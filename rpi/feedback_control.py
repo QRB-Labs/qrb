@@ -24,7 +24,6 @@ SENSOR_PERIOD = 60
 # Feedback control parameraters
 WINDOW = 3600            # look back to compute current rate of change
 DERIVATIVE_COEFF = 900   # look forward for forecast
-PROPORTIONAL_COEFF = 1   # weight of current temp
 THRESHOLD_TEMP = 25      # forecast threshold to activate
 
 MAX_ACTIVATIONS_PER_DAY = 48
@@ -78,7 +77,7 @@ def main(my_logger):
             continue
 
         temp_slope, unused = slope(time_history, temperature_history)
-        pred_temperature = DERIVATIVE_COEFF*temp_slope + PROPORTIONAL_COEFF*temperature
+        pred_temperature = DERIVATIVE_COEFF*temp_slope + temperature
         my_logger.debug({"message": "Control signal",
                          "Temperature": temperature,
                          "Humidity": humidity,
