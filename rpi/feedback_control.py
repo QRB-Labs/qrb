@@ -87,24 +87,28 @@ def main(my_logger):
         while activation_history and min(activation_history) < t-DAY_LENGTH:
             heapq.heappop(activation_history)
 
-        if (not activation_history ) or \
-           (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
-            t - max(activation_history) > MTB_ACTIVATIONS):
-            # activation duration proportional to log of desired temperature change.
-            duration = DURATION_ALPHA * np.log((pred_temperature - THRESHOLD_TEMP)/TEMP_BETA)
-            duration = max(MIN_ACTIVATION_DURATION,
-                               min(MAX_ACTIVATION_DURATION,
-                                   duration))
-            duration = int(duration)
-            my_logger.info({"message": "Activate",
-                            "duration": duration,
-                            "Temperature Forecast": pred_temperature})
-            if not DRY_RUN:
-                relay_webapp.toggle_relay(duration)
-            heapq.heappush(activation_history, t)
-        else:
-            my_logger.debug({"message": "Skip. Too many activations",
+        if len(activation_history) >= MAX_ACTIVATIONS_PER_DAY:
+            my_logger.debug({"message": "Skip. Daily max.",
                              "Temperature Forecast": pred_temperature})
+            continue
+
+        if t - max(activation_history) < MTB_ACTIVATIONS):
+            my_logger.debug({"message": "Skip. Max frequency.",
+                             "Temperature Forecast": pred_temperature})
+            continue
+
+        # activation duration proportional to log of desired temperature change.
+        duration = DURATION_ALPHA * np.log((pred_temperature - THRESHOLD_TEMP)/TEMP_BETA)
+        duration = max(MIN_ACTIVATION_DURATION,
+                       min(MAX_ACTIVATION_DURATION,
+                           duration))
+        duration = int(duration)
+        my_logger.info({"message": "Activate",
+                        "duration": duration,
+                        "Temperature Forecast": pred_temperature})
+        if not DRY_RUN:
+            relay_webapp.toggle_relay(duration)
+        heapq.heappush(activation_history, t)
 
 
 if __name__ == '__main__':
