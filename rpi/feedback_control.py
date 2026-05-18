@@ -35,6 +35,9 @@ TEMP_BETA=0.0426         # degrees C (~smallest achievable temp change)
 DURATION_ALPHA=60/2.12   # seconds per log of temp change degrees
 MTB_ACTIVATIONS = 900    # minimum time between activations
 
+Kp = 1.0/TEMP_BETA
+Kd = DERIVATIVE_COEFF/TEMP_BETA
+
 
 def slope(x, y):
     '''Least squares regression: y = a*x + b. Returns (a, b).
@@ -74,8 +77,8 @@ def main(my_logger):
         if len(time_history) < 5:
             continue
 
-        a, unused = slope(time_history, temperature_history)
-        pred_temperature = DERIVATIVE_COEFF*a + PROPORTIONAL_COEFF*temperature
+        temp_slope, unused = slope(time_history, temperature_history)
+        pred_temperature = DERIVATIVE_COEFF*temp_slope + PROPORTIONAL_COEFF*temperature
         my_logger.debug({"message": "Control signal",
                          "Temperature": temperature,
                          "Humidity": humidity,
@@ -98,7 +101,7 @@ def main(my_logger):
             continue
 
         # activation duration proportional to log of desired temperature change.
-        duration = DURATION_ALPHA * np.log((pred_temperature - THRESHOLD_TEMP)/TEMP_BETA)
+        duration = DURATION_ALPHA * np.log(Kp*(temperature - THRESHOLD_TEMP) + Kd*temp_slope)
         duration = max(MIN_ACTIVATION_DURATION,
                        min(MAX_ACTIVATION_DURATION,
                            duration))
