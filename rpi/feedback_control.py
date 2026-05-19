@@ -102,13 +102,11 @@ def main(my_logger):
             heapq.heappop(activation_history)
 
         if len(activation_history) >= MAX_ACTIVATIONS_PER_DAY:
-            my_logger.debug({"message": "Skip. Daily max.",
-                             "Temperature Forecast": pred_temperature})
+            my_logger.debug({"message": "Skip. Daily max."})
             continue
 
         if len(activation_history) and t - max(activation_history) < MTB_ACTIVATIONS:
-            my_logger.debug({"message": "Skip. Max frequency.",
-                             "Temperature Forecast": pred_temperature})
+            my_logger.debug({"message": "Skip. Max frequency."})
             continue
 
         # activation duration proportional to log of desired temperature change.
