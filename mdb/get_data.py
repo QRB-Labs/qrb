@@ -22,14 +22,14 @@ COLUMN_MAP = {
 }
 
 
-def sync_sheets(json_key, spreadsheet_url, tab_names):
+def sync_sheets(json_key, spreadsheet_url, tab_names, cache=False):
     gc = gspread.service_account(filename=json_key)
     sh = None
     temp_dir = tempfile.gettempdir()
 
     for name in tab_names:
         output_file = os.path.join(temp_dir, f'{name}.csv')
-        if os.path.exists(output_file):
+        if cache and os.path.exists(output_file):
             #  Local file  already exists. Skipping Google Sheets download
             yield output_file 
             continue # Move to the next worksheet
