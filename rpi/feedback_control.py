@@ -36,6 +36,11 @@ MTB_ACTIVATIONS = 900    # minimum time between activations
 
 Kp = 1.0/TEMP_BETA
 Kd = DERIVATIVE_COEFF/TEMP_BETA
+Ki = 1.0/(4*TEMP_BETA*DERIVATIVE_COEFF)
+
+
+def integral(x, y):
+    return np.sum(y[1:] * np.diff(x))
 
 
 def slope(x, y):
@@ -78,12 +83,19 @@ def main(my_logger):
 
         temp_slope, unused = slope(time_history, temperature_history)
         pred_temperature = DERIVATIVE_COEFF*temp_slope + temperature
+        # PID (proportional, integral, derivative) control of temperature error
+        u = Kp*(temperature - THRESHOLD_TEMP) + \
+            Kd*temp_slope + \
+            Ki*integral(time_history, np.asarray(temperature_history) - THRESHOLD_TEMP)
+
         my_logger.debug({"message": "Control signal",
                          "Temperature": temperature,
                          "Humidity": humidity,
+                         "Control": u,
                          "Temperature Forecast": pred_temperature})
 
-        if pred_temperature <= THRESHOLD_TEMP:
+        if u < 1.0:
+            # control signal impact is below smallest achievable temp change TEMP_BETA
             continue
 
         while activation_history and min(activation_history) < t-DAY_LENGTH:
@@ -100,7 +112,7 @@ def main(my_logger):
             continue
 
         # activation duration proportional to log of desired temperature change.
-        duration = DURATION_ALPHA * np.log(Kp*(temperature - THRESHOLD_TEMP) + Kd*temp_slope)
+        duration = DURATION_ALPHA * np.log(u)
         duration = max(MIN_ACTIVATION_DURATION,
                        min(MAX_ACTIVATION_DURATION,
                            duration))
