@@ -106,7 +106,7 @@ def main(my_logger):
                              "Temperature Forecast": pred_temperature})
             continue
 
-        if t - max(activation_history) < MTB_ACTIVATIONS):
+        if len(activation_history) and t - max(activation_history) < MTB_ACTIVATIONS:
             my_logger.debug({"message": "Skip. Max frequency.",
                              "Temperature Forecast": pred_temperature})
             continue
