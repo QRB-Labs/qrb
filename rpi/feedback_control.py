@@ -24,16 +24,16 @@ SENSOR_PERIOD = 60
 # Feedback control parameraters
 WINDOW = 3600            # look back to compute current rate of change
 DERIVATIVE_COEFF = 900   # look forward for forecast
-THRESHOLD_TEMP = 25      # forecast threshold to activate
+THRESHOLD_TEMP = 25      # target to stay under
 
 MAX_ACTIVATIONS_PER_DAY = 48
 DAY_LENGTH = 24*60*60
 MAX_ACTIVATION_DURATION = 180
 MIN_ACTIVATION_DURATION = 30
-TEMP_BETA=0.0426         # degrees C (~smallest achievable temp change)
-DURATION_ALPHA=60/2.12   # seconds per log of temp change degrees
 MTB_ACTIVATIONS = 900    # minimum time between activations
 
+TEMP_BETA=0.0426         # °C ~smallest achievable temp change
+DURATION_ALPHA=60/2.12   # seconds per log normalized temp change
 Kp = 1.0/TEMP_BETA
 Kd = DERIVATIVE_COEFF/TEMP_BETA
 Ki = 1.0/(4*TEMP_BETA*DERIVATIVE_COEFF)
@@ -83,7 +83,9 @@ def main(my_logger):
 
         temp_slope, unused = slope(time_history, temperature_history)
         pred_temperature = DERIVATIVE_COEFF*temp_slope + temperature
-        # PID (proportional, integral, derivative) control of temperature error
+        # Control signal u is
+        # - PID (proportional, integral, derivative) of temperature error,
+        # - desired normalized temp change. E.g. u = 2.0 => temp -= 2*TEMP_BETA
         u = Kp*(temperature - THRESHOLD_TEMP) + \
             Kd*temp_slope + \
             Ki*integral(time_history, np.asarray(temperature_history) - THRESHOLD_TEMP)
@@ -95,7 +97,7 @@ def main(my_logger):
                          "Temperature Forecast": pred_temperature})
 
         if u < 1.0:
-            # control signal impact is below smallest achievable temp change TEMP_BETA
+            # desired change < smallest achievable temp change TEMP_BETA
             continue
 
         while activation_history and min(activation_history) < t-DAY_LENGTH:
@@ -109,7 +111,7 @@ def main(my_logger):
             my_logger.debug({"message": "Skip. Max frequency."})
             continue
 
-        # activation duration proportional to log of desired temperature change.
+        # activation duration ~ log of normalized desired temperature change.
         duration = DURATION_ALPHA * np.log(u)
         duration = max(MIN_ACTIVATION_DURATION,
                        min(MAX_ACTIVATION_DURATION,
