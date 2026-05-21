@@ -34,7 +34,7 @@ TEMP_BETA=0.0426         # °C ~smallest achievable temp change
 DURATION_ALPHA=60/2.12   # seconds per log normalized temp change
 Kp = 1.0
 Kd = MTB_ACTIVATIONS     # derivative coeff = look ahead time ~ 1/control_freq
-Ki = 1.0/WINDOW          
+Ki = 1.0/WINDOW
 
 
 def integral(x, y):
@@ -47,7 +47,7 @@ def slope(x, y):
     '''
     X = np.vstack([x, np.ones(len(x))]).T
     a, b = np.linalg.lstsq(X, y, rcond=None)[0]
-    return a, b
+    return a
 
 
 def slice_to_window(time_series, value_series, window_start):
@@ -58,7 +58,7 @@ def slice_to_window(time_series, value_series, window_start):
 
 
 def main(my_logger):
-    temperature_history = np.array([])
+    errors_history = np.array([])
     time_history = np.array([])
     activation_history = []
     t0 = datetime.now().timestamp()
@@ -72,20 +72,18 @@ def main(my_logger):
         if temperature is None:
             my_logger.error("read_sensor failed")
             continue
-        time_history, temperature_history = slice_to_window(
+        time_history, errors_history = slice_to_window(
             np.append(time_history, t),
-            np.append(temperature_history, temperature),
+            np.append(errors_history, temperature - THRESHOLD_TEMP),
             t-WINDOW)
         if len(time_history) < 5:
             continue
 
         # Control signal u is PID (proportional, integral, derivative)
         # of temperature error, and equivalent to desired temp change
-        temp_slope, _ = slope(time_history, temperature_history)
-        errors = np.asarray(temperature_history) - THRESHOLD_TEMP
-        u = Kp * errors[-1] + \
-            Kd * temp_slope + \
-            Ki * integral(time_history, errors)
+        u = Kp * errors_history[-1] + \
+            Kd * slope(time_history, errors_history) + \
+            Ki * integral(time_history, errors_history)
 
         my_logger.debug({"message": "Control signal",
                          "Temperature": temperature,
