@@ -79,12 +79,13 @@ def main(my_logger):
         if len(time_history) < 5:
             continue
 
-        temp_slope, unused = slope(time_history, temperature_history)
         # Control signal u is PID (proportional, integral, derivative)
         # of temperature error, and equivalent to desired temp change
-        u = Kp*(temperature - THRESHOLD_TEMP) + \
-            Kd*temp_slope + \
-            Ki*integral(time_history, np.asarray(temperature_history) - THRESHOLD_TEMP)
+        temp_slope, _ = slope(time_history, temperature_history)
+        errors = np.asarray(temperature_history) - THRESHOLD_TEMP
+        u = Kp * errors[-1] + \
+            Kd * temp_slope + \
+            Ki * integral(time_history, errors)
 
         my_logger.debug({"message": "Control signal",
                          "Temperature": temperature,
