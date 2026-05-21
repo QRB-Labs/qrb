@@ -10,7 +10,6 @@ Usage:
 '''
 
 from datetime import datetime
-import heapq
 import numpy as np
 import time
 import random
@@ -100,14 +99,14 @@ def main(my_logger):
             # desired change < smallest achievable temp change TEMP_BETA
             continue
 
-        while activation_history and min(activation_history) < t-DAY_LENGTH:
-            heapq.heappop(activation_history)
+        while activation_history and activation_history[0] < t-DAY_LENGTH:
+            activation_history.pop(0)
 
         if len(activation_history) >= MAX_ACTIVATIONS_PER_DAY:
             my_logger.debug({"message": "Skip. Daily max."})
             continue
 
-        if len(activation_history) and t - max(activation_history) < MTB_ACTIVATIONS:
+        if len(activation_history) and t - activation_history[-1] < MTB_ACTIVATIONS:
             my_logger.debug({"message": "Skip. Max frequency."})
             continue
 
@@ -122,7 +121,7 @@ def main(my_logger):
                         "Temperature Forecast": pred_temperature})
         if not DRY_RUN:
             relay_webapp.toggle_relay(duration)
-        heapq.heappush(activation_history, t)
+        activation_history.append(t)
 
 
 if __name__ == '__main__':
