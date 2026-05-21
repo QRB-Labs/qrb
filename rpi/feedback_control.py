@@ -33,9 +33,9 @@ MTB_ACTIVATIONS = 900    # minimum time between activations
 
 TEMP_BETA=0.0426         # °C ~smallest achievable temp change
 DURATION_ALPHA=60/2.12   # seconds per log normalized temp change
-Kp = 1.0/TEMP_BETA
-Kd = DERIVATIVE_COEFF/TEMP_BETA
-Ki = 1.0/(4*TEMP_BETA*DERIVATIVE_COEFF)
+Kp = 1.0
+Kd = DERIVATIVE_COEFF
+Ki = 1.0/(4*DERIVATIVE_COEFF)
 
 
 def integral(x, y):
@@ -84,7 +84,7 @@ def main(my_logger):
         pred_temperature = DERIVATIVE_COEFF*temp_slope + temperature
         # Control signal u is
         # - PID (proportional, integral, derivative) of temperature error,
-        # - desired normalized temp change. E.g. u = 2.0 => temp -= 2*TEMP_BETA
+        # - desired temp change
         u = Kp*(temperature - THRESHOLD_TEMP) + \
             Kd*temp_slope + \
             Ki*integral(time_history, np.asarray(temperature_history) - THRESHOLD_TEMP)
@@ -95,8 +95,7 @@ def main(my_logger):
                          "Control": u,
                          "Temperature Forecast": pred_temperature})
 
-        if u < 1.0:
-            # desired change < smallest achievable temp change TEMP_BETA
+        if u < TEMP_BETA:
             continue
 
         while activation_history and activation_history[0] < t-DAY_LENGTH:
@@ -111,7 +110,7 @@ def main(my_logger):
             continue
 
         # activation duration ~ log of normalized desired temperature change.
-        duration = DURATION_ALPHA * np.log(u)
+        duration = DURATION_ALPHA * np.log(u/TEMP_BETA)
         duration = max(MIN_ACTIVATION_DURATION,
                        min(MAX_ACTIVATION_DURATION,
                            duration))
