@@ -21,21 +21,20 @@ DRY_RUN=False  # if True, no activation, reading and simulation only
 SENSOR_PERIOD = 60
 
 # Feedback control parameraters
-WINDOW = 3600            # look back to compute current rate of change
-DERIVATIVE_COEFF = 900   # look forward for forecast
+WINDOW = 3600            # look back to compute derivative and integral
 THRESHOLD_TEMP = 25      # target to stay under
 
 MAX_ACTIVATIONS_PER_DAY = 48
 DAY_LENGTH = 24*60*60
 MAX_ACTIVATION_DURATION = 180
 MIN_ACTIVATION_DURATION = 30
-MTB_ACTIVATIONS = 900    # minimum time between activations
+MTB_ACTIVATIONS = 900    # min time between activations (1/max control freq)
 
 TEMP_BETA=0.0426         # °C ~smallest achievable temp change
 DURATION_ALPHA=60/2.12   # seconds per log normalized temp change
 Kp = 1.0
-Kd = DERIVATIVE_COEFF
-Ki = 1.0/(4*DERIVATIVE_COEFF)
+Kd = MTB_ACTIVATIONS     # derivative coeff = look ahead time ~ 1/control_freq
+Ki = 1.0/WINDOW          
 
 
 def integral(x, y):
@@ -81,10 +80,9 @@ def main(my_logger):
             continue
 
         temp_slope, unused = slope(time_history, temperature_history)
-        pred_temperature = DERIVATIVE_COEFF*temp_slope + temperature
-        # Control signal u is
-        # - PID (proportional, integral, derivative) of temperature error,
-        # - desired temp change
+        pred_temperature = Kd*temp_slope + temperature
+        # Control signal u is PID (proportional, integral, derivative)
+        # of temperature error, and equivalent to desired temp change
         u = Kp*(temperature - THRESHOLD_TEMP) + \
             Kd*temp_slope + \
             Ki*integral(time_history, np.asarray(temperature_history) - THRESHOLD_TEMP)
