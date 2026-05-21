@@ -80,7 +80,6 @@ def main(my_logger):
             continue
 
         temp_slope, unused = slope(time_history, temperature_history)
-        pred_temperature = Kd*temp_slope + temperature
         # Control signal u is PID (proportional, integral, derivative)
         # of temperature error, and equivalent to desired temp change
         u = Kp*(temperature - THRESHOLD_TEMP) + \
@@ -90,8 +89,7 @@ def main(my_logger):
         my_logger.debug({"message": "Control signal",
                          "Temperature": temperature,
                          "Humidity": humidity,
-                         "Control": u,
-                         "Temperature Forecast": pred_temperature})
+                         "Control": u})
 
         if u < TEMP_BETA:
             continue
@@ -113,9 +111,7 @@ def main(my_logger):
                        min(MAX_ACTIVATION_DURATION,
                            duration))
         duration = int(duration)
-        my_logger.info({"message": "Activate",
-                        "duration": duration,
-                        "Temperature Forecast": pred_temperature})
+        my_logger.info({"message": "Activate", "duration": duration})
         if not DRY_RUN:
             relay_webapp.toggle_relay(duration)
         activation_history.append(t)
