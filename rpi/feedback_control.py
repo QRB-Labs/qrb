@@ -6,7 +6,6 @@ the pump control (toggle_relay) to stay below threshold temperature.
 Usage:
 
 ./feedback_control.py > feedback_control.log 2>&1 &
-
 '''
 
 from datetime import datetime
@@ -42,9 +41,7 @@ def integral(x, y):
 
 
 def slope(x, y):
-    '''Least squares regression: y = a*x + b. Returns (a, b).
-
-    '''
+    '''Least squares regression: y = a*x + b. Returns a.'''
     X = np.vstack([x, np.ones(len(x))]).T
     a, b = np.linalg.lstsq(X, y, rcond=None)[0]
     return a
