@@ -10,7 +10,6 @@ Usage:
 '''
 
 from datetime import datetime
-import heapq
 import numpy as np
 import time
 import random
@@ -22,18 +21,24 @@ DRY_RUN=False  # if True, no activation, reading and simulation only
 SENSOR_PERIOD = 60
 
 # Feedback control parameraters
-WINDOW = 3600            # look back to compute current rate of change
-DERIVATIVE_COEFF = 900   # look forward for forecast
-PROPORTIONAL_COEFF = 1   # weight of current temp
-THRESHOLD_TEMP = 25      # forecast threshold to activate
+WINDOW = 3600            # look back to compute derivative and integral
+THRESHOLD_TEMP = 25      # target to stay under
 
 MAX_ACTIVATIONS_PER_DAY = 48
 DAY_LENGTH = 24*60*60
 MAX_ACTIVATION_DURATION = 180
 MIN_ACTIVATION_DURATION = 30
-TEMP_BETA=0.0426         # degrees C (~smallest achievable temp change)
-DURATION_ALPHA=60/2.12   # seconds per log of temp change degrees
-MTB_ACTIVATIONS = 900    # minimum time between activations
+MTB_ACTIVATIONS = 900    # min time between activations (1/max control freq)
+
+TEMP_BETA=0.0426         # °C ~smallest achievable temp change
+DURATION_ALPHA=60/2.12   # seconds per log normalized temp change
+Kp = 1.0
+Kd = MTB_ACTIVATIONS     # derivative coeff = look ahead time ~ 1/control_freq
+Ki = 1.0/WINDOW
+
+
+def integral(x, y):
+    return np.sum(y[1:] * np.diff(x))
 
 
 def slope(x, y):
@@ -42,7 +47,7 @@ def slope(x, y):
     '''
     X = np.vstack([x, np.ones(len(x))]).T
     a, b = np.linalg.lstsq(X, y, rcond=None)[0]
-    return a, b
+    return a
 
 
 def slice_to_window(time_series, value_series, window_start):
@@ -53,7 +58,7 @@ def slice_to_window(time_series, value_series, window_start):
 
 
 def main(my_logger):
-    temperature_history = np.array([])
+    errors_history = np.array([])
     time_history = np.array([])
     activation_history = []
     t0 = datetime.now().timestamp()
@@ -67,44 +72,45 @@ def main(my_logger):
         if temperature is None:
             my_logger.error("read_sensor failed")
             continue
-        time_history, temperature_history = slice_to_window(
+        time_history, errors_history = slice_to_window(
             np.append(time_history, t),
-            np.append(temperature_history, temperature),
+            np.append(errors_history, temperature - THRESHOLD_TEMP),
             t-WINDOW)
         if len(time_history) < 5:
             continue
 
-        a, unused = slope(time_history, temperature_history)
-        pred_temperature = DERIVATIVE_COEFF*a + PROPORTIONAL_COEFF*temperature
+        # Control signal u is PID (proportional, integral, derivative)
+        # of temperature error, and equivalent to desired temp change
+        u = Kp * errors_history[-1] + \
+            Kd * slope(time_history, errors_history) + \
+            Ki * integral(time_history, errors_history)
         my_logger.debug({"message": "Control signal",
                          "Temperature": temperature,
                          "Humidity": humidity,
-                         "Temperature Forecast": pred_temperature})
+                         "Control": u})
 
-        if pred_temperature <= THRESHOLD_TEMP:
+        if u < TEMP_BETA:
             continue
 
-        while activation_history and min(activation_history) < t-DAY_LENGTH:
-            heapq.heappop(activation_history)
+        while activation_history and activation_history[0] < t-DAY_LENGTH:
+            activation_history.pop(0)
 
-        if (not activation_history ) or \
-           (len(activation_history) < MAX_ACTIVATIONS_PER_DAY and \
-            t - max(activation_history) > MTB_ACTIVATIONS):
-            # activation duration proportional to log of desired temperature change.
-            duration = DURATION_ALPHA * np.log((pred_temperature - THRESHOLD_TEMP)/TEMP_BETA)
-            duration = max(MIN_ACTIVATION_DURATION,
-                               min(MAX_ACTIVATION_DURATION,
-                                   duration))
-            duration = int(duration)
-            my_logger.info({"message": "Activate",
-                            "duration": duration,
-                            "Temperature Forecast": pred_temperature})
-            if not DRY_RUN:
-                relay_webapp.toggle_relay(duration)
-            heapq.heappush(activation_history, t)
-        else:
-            my_logger.debug({"message": "Skip. Too many activations",
-                             "Temperature Forecast": pred_temperature})
+        if len(activation_history) >= MAX_ACTIVATIONS_PER_DAY:
+            my_logger.debug({"message": "Skip. Daily max."})
+            continue
+
+        if activation_history and t - activation_history[-1] < MTB_ACTIVATIONS:
+            my_logger.debug({"message": "Skip. Max frequency."})
+            continue
+
+        # activation duration ~ log of normalized desired temperature change.
+        duration = DURATION_ALPHA * np.log(u/TEMP_BETA)
+        duration = int(max(MIN_ACTIVATION_DURATION, min(MAX_ACTIVATION_DURATION,
+                                                        duration)))
+        my_logger.info({"message": "Activate", "duration": duration})
+        if not DRY_RUN:
+            relay_webapp.toggle_relay(duration)
+        activation_history.append(t)
 
 
 if __name__ == '__main__':
