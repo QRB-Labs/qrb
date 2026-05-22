@@ -84,7 +84,6 @@ def main(my_logger):
         u = Kp * errors_history[-1] + \
             Kd * slope(time_history, errors_history) + \
             Ki * integral(time_history, errors_history)
-
         my_logger.debug({"message": "Control signal",
                          "Temperature": temperature,
                          "Humidity": humidity,
@@ -100,16 +99,14 @@ def main(my_logger):
             my_logger.debug({"message": "Skip. Daily max."})
             continue
 
-        if len(activation_history) and t - activation_history[-1] < MTB_ACTIVATIONS:
+        if activation_history and t - activation_history[-1] < MTB_ACTIVATIONS:
             my_logger.debug({"message": "Skip. Max frequency."})
             continue
 
         # activation duration ~ log of normalized desired temperature change.
         duration = DURATION_ALPHA * np.log(u/TEMP_BETA)
-        duration = max(MIN_ACTIVATION_DURATION,
-                       min(MAX_ACTIVATION_DURATION,
-                           duration))
-        duration = int(duration)
+        duration = int(max(MIN_ACTIVATION_DURATION, min(MAX_ACTIVATION_DURATION,
+                                                        duration)))
         my_logger.info({"message": "Activate", "duration": duration})
         if not DRY_RUN:
             relay_webapp.toggle_relay(duration)
