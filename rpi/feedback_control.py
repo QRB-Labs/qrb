@@ -42,9 +42,7 @@ def integral(x, y):
 
 
 def slope(x, y):
-    '''Least squares regression: y = a*x + b. Returns (a, b).
-
-    '''
+    '''Least squares regression: y = a*x + b. Returns a.'''
     X = np.vstack([x, np.ones(len(x))]).T
     a, b = np.linalg.lstsq(X, y, rcond=None)[0]
     return a
@@ -105,8 +103,12 @@ def main(my_logger):
 
         # activation duration ~ log of normalized desired temperature change.
         duration = DURATION_ALPHA * np.log(u/TEMP_BETA)
-        duration = int(max(MIN_ACTIVATION_DURATION, min(MAX_ACTIVATION_DURATION,
-                                                        duration)))
+
+        if duration < MIN_ACTIVATION_DURATION:
+            my_logger.debug({"message": "Skip. Min duration."})
+            continue
+        
+        duration = int(min(MAX_ACTIVATION_DURATION, duration))
         my_logger.info({"message": "Activate", "duration": duration})
         if not DRY_RUN:
             relay_webapp.toggle_relay(duration)
