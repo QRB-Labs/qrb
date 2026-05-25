@@ -26,8 +26,8 @@ THRESHOLD_TEMP = 25      # target to stay under
 
 MAX_ACTIVATIONS_PER_DAY = 48
 DAY_LENGTH = 24*60*60
-MAX_ACTIVATION_DURATION = 180
-MIN_ACTIVATION_DURATION = 30
+MAX_ACTIVATION_DURATION = 300
+MIN_ACTIVATION_DURATION = 60
 MTB_ACTIVATIONS = 900    # min time between activations (1/max control freq)
 
 TEMP_BETA=0.1            # °C ~smallest achievable temp change
