@@ -30,8 +30,8 @@ MAX_ACTIVATION_DURATION = 300
 MIN_ACTIVATION_DURATION = 60
 MTB_ACTIVATIONS = 900    # min time between activations (1/max control freq)
 
-TEMP_BETA=0.1            # °C ~smallest achievable temp change
-DURATION_ALPHA=40        # seconds per log normalized temp change
+TEMP_BETA=0.2            # °C ~smallest achievable temp change
+DURATION_ALPHA=50        # seconds per log normalized temp change
 Kp = 1.0
 Kd = MTB_ACTIVATIONS     # derivative coeff = look ahead time ~ 1/control_freq
 Ki = 1.0/WINDOW
