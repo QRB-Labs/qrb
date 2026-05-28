@@ -38,7 +38,7 @@ Ki = 1.0/WINDOW
 
 
 def integral(x, y):
-    return np.sum(y[1:] * np.diff(x))
+    return np.sum(y[:-1] * np.diff(x))
 
 
 def slope(x, y):
