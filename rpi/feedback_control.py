@@ -9,10 +9,8 @@ Usage:
 
 '''
 
-from datetime import datetime
 import numpy as np
 import time
-import random
 
 import qrb_logging
 import relay_webapp
@@ -20,7 +18,7 @@ import relay_webapp
 DRY_RUN=False  # if True, no activation, reading and simulation only
 SENSOR_PERIOD = 60
 
-# Feedback control parameraters
+# Feedback control parameters
 WINDOW = 3600            # look back to compute derivative and integral
 THRESHOLD_TEMP = 25      # target to stay under
 
@@ -43,7 +41,7 @@ def integral(x, y):
 
 def slope(x, y):
     '''Least squares regression: y = a*x + b. Returns a.'''
-    X = np.vstack([x, np.ones(len(x))]).T
+    X = np.vstack([x - x[0], np.ones(len(x))]).T
     a, b = np.linalg.lstsq(X, y, rcond=None)[0]
     return a
 
@@ -59,13 +57,12 @@ def main(my_logger):
     errors_history = np.array([])
     time_history = np.array([])
     activation_history = []
-    t0 = datetime.now().timestamp()
     t = None
 
     while True:
         if t: # don't sleep on the first iteration
             time.sleep(SENSOR_PERIOD)
-        t = datetime.now().timestamp() - t0
+        t = time.monotonic()
         temperature, humidity = relay_webapp.read_sensor()
         if temperature is None:
             my_logger.error("read_sensor failed")
