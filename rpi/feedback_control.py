@@ -8,10 +8,8 @@ Usage:
 ./feedback_control.py > feedback_control.log 2>&1 &
 '''
 
-from datetime import datetime
 import numpy as np
 import time
-import random
 
 import qrb_logging
 import relay_webapp
@@ -19,30 +17,30 @@ import relay_webapp
 DRY_RUN=False  # if True, no activation, reading and simulation only
 SENSOR_PERIOD = 60
 
-# Feedback control parameraters
+# Feedback control parameters
 WINDOW = 3600            # look back to compute derivative and integral
 THRESHOLD_TEMP = 25      # target to stay under
 
 MAX_ACTIVATIONS_PER_DAY = 48
 DAY_LENGTH = 24*60*60
-MAX_ACTIVATION_DURATION = 180
-MIN_ACTIVATION_DURATION = 30
+MAX_ACTIVATION_DURATION = 300
+MIN_ACTIVATION_DURATION = 54  # time for pump to start having an effect
 MTB_ACTIVATIONS = 900    # min time between activations (1/max control freq)
 
-TEMP_BETA=0.0426         # °C ~smallest achievable temp change
-DURATION_ALPHA=60/2.12   # seconds per log normalized temp change
+TEMP_BETA=0.66           # °C ~smallest achievable temp change
+DURATION_ALPHA=25        # sec/°C duration per temp change
 Kp = 1.0
 Kd = MTB_ACTIVATIONS     # derivative coeff = look ahead time ~ 1/control_freq
 Ki = 1.0/WINDOW
 
 
 def integral(x, y):
-    return np.sum(y[1:] * np.diff(x))
+    return np.sum(y[:-1] * np.diff(x))
 
 
 def slope(x, y):
     '''Least squares regression: y = a*x + b. Returns a.'''
-    X = np.vstack([x, np.ones(len(x))]).T
+    X = np.vstack([x - x[0], np.ones(len(x))]).T
     a, b = np.linalg.lstsq(X, y, rcond=None)[0]
     return a
 
@@ -58,13 +56,12 @@ def main(my_logger):
     errors_history = np.array([])
     time_history = np.array([])
     activation_history = []
-    t0 = datetime.now().timestamp()
     t = None
 
     while True:
         if t: # don't sleep on the first iteration
             time.sleep(SENSOR_PERIOD)
-        t = datetime.now().timestamp() - t0
+        t = time.monotonic()
         temperature, humidity = relay_webapp.read_sensor()
         if temperature is None:
             my_logger.error("read_sensor failed")
@@ -100,10 +97,8 @@ def main(my_logger):
             my_logger.debug({"message": "Skip. Max frequency."})
             continue
 
-        # activation duration ~ log of normalized desired temperature change.
-        duration = DURATION_ALPHA * np.log(u/TEMP_BETA)
-        duration = int(max(MIN_ACTIVATION_DURATION, min(MAX_ACTIVATION_DURATION,
-                                                        duration)))
+        duration = DURATION_ALPHA * u + MIN_ACTIVATION_DURATION
+        duration = int(min(MAX_ACTIVATION_DURATION, duration))
         my_logger.info({"message": "Activate", "duration": duration})
         if not DRY_RUN:
             relay_webapp.toggle_relay(duration)
