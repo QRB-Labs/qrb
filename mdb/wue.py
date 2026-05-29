@@ -46,7 +46,7 @@ query = {
                     }
                 },
                 "high_temp": {
-                    "percentiles": { "field": "Temperature" , "percents": [95]}
+                    "percentiles": { "field": "Temperature" , "percents": [90]}
                 }
             }
         }
@@ -72,7 +72,7 @@ def get_data(es_url):
         parsed_data.append({
             "timestamp": b['key_as_string'],
             "activation_mins": duration_mins,
-            "high_temp": b['high_temp']['values']['95.0']
+            "high_temp": b['high_temp']['values']['90.0']
         })
 
     df = pd.DataFrame(parsed_data)
@@ -105,7 +105,7 @@ def plot(df):
         )
 
     plt.xlabel('Activation duration (min/day)')
-    plt.ylabel('Temperature 95th-p (°C)')
+    plt.ylabel('High (90th-p) Temperature (°C)')
     plt.grid(True, alpha=0.3)
 
     buf = io.BytesIO()
