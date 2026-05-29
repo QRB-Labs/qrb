@@ -6,7 +6,6 @@ the pump control (toggle_relay) to stay below threshold temperature.
 Usage:
 
 ./feedback_control.py > feedback_control.log 2>&1 &
-
 '''
 
 import numpy as np
