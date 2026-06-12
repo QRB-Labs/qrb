@@ -24,11 +24,11 @@ THRESHOLD_TEMP = 25      # target to stay under
 MAX_ACTIVATIONS_PER_DAY = 48
 DAY_LENGTH = 24*60*60
 MAX_ACTIVATION_DURATION = 300
-MIN_ACTIVATION_DURATION = 54  # time for pump to start having an effect
+MIN_ACTIVATION_DURATION = 32  # time for pump to start having an effect
 MTB_ACTIVATIONS = 900    # min time between activations (1/max control freq)
 
 TEMP_BETA=0.66           # °C ~smallest achievable temp change
-DURATION_ALPHA=25        # sec/°C duration per temp change
+DURATION_ALPHA=37        # sec/°C duration per temp change
 Kp = 1.0
 Kd = MTB_ACTIVATIONS     # derivative coeff = look ahead time ~ 1/control_freq
 Ki = 1.0/WINDOW
