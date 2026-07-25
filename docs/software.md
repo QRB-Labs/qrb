@@ -39,4 +39,4 @@ MDB is QRB Labs' minimalist open source mining monitoring and management softwar
 
 </div>
 
-[Github repostiory](https://github.com/QRB-Labs/qrb)
+[Github repository](https://github.com/QRB-Labs/qrb)
