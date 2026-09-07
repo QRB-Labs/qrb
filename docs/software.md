@@ -13,7 +13,7 @@ MDB is QRB Labs' minimalist open source mining monitoring and management softwar
 <div style="padding: 16px">
 <ul>
 	<li>ultra-lightweight machine database in Google sheets</li>
-	<li>tools to monitor and control miners via miner API</li>
+	<li>miner_status tool to monitor miners via API (MicroBT, Bitmain, and Auradine supported)</li>
 	<li>dashboard and search engine for history and real-time analysis</li>
 	<li>rack visualization integrated with real-time status monitoring</li>
 	<li>environment monitoring via temperature and humidity sensors</li>
@@ -39,4 +39,4 @@ MDB is QRB Labs' minimalist open source mining monitoring and management softwar
 
 </div>
 
-[Github repostiory](https://github.com/QRB-Labs/qrb)
+[Github repository](https://github.com/QRB-Labs/qrb)
